@@ -14,6 +14,7 @@
 
 (def input
   [{:name    "1"
+    :start   true
     :text    "Êtes-vous une administration ?"
     :help    "La bonne question au bon moment."
     :choices [{:answer  "Oui"

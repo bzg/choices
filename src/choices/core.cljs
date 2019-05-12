@@ -1,8 +1,3 @@
-;; - test static index.html
-;; - fix readme.org
-;; - test choices.eig-forever.org
-;; - git push
-
 (ns choices.core
   (:require [reagent.core :as reagent]
             [reagent.session :as session]
@@ -10,10 +5,11 @@
             [choices.config :as config]
             [accountant.core :as accountant]))
 
+;; Initialize atoms
 (def show-help (reagent/atom config/help))
-
 (def output (reagent/atom {}))
 
+;; Create bidi routes
 (defn make-routes-from-input [i]
   (conj
    {"" (keyword (:name (first i)))}
@@ -22,17 +18,19 @@
 
 (def app-routes ["/" (make-routes-from-input config/input)])
 
+;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
 
-;; Take output, remove summaries associated with
-;; other choices in choices-goto than goto and
-;; add {name summary}
-(defn clean-up-summaries [choices-goto goto name summary]
+(defn clean-up-summaries
+  "Remove summaries associated with other choices that are have not been
+  selected."
+  [choices-goto goto name summary]
   (let [choices-to-remove (filter #(not= goto %) choices-goto)]
     (swap! output #(apply dissoc % choices-to-remove))
     (swap! output assoc name summary)))
 
-(defn create-page-contents [{:keys [done name text help choices]}]
+;; Create all the pages
+(defn create-page-contents [{:keys [start done name text help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
      (if config/header
@@ -72,8 +70,11 @@
                        :style    {:text-decoration "none"}
                        :href     (bidi/path-for app-routes (keyword goto))
                        :on-click (fn []
-                                   (swap! output conj
-                                          (clean-up-summaries choices-goto goto name summary)))}
+                                   (if start ;; FIXME: temporary fix
+                                     (reset! output {name summary})
+                                     (swap! output conj
+                                            (clean-up-summaries
+                                             choices-goto goto name summary))))}
                    answer]]
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
@@ -83,8 +84,6 @@
         [:div {:class "content has-text-centered"}
          [:p (:text config/footer)]
          [:p (:contact config/footer)]]])]))
-
-(doall (map create-page-contents config/input))
 
 (defmethod page-contents :four-o-four []
   [:body
@@ -107,9 +106,10 @@
        [:p (:text config/footer)]
        [:p (:contact config/footer)]]])])
 
-;; -------------------------
-;; Page mounting component
+;; Main function: create all the pages from `config/input`
+(doall (map create-page-contents config/input))
 
+;; Page mounting component
 (defn current-page []
   (let [page (session/get :current-page)]
     [:div
@@ -122,12 +122,11 @@
 
 (defn ^:export init []
   (accountant/configure-navigation!
-   {:nav-handler  (fn
-                    [path]
-                    (let [match        (bidi/match-route app-routes path)
-                          current-page (:handler match)]
-                      (session/put! :current-page current-page)))
-    :path-exists? (fn [path]
-                    (boolean (bidi/match-route app-routes path)))})
+   {:nav-handler
+    (fn [path] (let [match        (bidi/match-route app-routes path)
+                     current-page (:handler match)]
+                 (session/put! :current-page current-page)))
+    :path-exists?
+    (fn [path] (boolean (bidi/match-route app-routes path)))})
   (accountant/dispatch-current!)
   (mount-root))
