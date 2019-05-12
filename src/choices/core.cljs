@@ -33,7 +33,7 @@
 (defn create-page-contents [{:keys [start done name text help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
-     (if config/header
+     (when (not-empty config/header)
        [:section {:class (str "hero " (:color config/header))}
         [:div {:class "hero-body"}
          [:div {:class "container"}
@@ -46,7 +46,7 @@
         [:div [:h1 {:class "title"} text]
          (if @show-help [:h2 {:class "subtitle"} help])]
         (if-not done
-          [:a {:class    "button is-info"
+          [:a {:class    "button is-warning"
                :on-click #(swap! show-help not)} "?"])]
        (if done
          [:div
@@ -56,7 +56,7 @@
               ^{:key o}
               [:div {:class "tile is-child notification"}
                [:div {:class "subtitle"} o]])]]
-          [:a {:class "button is-info"
+          [:a {:class "button is-success"
                :href  "/"} "▶"]]
          [:div {:class "tile is-ancestor"}
           [:div {:class "tile is-parent"}
@@ -79,7 +79,7 @@
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
                     [:div {:class "subtitle"} explain]])])))]])]]
-     (if config/footer
+     (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
          [:p (:text config/footer)]
@@ -87,7 +87,7 @@
 
 (defmethod page-contents :four-o-four []
   [:body
-   (if config/header
+   (when (not-empty config/header)
      [:section {:class (str "hero " (:color config/header))}
       [:div {:class "hero-body"}
        [:div {:class "container"}
@@ -100,7 +100,7 @@
       [:div [:h1 {:class "title"} "404 - wrong page?"]
        [:h2 {:class "subtitle"} "Can we help?"]]]
      [:a {:href "/" :class "button is-info"} "Start over"]]]
-   (if config/footer
+   (when (not-empty config/footer)
      [:section {:class "footer"}
       [:div {:class "content has-text-centered"}
        [:p (:text config/footer)]
