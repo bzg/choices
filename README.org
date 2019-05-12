@@ -1,0 +1,16 @@
+* Choices
+
+With minimal configuration, build a single page application to let
+users traverse choices and get a summary of what they've chosen.
+
+* TODO
+
+- More documentation
+- More testing
+
+* License
+
+2019 Bastien Guerry.
+
+This application is published under the EPL 2.0 license.
+
