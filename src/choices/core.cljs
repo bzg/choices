@@ -122,10 +122,11 @@
                               "?subject=" (:fr (:mail-subject config/i18n))
                               "&body=" (string/join "\n" (vals @output)))}
               "📩"])
-           [:a {:class "button level-item"
-                :style bigger
-                :title (:fr (:redo config/i18n))
-                :href  "/"} "🔃"]]])]]
+           [:a {:class    "button level-item"
+                :style    bigger
+                :title    (:fr (:redo config/i18n))
+                :on-click #(reset! output nil)
+                :href     "/"} "🔃"]]])]]
      (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
