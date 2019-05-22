@@ -3,7 +3,8 @@
             [reagent.session :as session]
             [bidi.bidi :as bidi]
             [choices.config :as config]
-            [accountant.core :as accountant]))
+            [accountant.core :as accountant]
+            [cljsjs.clipboard]))
 
 ;; Initialize atoms
 (def show-help (reagent/atom config/help))
@@ -29,6 +30,28 @@
     (swap! output #(apply dissoc % choices-to-remove))
     (swap! output assoc name summary)))
 
+;; Create copy-to-clipboard component
+(defn clipboard-button [label target]
+  (let [clipboard-atom (reagent/atom nil)]
+    (reagent/create-class
+     {:display-name "clipboard-button"
+      :component-did-mount
+      #(let [clipboard (new js/ClipboardJS (reagent/dom-node %))]
+         (reset! clipboard-atom clipboard)
+         (.log js/console "clipboard mounted"))
+      :component-will-unmount
+      #(when-not (nil? @clipboard-atom)
+         (.destroy @clipboard-atom)
+         (reset! clipboard-atom nil)
+         (.log js/console "clipboard unmounted"))
+      :reagent-render
+      (fn []
+        [:a {:title                 (:fr (:copy-to-clipboard config/i18n))
+             :class                 "button is-text"
+             :style                 {:font-size "2em" :text-decoration "none"}
+             :data-clipboard-target target}
+         label])})))
+
 ;; Create all the pages
 (defn create-page-contents [{:keys [start done name text help force-help choices]}]
   (defmethod page-contents (keyword name) []
@@ -48,12 +71,16 @@
       [:div {:class "section"}
        [:div {:class "level"}
         [:div [:h1 {:class "title"} text]
-         (if (or force-help @show-help) [:h2 {:class "subtitle"} help])]
+         (when (or force-help @show-help)
+           [:h2 {:class "subtitle"} help])]
         (if-not done
-          [:a {:class    "button is-info"
-               :on-click #(swap! show-help not)} "?"])]
+          [:a {:class    "button is-text"
+               :style    {:font-size "2em" :text-decoration "none"}
+               :title    (:fr (:display-help config/i18n))
+               :on-click #(swap! show-help not)} "💬"]
+          [clipboard-button "📋" "#copy-this"])]
        (if done
-         [:div
+         [:div {:id "copy-this"}
           [:div {:class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
             (for [o (vals @output)]

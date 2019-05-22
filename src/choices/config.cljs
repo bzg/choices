@@ -1,6 +1,9 @@
 (ns choices.config
   (:require [reagent.core :as reagent]))
 
+(def i18n {:display-help      {:fr "Afficher de l'aide"}
+           :copy-to-clipboard {:fr "Copier dans le presse-papier"}})
+
 (def help false)
 
 (def header
