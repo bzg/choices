@@ -14,20 +14,21 @@
    :contact "contact@me.info"})
 
 (def input
-  [{:name    "1"
-    :start   true
-    :text    "Êtes-vous une administration ?"
-    :help    "On commence par la première question."
-    :choices [{:answer  "Oui"
-               :explain "Une administration est ceci."
-               :summary "Vous êtes une administration."
-               :goto    "2"
-               :color   "is-success"}
-              {:answer  "Non"
-               :explain "Une administration n'est pas cela."
-               :summary "Vous n'êtes pas une administration."
-               :color   "is-warning"
-               :goto    "8"}]}
+  [{:name       "1"
+    :start      true
+    :text       "Êtes-vous une administration ?"
+    :help       "On commence par la première question."
+    :force-help true
+    :choices    [{:answer  "Oui"
+                  :explain "Une administration est ceci."
+                  :summary "Vous êtes une administration."
+                  :goto    "2"
+                  :color   "is-success"}
+                 {:answer  "Non"
+                  :explain "Une administration n'est pas cela."
+                  :summary "Vous n'êtes pas une administration."
+                  :color   "is-warning"
+                  :goto    "8"}]}
    {:name    "2"
     :text    "Vous avez plus de 50 agents ?"
     :help    "Levez la main."

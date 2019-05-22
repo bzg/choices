@@ -30,7 +30,7 @@
     (swap! output assoc name summary)))
 
 ;; Create all the pages
-(defn create-page-contents [{:keys [start done name text help choices]}]
+(defn create-page-contents [{:keys [start done name text help force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
      (when (not-empty config/header)
@@ -48,7 +48,7 @@
       [:div {:class "section"}
        [:div {:class "level"}
         [:div [:h1 {:class "title"} text]
-         (if @show-help [:h2 {:class "subtitle"} help])]
+         (if (or force-help @show-help) [:h2 {:class "subtitle"} help])]
         (if-not done
           [:a {:class    "button is-info"
                :on-click #(swap! show-help not)} "?"])]
