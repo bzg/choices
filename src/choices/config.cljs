@@ -22,11 +22,11 @@
                :explain "Une administration est ceci."
                :summary "Vous êtes une administration."
                :goto    "2"
-               :color   "is-link"}
+               :color   "is-success"}
               {:answer  "Non"
                :explain "Une administration n'est pas cela."
                :summary "Vous n'êtes pas une administration."
-               :color   "is-danger"
+               :color   "is-warning"
                :goto    "8"}]}
    {:name    "2"
     :text    "Vous avez plus de 50 agents ?"
@@ -35,11 +35,11 @@
                :goto    "3"
                :explain "Je les ai tous comptés."
                :summary "Vous avez plus de 50 agents."
-               :color   "is-link"}
+               :color   "is-success"}
               {:answer  "En fait non."
                :goto    "8"
                :summary "Vous n'avez pas plus de 50 agents."
-               :color   "is-danger"}]}
+               :color   "is-warning"}]}
    {:name    "3"
     :text    "Vous avez envie de publier vos données ?"
     :help    "Ne soyez pas timides !"
@@ -47,12 +47,12 @@
                :summary "Vous avez vraiment envie de publier vos données."
                :explain "Une explication."
                :goto    "8"
-               :color   "is-link"}
+               :color   "is-success"}
               {:answer  "Non, j'ai trop peur."
                :summary "Vous avez trop peur de publier vos données."
                :explain "Encore une explication."
                :goto    "8"
-               :color   "is-danger"}]}
+               :color   "is-warning"}]}
    {:name "8"
     :text "Résulat des courses..."
     :done true}])

@@ -50,7 +50,7 @@
         [:div [:h1 {:class "title"} text]
          (if @show-help [:h2 {:class "subtitle"} help])]
         (if-not done
-          [:a {:class    "button is-warning"
+          [:a {:class    "button is-info"
                :on-click #(swap! show-help not)} "?"])]
        (if done
          [:div
