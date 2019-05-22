@@ -1,0 +1,13 @@
+@media print {
+    body * {
+	visibility: hidden;
+    }
+    #copy-this, #copy-this * {
+	visibility: visible;
+    }
+    #copy-this {
+	position: absolute;
+	left: 0;
+	top: 0;
+    }
+}

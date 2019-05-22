@@ -80,15 +80,14 @@
                :on-click #(swap! show-help not)} "💬"]
           [clipboard-button "📋" "#copy-this"])]
        (if done
-         [:div {:id "copy-this"}
-          [:div {:class "tile is-ancestor"}
+         [:div
+          [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
             (for [o (vals @output)]
               ^{:key o}
               [:div {:class "tile is-child notification"}
                [:div {:class "subtitle"} o]])]]
-          [:a {:class "button is-success"
-               :href  "/"} "▶"]]
+          [:a {:class "button is-success" :href "/"} "▶"]]
          [:div {:class "tile is-ancestor"}
           [:div {:class "tile is-parent"}
            (let [choices-goto (map :goto choices)]
