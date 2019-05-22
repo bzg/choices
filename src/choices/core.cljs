@@ -114,6 +114,11 @@
               [:div {:class "tile is-child notification"}
                [:div {:class "subtitle"} o]])]]
           [:div {:class "level-right"}
+           [:a {:class    "button level-item"
+                :style    bigger
+                :title    (:fr (:redo config/i18n))
+                :on-click #(reset! output nil)
+                :href     "/"} "🔃"]
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
                   :style bigger
@@ -121,12 +126,7 @@
                   :href  (str "mailto:" config/mail-to
                               "?subject=" (:fr (:mail-subject config/i18n))
                               "&body=" (string/join "\n" (vals @output)))}
-              "📩"])
-           [:a {:class    "button level-item"
-                :style    bigger
-                :title    (:fr (:redo config/i18n))
-                :on-click #(reset! output nil)
-                :href     "/"} "🔃"]]])]]
+              "📩"])]])]]
      (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
