@@ -74,7 +74,7 @@
        [:div {:class "level"}
         [:div [:h1 {:class "title"} text]
          (when (or force-help @show-help)
-           [:h2 {:class "subtitle"} help])]
+           [:h2 {:class "subtitle" :style {:margin "1em"}} help])]
         (if-not done
           ;; Not done: display the help button
           [:a {:class    "button is-text"
