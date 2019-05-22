@@ -67,65 +67,41 @@
                :goto    "oui"
                :color   "is-warning"}]}
 
-   ;; {:name    "4"
-   ;;  :text    "Ces données peuvent-elles être occultées par un traitement automatisé d’usage courant sans que cela ne dénature ni ne vide de son sens le document ?"
-   ;;  :help    "Un document est « dénaturé » ou « vidé » de son sens s’il ne contient plus de données ou si les données-clés pour la compréhension du document sont enlevées."
-   ;;  :choices [{:answer  "Oui"
-   ;;             :summary "Vous pouvez occulter vos données."
-   ;;             :goto    "3"
-   ;;             :color   "is-success"}
-   ;;            {:answer  "Non"
-   ;;             :summary "Vous ne pouvez pas occulter vos données"
-   ;;             :goto    "non"
-   ;;             :color   "is-warning"}]}
+   {:name    "4"
+    :text    "Ces données peuvent-elles être occultées par un traitement automatisé d’usage courant sans que cela ne dénature ni ne vide de son sens le document ?"
+    :help    "Un document est « dénaturé » ou « vidé » de son sens s’il ne contient plus de données ou si les données-clés pour la compréhension du document sont enlevées."
+    :choices [{:answer  "Oui"
+               :summary "Vous pouvez occulter vos données."
+               :goto    "3"
+               :color   "is-success"}
+              {:answer  "Non"
+               :summary "Vous ne pouvez pas occulter vos données"
+               :goto    "non"
+               :color   "is-warning"}]}
    
-   ;; {:name    "5"
-   ;;  :text    "Ces données sont-elles nécessaires à l’information du public ?"
-   ;;  :help    "Les données « nécessaires à l’information du public » ont été définies par le Décret n° 2018-1117 du 10 décembre 2018 relatif aux catégories de documents administratifs pouvant être rendus publics sans faire l'objet d'un processus d'anonymisation. Il s’agit, notamment, de données relatives à l’organisation de l’administration (ex : annuaires administratifs), aux conditions d’exercice et d’organisation de la vie politique, aux conditions d’exercice des professions réglementées, ou encore aux conditions d’organisation et d’exercice des activités touristiques."
-   ;;  :choices [{:answer  "Oui"
-   ;;             :summary "Ces données sont nécessaires à l’information du public."
-   ;;             :goto    "oui"
-   ;;             :color   "is-success"}
-   ;;            {:answer  "Non"
-   ;;             :summary "Ces données ne sont pas nécessaires à l’information du public."
-   ;;             :goto    "6"
-   ;;             :color   "is-warning"}]}
+   {:name    "5"
+    :text    "Ces données sont-elles nécessaires à l’information du public ?"
+    :help    "Les données « nécessaires à l’information du public » ont été définies par le Décret n° 2018-1117 du 10 décembre 2018 relatif aux catégories de documents administratifs pouvant être rendus publics sans faire l'objet d'un processus d'anonymisation. Il s’agit, notamment, de données relatives à l’organisation de l’administration (ex : annuaires administratifs), aux conditions d’exercice et d’organisation de la vie politique, aux conditions d’exercice des professions réglementées, ou encore aux conditions d’organisation et d’exercice des activités touristiques."
+    :choices [{:answer  "Oui"
+               :summary "Ces données sont nécessaires à l’information du public."
+               :goto    "oui"
+               :color   "is-success"}
+              {:answer  "Non"
+               :summary "Ces données ne sont pas nécessaires à l’information du public."
+               :goto    "6"
+               :color   "is-warning"}]}
 
-   ;; {:name    "6"
-   ;;  :text    "Ces données sont-elles nécessaires à l’information du public ?"
-   ;;  :help    "Les données « nécessaires à l’information du public » ont été définies par le Décret n° 2018-1117 du 10 décembre 2018 relatif aux catégories de documents administratifs pouvant être rendus publics sans faire l'objet d'un processus d'anonymisation. Il s’agit, notamment, de données relatives à l’organisation de l’administration (ex : annuaires administratifs), aux conditions d’exercice et d’organisation de la vie politique, aux conditions d’exercice des professions réglementées, ou encore aux conditions d’organisation et d’exercice des activités touristiques."
-   ;;  :choices [{:answer  "Oui"
-   ;;             :summary "Ces données sont nécessaires à l’information du public."
-   ;;             :goto    "oui"
-   ;;             :color   "is-success"}
-   ;;            {:answer  "Non"
-   ;;             :summary "Ces données ne sont pas nécessaires à l’information du public."
-   ;;             :goto    "6"
-   ;;             :color   "is-warning"}]}
-
-   ;; {:name    "6"
-   ;;  :text    "Ces données peuvent-elles être anonymisées sans que cette opération implique des efforts disproportionnés ou que le document ne soit dénaturé ou vidé de son sens ?"
-   ;;  :help    "L'anonymisation est un processus consistant à traiter des données à caractère personnel afin d’empêcher totalement et de manière irréversible l’identification d’une personne physique. L’anonymisation suppose donc qu’il n’y ait plus aucun lien possible entre l’information concernée et la personne à laquelle elle se rattache. L’identification devient alors totalement impossible. L'anonymisation doit être adaptée à chaque jeu de données. La notion d’efforts disproportionnés est laissée à l’appréciation de chaque administration ; on considère que le retrait d’une colonne ou d’une ligne d’une base de données ne constitue pas un effort disproportionné."
-   ;;  :choices [{:answer  "Oui"
-   ;;             :summary "Ces données peuvent être anonymisées comme requis."
-   ;;             :goto    "oui"
-   ;;             :color   "is-success"}
-   ;;            {:answer  "Non"
-   ;;             :summary "Ces données ne peuvent pas être anonymisées comme requis."
-   ;;             :goto    "non"
-   ;;             :color   "is-warning"}]}
-
-   ;; {:name    "6"
-   ;;  :text    "Ces données peuvent-elles être anonymisées sans que cette opération implique des efforts disproportionnés ou que le document ne soit dénaturé ou vidé de son sens ?"
-   ;;  :help    "L'anonymisation est un processus consistant à traiter des données à caractère personnel afin d’empêcher totalement et de manière irréversible l’identification d’une personne physique. L’anonymisation suppose donc qu’il n’y ait plus aucun lien possible entre l’information concernée et la personne à laquelle elle se rattache. L’identification devient alors totalement impossible. L'anonymisation doit être adaptée à chaque jeu de données. La notion d’efforts disproportionnés est laissée à l’appréciation de chaque administration ; on considère que le retrait d’une colonne ou d’une ligne d’une base de données ne constitue pas un effort disproportionné."
-   ;;  :choices [{:answer  "Oui"
-   ;;             :summary "Ces données peuvent être anonymisées comme requis."
-   ;;             :goto    "oui"
-   ;;             :color   "is-success"}
-   ;;            {:answer  "Non"
-   ;;             :summary "Ces données ne peuvent pas être anonymisées comme requis."
-   ;;             :goto    "non"
-   ;;             :color   "is-warning"}]}
+   {:name    "6"
+    :text    "Ces données peuvent-elles être anonymisées sans que cette opération implique des efforts disproportionnés ou que le document ne soit dénaturé ou vidé de son sens ?"
+    :help    "L'anonymisation est un processus consistant à traiter des données à caractère personnel afin d’empêcher totalement et de manière irréversible l’identification d’une personne physique. L’anonymisation suppose donc qu’il n’y ait plus aucun lien possible entre l’information concernée et la personne à laquelle elle se rattache. L’identification devient alors totalement impossible. L'anonymisation doit être adaptée à chaque jeu de données. La notion d’efforts disproportionnés est laissée à l’appréciation de chaque administration ; on considère que le retrait d’une colonne ou d’une ligne d’une base de données ne constitue pas un effort disproportionné."
+    :choices [{:answer  "Oui"
+               :summary "Ces données peuvent être anonymisées comme requis."
+               :goto    "oui"
+               :color   "is-success"}
+              {:answer  "Non"
+               :summary "Ces données ne peuvent pas être anonymisées comme requis."
+               :goto    "non"
+               :color   "is-warning"}]}
    
    {:name "non"
     :text "Vous n’êtes pas tenus de publier votre document en Open data."
@@ -133,5 +109,4 @@
    
    {:name "oui"
     :text "Vous devez publier votre document en Open data sur une plateforme dédiée !"
-    :done true}
-   ])
+    :done true}])
