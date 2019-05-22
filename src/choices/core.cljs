@@ -15,13 +15,12 @@
 (def bigger {:font-size "2em" :text-decoration "none"})
 
 ;; Create bidi routes
-(defn make-routes-from-input [i]
-  (conj
-   {"" (keyword (:name (first i)))}
-   (into {} (map (fn [{:keys [name]}] {name (keyword name)}) i))
-   {true :four-o-four}))
-
-(def app-routes ["/" (make-routes-from-input config/input)])
+(def app-routes
+  ["/" (into []
+             (concat [["" (keyword (:name (first config/input)))]]
+                     (into [] (for [n config/input]
+                                [(:name n) (keyword (:name n))]))
+                     [[true :four-o-four]]))])
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
