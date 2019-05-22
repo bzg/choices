@@ -9,7 +9,7 @@
                  [reagent-utils "0.3.3"]
                  [bidi "2.1.6"]
                  [venantius/accountant "0.2.4"]]
-  :plugins [[lein-figwheel "0.5.16"]
+  :plugins [[lein-figwheel "0.5.18"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
   :source-paths ["src"]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
