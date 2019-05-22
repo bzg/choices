@@ -120,7 +120,7 @@
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
                   :style bigger
-                  :title (:fr (:mail-to config/i18n))
+                  :title (:fr (:mail-to-message config/i18n))
                   :href  (str "mailto:" config/mail-to
                               "?subject=" (:fr (:mail-subject config/i18n))
                               "&body=" (string/join "\n" (vals @output)))}
