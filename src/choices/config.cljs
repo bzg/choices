@@ -5,6 +5,7 @@
 
 (def header
   {:title    "Guide Open Data"
+   :logo     "https://www.etalab.gouv.fr/wp-content/uploads/2014/07/logo-etalab-320x200.png"
    :color    "is-primary"
    :subtitle "Guide pour la publication des données administratives"})
 
