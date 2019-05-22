@@ -41,13 +41,11 @@
      {:display-name "clipboard-button"
       :component-did-mount
       #(let [clipboard (new js/ClipboardJS (reagent/dom-node %))]
-         (reset! clipboard-atom clipboard)
-         (.log js/console "clipboard mounted"))
+         (reset! clipboard-atom clipboard))
       :component-will-unmount
       #(when-not (nil? @clipboard-atom)
          (.destroy @clipboard-atom)
-         (reset! clipboard-atom nil)
-         (.log js/console "clipboard unmounted"))
+         (reset! clipboard-atom nil))
       :reagent-render
       (fn []
         [:a {:title                 (:fr (:copy-to-clipboard config/i18n))
@@ -99,11 +97,11 @@
                        :style    {:text-decoration "none"}
                        :href     (bidi/path-for app-routes (keyword goto))
                        :on-click (fn []
-                                   (if start ;; FIXME: temporary fix
-                                     (reset! output {name summary})
-                                     (swap! output conj
-                                            (clean-up-summaries
-                                             choices-goto goto name summary))))}
+                                   (when (not-empty summary)
+                                     (if start ;; FIXME: temporary fix
+                                       (reset! output {name summary})
+                                       (clean-up-summaries
+                                        choices-goto goto name summary))))}
                    answer]]
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
