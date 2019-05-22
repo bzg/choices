@@ -4,11 +4,15 @@
             [bidi.bidi :as bidi]
             [choices.config :as config]
             [accountant.core :as accountant]
-            [cljsjs.clipboard]))
+            [cljsjs.clipboard]
+            [clojure.string :as string]))
 
 ;; Initialize atoms
-(def show-help (reagent/atom config/help))
+(def show-help (reagent/atom config/display-help))
 (def output (reagent/atom {}))
+
+;; Utility
+(def bigger {:font-size "2em" :text-decoration "none"})
 
 ;; Create bidi routes
 (defn make-routes-from-input [i]
@@ -48,7 +52,7 @@
       (fn []
         [:a {:title                 (:fr (:copy-to-clipboard config/i18n))
              :class                 "button is-text"
-             :style                 {:font-size "2em" :text-decoration "none"}
+             :style                 bigger
              :data-clipboard-target target}
          label])})))
 
@@ -74,20 +78,15 @@
          (when (or force-help @show-help)
            [:h2 {:class "subtitle"} help])]
         (if-not done
+          ;; Not done: display the help button
           [:a {:class    "button is-text"
-               :style    {:font-size "2em" :text-decoration "none"}
+               :style    bigger
                :title    (:fr (:display-help config/i18n))
                :on-click #(swap! show-help not)} "💬"]
+          ;; Done: display the copy-to-clipboard button
           [clipboard-button "📋" "#copy-this"])]
-       (if done
-         [:div
-          [:div {:id "copy-this" :class "tile is-ancestor"}
-           [:div {:class "tile is-parent is-vertical is-12"}
-            (for [o (vals @output)]
-              ^{:key o}
-              [:div {:class "tile is-child notification"}
-               [:div {:class "subtitle"} o]])]]
-          [:a {:class "button is-success" :href "/"} "▶"]]
+       (if-not done
+         ;; Not done: display the choices
          [:div {:class "tile is-ancestor"}
           [:div {:class "tile is-parent"}
            (let [choices-goto (map :goto choices)]
@@ -108,7 +107,28 @@
                    answer]]
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
-                    [:div {:class "subtitle"} explain]])])))]])]]
+                    [:div {:class "subtitle"} explain]])])))]]
+         ;; Done: display the final output
+         [:div
+          [:div {:id "copy-this" :class "tile is-ancestor"}
+           [:div {:class "tile is-parent is-vertical is-12"}
+            (for [o (vals @output)]
+              ^{:key o}
+              [:div {:class "tile is-child notification"}
+               [:div {:class "subtitle"} o]])]]
+          [:div {:class "level-right"}
+           (if (not-empty config/mail-to)
+             [:a {:class "button level-item"
+                  :style bigger
+                  :title (:fr (:mail-to config/i18n))
+                  :href  (str "mailto:" config/mail-to
+                              "?subject=" (:fr (:mail-subject config/i18n))
+                              "&body=" (string/join "\n" (vals @output)))}
+              "📩"])
+           [:a {:class "button level-item"
+                :style bigger
+                :title (:fr (:redo config/i18n))
+                :href  "/"} "🔃"]]])]]
      (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}

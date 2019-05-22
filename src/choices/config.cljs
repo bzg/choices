@@ -1,10 +1,15 @@
 (ns choices.config
   (:require [reagent.core :as reagent]))
 
-(def i18n {:display-help      {:fr "Afficher de l'aide"}
-           :copy-to-clipboard {:fr "Copier dans le presse-papier"}})
+(def mail-to "bzg@bzg.fr")
 
-(def help false)
+(def display-help false)
+
+(def i18n {:display-help      {:fr "Afficher de l'aide"}
+           :copy-to-clipboard {:fr "Copier dans le presse-papier"}
+           :mail-to-message   {:fr "Envoyer par mail"}
+           :mail-subject      {:fr "Résultat du guide open data"}
+           :redo              {:fr "Recommencer"}})
 
 (def header
   {:title    "Guide Open Data"
