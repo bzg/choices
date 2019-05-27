@@ -25,7 +25,7 @@
 
 (def input
   [{:name       "0"
-    :start      true
+    :default    true
     :text       "Une présentation du guide"
     :force-help true
     :help       "Un assez long text ici"
@@ -34,6 +34,7 @@
                   :color  "is-success"}]}
 
    {:name    "1"
+    :start   true
     :text    "Votre document est-il achevé ?"
     :help    [:div [:p "Un document administratif correspond à tout document produit ou reçu par une administration dans le cadre de sa mission de service public."] [:br] [:p "Un document administratif produit peut être une base de données contenant des informations relatives à une mission de service public."] [:br] [:p "Un document reçu peut être un document fourni par une administration à une autre pour les besoins de sa mission de service public."]]
     :choices [{:answer  "Oui"

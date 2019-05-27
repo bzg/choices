@@ -54,7 +54,7 @@
          label])})))
 
 ;; Create all the pages
-(defn create-page-contents [{:keys [start done name text help force-help choices]}]
+(defn create-page-contents [{:keys [default start done name text help force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
      (when (not-empty config/header)
@@ -98,7 +98,7 @@
                        :href     (bidi/path-for app-routes (keyword goto))
                        :on-click (fn []
                                    (when (not-empty summary)
-                                     (if start ;; FIXME: temporary fix
+                                     (if (or default start) ;; FIXME: temporary fix
                                        (reset! output {name summary})
                                        (clean-up-summaries
                                         choices-goto goto name summary))))}
