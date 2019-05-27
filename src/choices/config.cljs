@@ -9,7 +9,9 @@
            :copy-to-clipboard {:fr "Copier dans le presse-papier"}
            :mail-to-message   {:fr "Envoyer par mail"}
            :mail-subject      {:fr "Résultat du guide open data"}
-           :redo              {:fr "Recommencer"}})
+           :redo              {:fr "Recommencer"}
+           :404-title         {:fr "Page introuvable (erreur 404)"}
+           :404-subtitle      {:fr ""}})
 
 (def header
   {:title    "Guide juridique de l'Open Data"

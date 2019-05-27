@@ -148,9 +148,9 @@
    [:div {:class "container"}
     [:div {:class "section"}
      [:div {:class "level"}
-      [:div [:h1 {:class "title"} "404 - wrong page?"]
-       [:h2 {:class "subtitle"} "Can we help?"]]]
-     [:a {:href "/" :class "button is-info"} "Start over"]]]
+      [:div [:h1 {:class "title"} (:fr (:404-title config/i18n))]
+       [:h2 {:class "subtitle"} (:fr (:404-subtitle config/i18n))]]]
+     [:a {:href "/" :class "button is-info"} (:fr (:redo config/i18n))]]]
    (when (not-empty config/footer)
      [:section {:class "footer"}
       [:div {:class "content has-text-centered"}
