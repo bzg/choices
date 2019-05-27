@@ -71,9 +71,10 @@
      [:div {:class "container"}
       [:div {:class "section"}
        [:div {:class "level"}
-        [:div [:h1 {:class "title"} text]
+        [:div
+         [:h1 {:class "title"} text]
          (when (or force-help @show-help)
-           [:h2 {:class "subtitle" :style {:margin "1em"}} help])]
+           [:div {:style {:margin "1em" :font-size "1.2rem"}} help])]
         (if-not done
           ;; Not done: display the help button
           [:a {:class    "button is-text"
@@ -131,7 +132,9 @@
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
          [:p (:text config/footer)]
-         [:p (:contact config/footer)]]])]))
+         [:p "Contact: "
+          [:a {:href (str "mailto:" (:contact config/footer))}
+           (:contact config/footer)]]]])]))
 
 (defmethod page-contents :four-o-four []
   [:body
