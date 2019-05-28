@@ -10,6 +10,8 @@
 ;; Initialize atoms
 (def show-help (reagent/atom config/display-help))
 (def output (reagent/atom []))
+(def show-modal (reagent/atom false))
+(def modal-message (reagent/atom ""))
 
 ;; Utility
 (def bigger {:font-size "2em" :text-decoration "none"})
@@ -61,12 +63,25 @@
            [:h1 {:class "title"} [:a {:href "/"} (:title config/header)]]
            [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
      [:div {:class "container"}
+      [:div {:class (str "modal " (when @show-modal "is-active"))}
+       [:div {:class "modal-background"}]
+       [:div {:class "modal-content"}
+        [:div {:class "box"}
+         [:div {:class "title"} (:fr (:attention config/i18n))]
+         [:p @modal-message]
+         [:br]
+         [:div {:class "has-text-centered"}
+          [:a {:class    "button is-medium is-warning"
+               :on-click #(reset! show-modal false)}
+           (:fr (:ok config/i18n))]]]]
+       [:button {:class    "modal-close is-large" :aria-label "close"
+                 :on-click #(reset! show-modal false)}]]
       [:div {:class "section"}
        [:div {:class "level"}
         [:div
          [:h1 {:class "title"} text]
          (when (or force-help @show-help)
-           [:div {:style {:margin "1em" :font-size "1.2rem"}} help])]
+           [:div {:class "is-size-5"} {:style {:margin "1em"}} help])]
         (if-not done
           ;; Not done: display the help button
           [:a {:class    "button is-text"
@@ -88,7 +103,11 @@
                   [:a {:class    "title"
                        :style    {:text-decoration "none"}
                        :href     (bidi/path-for app-routes (keyword goto))
-                       :on-click #(when summary (swap! output conj summary))}
+                       :on-click #(when summary
+                                    (swap! output conj summary)
+                                    (when (vector? summary)
+                                      (reset! show-modal true)
+                                      (reset! modal-message (peek summary))))}
                    answer]]
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
@@ -100,7 +119,14 @@
             (for [o @output]
               ^{:key o}
               [:div {:class "tile is-child notification"}
-               [:div {:class "subtitle"} o]])]]
+               (if (string? o)
+                 [:div {:class "subtitle"} o]
+                 [:div {:class "tile is-parent is-horizontal notification"}
+                  (for [n (butlast o)]
+                    ^{:key n}
+                    [:div {:class "tile is-child subtitle"} n])
+                  [:div {:class "tile is-child subtitle has-text-weight-bold"}
+                   (peek o)]])])]]
           [:div {:class "level-right"}
            [:a {:class    "button level-item"
                 :style    bigger
@@ -164,7 +190,7 @@
     (fn [path]
       (let [match        (bidi/match-route app-routes path)
             current-page (:handler match)]
-        (when (= current-page (last (session/get :history)))
+        (when (= current-page (peek (session/get :history)))
           (swap! output #(into [] (butlast %)))
           (session/put! :history (into [] (butlast (session/get :history)))))
         (session/put! :history (conj (into [] (session/get :history))

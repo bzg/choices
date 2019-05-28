@@ -10,6 +10,8 @@
            :mail-to-message   {:fr "Envoyer par mail"}
            :mail-subject      {:fr "Résultat du guide open data"}
            :redo              {:fr "Recommencer"}
+           :ok                {:fr "D'accord"}
+           :attention         {:fr "Attention"}
            :404-title         {:fr "Page introuvable (erreur 404)"}
            :404-subtitle      {:fr ""}})
 
@@ -35,7 +37,7 @@
    ;;                :color  "is-success"}]}
    {:name    "1"
     :text    "Votre document est-il achevé ?"
-    :help    [:div [:p "Un document administratif correspond à tout document produit ou reçu par une administration dans le cadre de sa mission de service public."] [:br] [:p "Un document administratif produit peut être une base de données contenant des informations relatives à une mission de service public."] [:br] [:p "Un document reçu peut être un document fourni par une administration à une autre pour les besoins de sa mission de service public."]]
+    :help    [:div "Un document administratif correspond à tout document produit ou reçu par une administration dans le cadre de sa mission de service public." [:br] [:p "Un document administratif produit peut être une base de données contenant des informations relatives à une mission de service public."] [:br] [:p "Un document reçu peut être un document fourni par une administration à une autre pour les besoins de sa mission de service public."]]
     :choices [{:answer  "Oui"
                :summary "Votre document est achevé."
                :goto    "2"
@@ -75,7 +77,8 @@
     :text    "Ces données peuvent-elles être occultées par un traitement automatisé d'usage courant sans que cela ne dénature ni ne vide de son sens le document ?"
     :help    "Un document est « dénaturé » ou « vidé » de son sens s'il ne contient plus de données ou si les données-clés pour la compréhension du document sont enlevées."
     :choices [{:answer  "Oui"
-               :summary "Ces données peuvent être occultées par un traitement d'usage courant."
+               :summary ["Ces données peuvent être occultées par un traitement d'usage courant."
+                         "Vous devez occultez ces données !"]
                :goto    "3"
                :color   "is-success"}
               {:answer  "Non"
@@ -99,7 +102,8 @@
     :text    "Ces données peuvent-elles être anonymisées sans que cette opération implique des efforts disproportionnés ou que le document ne soit dénaturé ou vidé de son sens ?"
     :help    [:div [:p "L'anonymisation est un processus consistant à traiter des données à caractère personnel afin d'empêcher totalement et de manière irréversible l'identification d'une personne physique. L'anonymisation suppose donc qu'il n'y ait plus aucun lien possible entre l'information concernée et la personne à laquelle elle se rattache. L'identification devient alors totalement impossible. L'anonymisation doit être adaptée à chaque jeu de données."] [:br] [:p "La notion « d'efforts disproportionnés » est laissée à l'appréciation de chaque administration ; on considère que le retrait d'une colonne ou d'une ligne d'une base de données ne constitue pas un effort disproportionné."] [:br] [:p "Un document est « dénaturé » ou « vidé » de son sens s'il ne contient plus de données ou si les données-clés pour la compréhension du document sont enlevées."]]
     :choices [{:answer  "Oui"
-               :summary "L'anonymisation de ces données n'implique pas d'effort disproportionné ni ne dénature le document."
+               :summary ["L'anonymisation de ces données n'implique pas d'effort disproportionné ni ne dénature le document."
+                         "Vous devez anonymiser ces données !"]
                :goto    "oui"
                :color   "is-success"}
               {:answer  "Non"
