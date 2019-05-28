@@ -17,7 +17,7 @@
 
 (def header
   {:title    "Guide juridique de l'Open Data"
-   :logo     "https://www.etalab.gouv.fr/wp-content/uploads/2014/07/logo-etalab-320x200.png"
+   :logo     "/img/logo-etalab-370x250.png"
    :color    "is-primary"
    :subtitle "Guide pour la publication des données administratives"})
 
