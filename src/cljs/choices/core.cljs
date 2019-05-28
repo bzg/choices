@@ -198,10 +198,9 @@
         (cond
           (= current-page (keyword config/default-page))
           (reset! output [])
-          (peek (session/get :history))
+          (= current-page (peek (session/get :history)))
           (do (swap! output #(into [] (butlast %)))
               (session/put! :history (into [] (butlast (session/get :history))))))
-
         (session/put! :history (conj (into [] (session/get :history))
                                      (session/get :current-page)))
         (session/put! :current-page current-page)))
