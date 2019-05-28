@@ -46,7 +46,7 @@
          label])})))
 
 ;; Create all the pages
-(defn create-page-contents [{:keys [default start done name text help force-help choices]}]
+(defn create-page-contents [{:keys [done name text help force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
      (when (not-empty config/header)
@@ -106,7 +106,7 @@
                 :style    bigger
                 :title    (:fr (:redo config/i18n))
                 :on-click #(reset! output [])
-                :href     "/"} "🔃"]
+                :href     config/start} "🔃"]
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
                   :style bigger
