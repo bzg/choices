@@ -1,4 +1,4 @@
-(defproject choices "0.1.0"
+(defproject choices "0.2.0"
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/bzg/choices"
   :license {:name "Eclipse Public License - v 2.0"
@@ -6,25 +6,30 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
+                 [compojure "1.6.1"]
+                 [http-kit "2.3.0"]
+                 [ring "1.7.1"]
                  [reagent-utils "0.3.3"]
                  [bidi "2.1.6"]
                  [venantius/accountant "0.2.4"]
                  [cljsjs/clipboard "2.0.4-0"]]
   :plugins [[lein-figwheel "0.5.18"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
-  :source-paths ["src"]
+  :source-paths ["src/clj"]
+  :main choices.handler
+  :prep-tasks ["compile" ["cljsbuild" "once"]]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
-  :profiles {:dev
-             {:source-paths ["dev"]
-              :plugins      [[lein-figwheel "0.5.18"]]}
-             :repl {:plugins      [[cider/cider-nrepl "0.18.0"]]
-                    :dependencies [[nrepl "0.6.0"]
-                                   [cider/piggieback "0.4.0"]
-                                   [figwheel-sidecar "0.5.18"]]}}
+  :profiles {:uberjar {:aot :all}
+             :dev     {:source-paths ["dev"]
+                       :plugins      [[lein-figwheel "0.5.18"]]}
+             :repl    {:plugins      [[cider/cider-nrepl "0.18.0"]]
+                       :dependencies [[nrepl "0.6.0"]
+                                      [cider/piggieback "0.4.1"]
+                                      [figwheel-sidecar "0.5.18"]]}}
   :cljsbuild {:builds
               {:dev
-               {:source-paths ["src"]
-                :figwheel     {:on-jsload      "choices.core/on-js-reload"
+               {:source-paths ["src/cljs"]
+                :figwheel     {:on-jsload      "choices.core/mount-root"
                                :websocket-host :js-client-host}
                 :compiler     {:main                 choices.core
                                :asset-path           "/js/compiled/out"
@@ -32,7 +37,7 @@
                                :output-dir           "resources/public/js/compiled/out"
                                :source-map-timestamp true}}
                :min
-               {:source-paths ["src"]
+               {:source-paths ["src/cljs"]
                 :compiler     {:output-to     "resources/public/js/compiled/choices.js"
                                :main          choices.core
                                :optimizations :advanced

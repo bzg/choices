@@ -81,7 +81,7 @@
         [:div
          [:h1 {:class "title"} text]
          (when (or force-help @show-help)
-           [:div {:class "is-size-5"} {:style {:margin "1em"}} help])]
+           [:div {:class "is-size-5" :style {:margin "1em"}} help])]
         (if-not done
           ;; Not done: display the help button
           [:a {:class    "button is-text"

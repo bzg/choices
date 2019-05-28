@@ -37,7 +37,7 @@
    ;;                :color  "is-success"}]}
    {:name    "1"
     :text    "Votre document est-il achevé ?"
-    :help    [:div "Un document administratif correspond à tout document produit ou reçu par une administration dans le cadre de sa mission de service public." [:br] [:p "Un document administratif produit peut être une base de données contenant des informations relatives à une mission de service public."] [:br] [:p "Un document reçu peut être un document fourni par une administration à une autre pour les besoins de sa mission de service public."]]
+    :help    [:div [:p "Un document administratif correspond à tout document produit ou reçu par une administration dans le cadre de sa mission de service public."] [:br] [:p "Un document administratif produit peut être une base de données contenant des informations relatives à une mission de service public."] [:br] [:p "Un document reçu peut être un document fourni par une administration à une autre pour les besoins de sa mission de service public."]]
     :choices [{:answer  "Oui"
                :summary "Votre document est achevé."
                :goto    "2"
