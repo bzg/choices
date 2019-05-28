@@ -9,7 +9,7 @@
 
 ;; Initialize atoms
 (def show-help (reagent/atom config/display-help))
-(def output (reagent/atom {}))
+(def output (reagent/atom []))
 
 ;; Utility
 (def bigger {:font-size "2em" :text-decoration "none"})
@@ -24,14 +24,6 @@
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
-
-(defn clean-up-summaries
-  "Remove summaries associated with other choices that are have not been
-  selected."
-  [choices-goto goto name summary]
-  (let [choices-to-remove (filter #(not= goto %) choices-goto)]
-    (swap! output #(apply dissoc % choices-to-remove))
-    (swap! output assoc name summary)))
 
 ;; Create copy-to-clipboard component
 (defn clipboard-button [label target]
@@ -96,12 +88,7 @@
                   [:a {:class    "title"
                        :style    {:text-decoration "none"}
                        :href     (bidi/path-for app-routes (keyword goto))
-                       :on-click (fn []
-                                   (when (not-empty summary)
-                                     (if (or default start) ;; FIXME: temporary fix
-                                       (reset! output {name summary})
-                                       (clean-up-summaries
-                                        choices-goto goto name summary))))}
+                       :on-click #(when summary (swap! output conj summary))}
                    answer]]
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
@@ -110,7 +97,7 @@
          [:div
           [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
-            (for [o (vals @output)]
+            (for [o @output]
               ^{:key o}
               [:div {:class "tile is-child notification"}
                [:div {:class "subtitle"} o]])]]
@@ -118,7 +105,7 @@
            [:a {:class    "button level-item"
                 :style    bigger
                 :title    (:fr (:redo config/i18n))
-                :on-click #(reset! output nil)
+                :on-click #(reset! output [])
                 :href     "/"} "🔃"]
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
@@ -126,7 +113,7 @@
                   :title (:fr (:mail-to-message config/i18n))
                   :href  (str "mailto:" config/mail-to
                               "?subject=" (:fr (:mail-subject config/i18n))
-                              "&body=" (string/join "\n" (vals @output)))}
+                              "&body=" (string/join "\n" @output))}
               "📩"])]])]]
      (when (not-empty config/footer)
        [:section {:class "footer"}
@@ -174,10 +161,17 @@
 (defn ^:export init []
   (accountant/configure-navigation!
    {:nav-handler
-    (fn [path] (let [match        (bidi/match-route app-routes path)
-                     current-page (:handler match)]
-                 (session/put! :current-page current-page)))
+    (fn [path]
+      (let [match        (bidi/match-route app-routes path)
+            current-page (:handler match)]
+        (when (= current-page (last (session/get :history)))
+          (swap! output #(into [] (butlast %)))
+          (session/put! :history (into [] (butlast (session/get :history)))))
+        (session/put! :history (conj (into [] (session/get :history))
+                                     (session/get :current-page)))
+        (session/put! :current-page current-page)))
     :path-exists?
     (fn [path] (boolean (bidi/match-route app-routes path)))})
   (accountant/dispatch-current!)
   (mount-root))
+
