@@ -140,7 +140,7 @@
                   :title (:fr (:mail-to-message config/i18n))
                   :href  (str "mailto:" config/mail-to
                               "?subject=" (:fr (:mail-subject config/i18n))
-                              "&body=" (string/join "\n" @output))}
+                              "&body=" (string/join "\n\n" @output))}
               "📩"])]])]]
      (when (not-empty config/footer)
        [:section {:class "footer"}
