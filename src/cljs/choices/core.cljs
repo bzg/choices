@@ -60,7 +60,8 @@
              [:figure {:class "media-left"}
               [:p {:class "image is-128x128"}
                [:img {:src (:logo config/header)}]]])
-           [:h1 {:class "title"} [:a {:href "/"} (:title config/header)]]
+           [:h1 {:class "title"} [:a {:href config/default-page}
+                                  (:title config/header)]]
            [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
@@ -132,7 +133,7 @@
                 :style    bigger
                 :title    (:fr (:redo config/i18n))
                 :on-click #(reset! output [])
-                :href     config/start} "🔃"]
+                :href     config/start-page} "🔃"]
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
                   :style bigger
@@ -156,14 +157,17 @@
       [:div {:class "hero-body"}
        [:div {:class "container"}
         [:div {:class "level"}
-         [:h1 {:class "title"} [:a {:href "/"} (:title config/header)]]
+         [:h1 {:class "title"} [:a {:href config/default-page}
+                                (:title config/header)]]
          [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
    [:div {:class "container"}
     [:div {:class "section"}
      [:div {:class "level"}
       [:div [:h1 {:class "title"} (:fr (:404-title config/i18n))]
        [:h2 {:class "subtitle"} (:fr (:404-subtitle config/i18n))]]]
-     [:a {:href "/" :class "button is-info"} (:fr (:redo config/i18n))]]]
+     [:a {:class "button is-info"
+          :href  config/start-page}
+      (:fr (:redo config/i18n))]]]
    (when (not-empty config/footer)
      [:section {:class "footer"}
       [:div {:class "content has-text-centered"}
@@ -190,9 +194,13 @@
     (fn [path]
       (let [match        (bidi/match-route app-routes path)
             current-page (:handler match)]
-        (when (= current-page (peek (session/get :history)))
-          (swap! output #(into [] (butlast %)))
-          (session/put! :history (into [] (butlast (session/get :history)))))
+        (cond
+          (= current-page (keyword config/default-page))
+          (reset! output [])
+          (peek (session/get :history))
+          (do (swap! output #(into [] (butlast %)))
+              (session/put! :history (into [] (butlast (session/get :history))))))
+
         (session/put! :history (conj (into [] (session/get :history))
                                      (session/get :current-page)))
         (session/put! :current-page current-page)))

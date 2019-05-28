@@ -25,16 +25,17 @@
   {:text    [:div "Ce site a été réalisée par la mission " [:a {:href "https://www.etalab.gouv.fr/"} "Etalab"]", à partir du " [:a {:href "https://www.cada.fr/lacada/consultation-publique-sur-le-guide-pratique-de-la-publication-en-ligne-et-de-la-reutilisation"} "Guide pratique de la publication en ligne et de la réutilisation des données publiques"] " rédigé par la CADA et la CNIL."]
    :contact "info@data.gouv.fr"})
 
-(def start "1")
+(def default-page "0")
+(def start-page "1")
 
 (def input
-  [;; {:name       "0"
-   ;;  :text       "Une présentation du guide."
-   ;;  :force-help true
-   ;;  :help       "Un assez long text ici"
-   ;;  :choices    [{:answer "Commencer"
-   ;;                :goto   "1"
-   ;;                :color  "is-success"}]}
+  [{:name       "0"
+    :text       "Une présentation du guide."
+    :force-help true
+    :help       "Un assez long text ici"
+    :choices    [{:answer "Commencer"
+                  :goto   "1"
+                  :color  "is-success"}]}
    {:name    "1"
     :text    "Votre document est-il achevé ?"
     :help    [:div [:p "Un document administratif correspond à tout document produit ou reçu par une administration dans le cadre de sa mission de service public."] [:br] [:p "Un document administratif produit peut être une base de données contenant des informations relatives à une mission de service public."] [:br] [:p "Un document reçu peut être un document fourni par une administration à une autre pour les besoins de sa mission de service public."]]
