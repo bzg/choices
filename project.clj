@@ -20,7 +20,7 @@
   :prep-tasks ["compile" ["cljsbuild" "once"]]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
   :profiles {:uberjar {:aot :all}
-             :dev     {:source-paths ["dev"]
+             :dev     {:source-paths ["dev" "src/cljs"]
                        :plugins      [[lein-figwheel "0.5.18"]]}
              :repl    {:plugins      [[cider/cider-nrepl "0.18.0"]]
                        :dependencies [[nrepl "0.6.0"]
