@@ -59,7 +59,8 @@
            (if (not-empty (:logo config/header))
              [:figure {:class "media-left"}
               [:p {:class "image is-128x128"}
-               [:img {:src (:logo config/header)}]]])
+               [:a {:href config/default-page}
+                [:img {:src (:logo config/header)}]]]])
            [:h1 {:class "title"} [:a {:href config/default-page}
                                   (:title config/header)]]
            [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
