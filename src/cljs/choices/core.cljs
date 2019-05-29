@@ -101,15 +101,15 @@
               (for [{:keys [answer goto explain color summary] :as c} choices]
                 ^{:key c}
                 [:div {:class "tile is-parent is-vertical"}
-                 [:div {:class (str "tile is-child box notification " color)}
-                  [:a {:class    "title"
-                       :style    {:text-decoration "none"}
-                       :href     (bidi/path-for app-routes (keyword goto))
-                       :on-click #(when summary
-                                    (swap! output conj summary)
-                                    (when (vector? summary)
-                                      (reset! show-modal true)
-                                      (reset! modal-message (peek summary))))}
+                 [:a {:class    "title"
+                      :style    {:text-decoration "none"}
+                      :href     (bidi/path-for app-routes (keyword goto))
+                      :on-click #(when summary
+                                   (swap! output conj summary)
+                                   (when (vector? summary)
+                                     (reset! show-modal true)
+                                     (reset! modal-message (peek summary))))}
+                  [:div {:class (str "tile is-child box notification " color)}
                    answer]]
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
