@@ -37,7 +37,6 @@
          (reset! clipboard-atom clipboard))
       :component-will-unmount
       #(when-not (nil? @clipboard-atom)
-         (.destroy @clipboard-atom)
          (reset! clipboard-atom nil))
       :reagent-render
       (fn []

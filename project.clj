@@ -40,6 +40,7 @@
                {:source-paths ["src/cljs"]
                 :compiler     {:output-to     "resources/public/js/compiled/choices.js"
                                :main          choices.core
+                               :externs       ["externs.js"]
                                :optimizations :advanced
                                :pretty-print  false}}}}
   :figwheel {:http-server-root "public"
