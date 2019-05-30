@@ -17,13 +17,13 @@
 (def bigger {:font-size "2em" :text-decoration "none"})
 (def summary-display-answers (reagent/atom true))
 
-;; Utility function
+;; Utility function to reset history
 (defn reset-history []
   (reset! summary-answers [])
   (reset! summary-questions [])
   (session/put! :history []))
 
-;; Create bidi routes
+;; Create routes
 (def app-routes
   ["/" (into
         []
@@ -35,7 +35,7 @@
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
 
-;; Create copy-to-clipboard component
+;; Create a copy-to-clipboard component
 (defn clipboard-button [label target]
   (let [clipboard-atom (reagent/atom nil)]
     (reagent/create-class
@@ -162,10 +162,11 @@
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
          [:p (:text view/footer)]
-         [:p "Contact: "
+         [:p (:contact-intro view/ui-strings)
           [:a {:href (str "mailto:" (:contact view/footer))}
            (:contact view/footer)]]]])]))
 
+;; Create a 404 page
 (defmethod page-contents :four-o-four []
   [:body
    (when (not-empty view/header)
@@ -190,10 +191,10 @@
        [:p (:text view/footer)]
        [:p (:contact view/footer)]]])])
 
-;; Main function: create all the pages from `input/choices`
+;; Create all the pages from `input/choices`
 (doall (map create-page-contents input/choices))
 
-;; Page mounting component
+;; Create component to mount the current page
 (defn current-page []
   (let [page (session/get :current-page)]
     [:div

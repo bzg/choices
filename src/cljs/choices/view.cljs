@@ -8,6 +8,7 @@
                  :mail-subject         "Résultat du guide open data"
                  :redo                 "Recommencer"
                  :ok                   "D'accord"
+                 :contact-intro        "Contact : "
                  :toggle-summary-style "Changer le style de résumé"
                  :attention            "Attention"
                  :404-title            "Page introuvable (erreur 404)"
