@@ -2,32 +2,33 @@
   (:require [reagent.core :as reagent]
             [reagent.session :as session]
             [bidi.bidi :as bidi]
-            [choices.config :as config]
+            [choices.view :as view]
+            [choices.input :as input]
             [accountant.core :as accountant]
             [cljsjs.clipboard]
             [clojure.string :as string]))
 
 ;; Initialize atoms and variables
-(def show-help (reagent/atom config/display-help))
-(def output (reagent/atom []))
-(def output-0 (reagent/atom []))
+(def show-help (reagent/atom view/display-help))
+(def summary-answers (reagent/atom []))
+(def summary-questions (reagent/atom []))
 (def show-modal (reagent/atom false))
 (def modal-message (reagent/atom ""))
 (def bigger {:font-size "2em" :text-decoration "none"})
-(def default-summary (reagent/atom true))
+(def summary-display-answers (reagent/atom true))
 
 ;; Utility function
 (defn reset-history []
-  (reset! output [])
-  (reset! output-0 [])
+  (reset! summary-answers [])
+  (reset! summary-questions [])
   (session/put! :history []))
 
 ;; Create bidi routes
 (def app-routes
   ["/" (into
         []
-        (concat [["" (keyword (:name (first config/input)))]]
-                (into [] (for [n config/input]
+        (concat [["" (keyword (:name (first input/choices)))]]
+                (into [] (for [n input/choices]
                            [(:name n) (keyword (:name n))]))
                 [[true :four-o-four]]))])
 
@@ -47,7 +48,7 @@
          (reset! clipboard-atom nil))
       :reagent-render
       (fn []
-        [:a {:title                 (:fr (:copy-to-clipboard config/i18n))
+        [:a {:title                 (:copy-to-clipboard view/ui-strings)
              :class                 "button is-text"
              :style                 bigger
              :data-clipboard-target target}
@@ -58,31 +59,31 @@
                                     force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
-     (when (not-empty config/header)
-       [:section {:class (str "hero " (:color config/header))}
+     (when (not-empty view/header)
+       [:section {:class (str "hero " (:color view/header))}
         [:div {:class "hero-body"}
          [:div {:class "container"}
           [:div {:class "level"}
-           (if (not-empty (:logo config/header))
+           (if (not-empty (:logo view/header))
              [:figure {:class "media-left"}
               [:p {:class "image is-128x128"}
-               [:a {:href config/default-page}
-                [:img {:src (:logo config/header)}]]]])
-           [:h1 {:class "title"} [:a {:href config/default-page}
-                                  (:title config/header)]]
-           [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
+               [:a {:href input/home-page}
+                [:img {:src (:logo view/header)}]]]])
+           [:h1 {:class "title"} [:a {:href input/home-page}
+                                  (:title view/header)]]
+           [:h2 {:class "subtitle"} (:subtitle view/header)]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
        [:div {:class "modal-background"}]
        [:div {:class "modal-content"}
         [:div {:class "box"}
-         [:div {:class "title"} (:fr (:attention config/i18n))]
+         [:div {:class "title"} (:attention view/ui-strings)]
          [:p @modal-message]
          [:br]
          [:div {:class "has-text-centered"}
           [:a {:class    "button is-medium is-warning"
                :on-click #(reset! show-modal false)}
-           (:fr (:ok config/i18n))]]]]
+           (:ok view/ui-strings)]]]]
        [:button {:class    "modal-close is-large" :aria-label "close"
                  :on-click #(reset! show-modal false)}]]
       [:div {:class "section"}
@@ -95,14 +96,14 @@
           ;; Not done: display the help button
           [:a {:class    "button is-text"
                :style    bigger
-               :title    (:fr (:display-help config/i18n))
+               :title    (:display-help view/ui-strings)
                :on-click #(swap! show-help not)}
            "💬"]
           ;; Done: display the copy-to-clipboard button
           [:div
            [:a {:class    "button is-text" :style bigger
-                :title    (:fr (:toggle-summary-style config/i18n))
-                :on-click #(swap! default-summary not)} "🔗"]
+                :title    (:toggle-summary-style view/ui-strings)
+                :on-click #(swap! summary-display-answers not)} "🔗"]
            [clipboard-button "📋" "#copy-this"]])]
        (if-not done
          ;; Not done: display the choices
@@ -117,9 +118,9 @@
                       :style    {:text-decoration "none"}
                       :href     (bidi/path-for app-routes (keyword goto))
                       :on-click #(do (when-not no-summary
-                                       (swap! output-0 conj [text answer]))
+                                       (swap! summary-questions conj [text answer]))
                                      (when summary
-                                       (swap! output conj summary)
+                                       (swap! summary-answers conj summary)
                                        (when (vector? summary)
                                          (reset! show-modal true)
                                          (reset! modal-message (peek summary)))))}
@@ -128,11 +129,11 @@
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
                     [:div {:class "subtitle"} explain]])])))]]
-         ;; Done: display the final output
+         ;; Done: display the final summary-answers
          [:div
           [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
-            (for [o (if @default-summary @output @output-0)]
+            (for [o (if @summary-display-answers @summary-answers @summary-questions)]
               ^{:key o}
               [:div {:class "tile is-child notification"}
                (if (string? o)
@@ -146,51 +147,51 @@
           [:div {:class "level-right"}
            [:a {:class    "button level-item"
                 :style    bigger
-                :title    (:fr (:redo config/i18n))
+                :title    (:redo view/ui-strings)
                 :on-click reset-history
-                :href     config/start-page} "🔃"]
-           (if (not-empty config/mail-to)
+                :href     input/start-page} "🔃"]
+           (if (not-empty view/mail-to)
              [:a {:class "button level-item"
                   :style bigger
-                  :title (:fr (:mail-to-message config/i18n))
-                  :href  (str "mailto:" config/mail-to
-                              "?subject=" (:fr (:mail-subject config/i18n))
-                              "&body=" (string/join "\n\n" @output))}
+                  :title (:mail-to-message view/ui-strings)
+                  :href  (str "mailto:" view/mail-to
+                              "?subject=" (:mail-subject view/ui-strings)
+                              "&body=" (string/join "\n\n" @summary-answers))}
               "📩"])]])]]
-     (when (not-empty config/footer)
+     (when (not-empty view/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
-         [:p (:text config/footer)]
+         [:p (:text view/footer)]
          [:p "Contact: "
-          [:a {:href (str "mailto:" (:contact config/footer))}
-           (:contact config/footer)]]]])]))
+          [:a {:href (str "mailto:" (:contact view/footer))}
+           (:contact view/footer)]]]])]))
 
 (defmethod page-contents :four-o-four []
   [:body
-   (when (not-empty config/header)
-     [:section {:class (str "hero " (:color config/header))}
+   (when (not-empty view/header)
+     [:section {:class (str "hero " (:color view/header))}
       [:div {:class "hero-body"}
        [:div {:class "container"}
         [:div {:class "level"}
-         [:h1 {:class "title"} [:a {:href config/default-page}
-                                (:title config/header)]]
-         [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
+         [:h1 {:class "title"} [:a {:href input/home-page}
+                                (:title view/header)]]
+         [:h2 {:class "subtitle"} (:subtitle view/header)]]]]])
    [:div {:class "container"}
     [:div {:class "section"}
      [:div {:class "level"}
-      [:div [:h1 {:class "title"} (:fr (:404-title config/i18n))]
-       [:h2 {:class "subtitle"} (:fr (:404-subtitle config/i18n))]]]
+      [:div [:h1 {:class "title"} (:404-title view/ui-strings)]
+       [:h2 {:class "subtitle"} (:404-subtitle view/ui-strings)]]]
      [:a {:class "button is-info"
-          :href  config/start-page}
-      (:fr (:redo config/i18n))]]]
-   (when (not-empty config/footer)
+          :href  input/start-page}
+      (:redo view/ui-strings)]]]
+   (when (not-empty view/footer)
      [:section {:class "footer"}
       [:div {:class "content has-text-centered"}
-       [:p (:text config/footer)]
-       [:p (:contact config/footer)]]])])
+       [:p (:text view/footer)]
+       [:p (:contact view/footer)]]])])
 
-;; Main function: create all the pages from `config/input`
-(doall (map create-page-contents config/input))
+;; Main function: create all the pages from `input/choices`
+(doall (map create-page-contents input/choices))
 
 ;; Page mounting component
 (defn current-page []
@@ -211,15 +212,15 @@
             current-page (:handler match)
             history      (session/get :history)]
         (cond
-          (or (= current-page (keyword config/default-page))
-              (= current-page (keyword config/start-page))
+          (or (= current-page (keyword input/home-page))
+              (= current-page (keyword input/start-page))
               (some #(= current-page %) history))
           ;; We need to reset all history information
           (reset-history)
           ;; We need to roll back history by one step
           (= current-page (peek history))
-          (do (swap! output #(into [] (butlast %)))
-              (swap! output-0 #(into [] (butlast %)))
+          (do (swap! summary-answers #(into [] (butlast %)))
+              (swap! summary-questions #(into [] (butlast %)))
               (session/put! :history (into [] (butlast history)))))
         (session/put! :history (conj (into [] history)
                                      (session/get :current-page)))

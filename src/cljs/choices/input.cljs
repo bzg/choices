@@ -1,36 +1,10 @@
-(ns choices.config
-  (:require [reagent.core :as reagent]))
+(ns choices.input)
 
-(def mail-to "bzg@bzg.fr")
-
-(def display-help false)
-
-(def i18n {:display-help         {:fr "Afficher de l'aide"}
-           :copy-to-clipboard    {:fr "Copier dans le presse-papier"}
-           :mail-to-message      {:fr "Envoyer par mail"}
-           :mail-subject         {:fr "Résultat du guide open data"}
-           :redo                 {:fr "Recommencer"}
-           :ok                   {:fr "D'accord"}
-           :toggle-summary-style {:fr "Changer le style de résumé"}
-           :attention            {:fr "Attention"}
-           :404-title            {:fr "Page introuvable (erreur 404)"}
-           :404-subtitle         {:fr ""}})
-
-(def header
-  {:title    "Guide juridique de l'Open Data"
-   :logo     "/img/logo-etalab-370x250.png"
-   :color    "is-primary"
-   :subtitle "Guide pour la publication des données administratives"})
-
-(def footer
-  {:text    [:div "Ce site a été réalisée par la mission " [:a {:href "https://www.etalab.gouv.fr/"} "Etalab"]", à partir du " [:a {:href "https://www.cada.fr/lacada/consultation-publique-sur-le-guide-pratique-de-la-publication-en-ligne-et-de-la-reutilisation"} "Guide pratique de la publication en ligne et de la réutilisation des données publiques"] " rédigé par la CADA et la CNIL."]
-   :contact "info@data.gouv.fr"})
-
-(def default-page "0")
+(def home-page "0")
 
 (def start-page "1")
 
-(def input
+(def choices
   [{:name       "0"
     :text       "Une présentation du guide."
     :force-help true
