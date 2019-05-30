@@ -1,4 +1,4 @@
-(defproject choices "0.2.0"
+(defproject choices "0.2.1"
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/bzg/choices"
   :license {:name "Eclipse Public License - v 2.0"
