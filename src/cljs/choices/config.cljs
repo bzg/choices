@@ -5,15 +5,16 @@
 
 (def display-help false)
 
-(def i18n {:display-help      {:fr "Afficher de l'aide"}
-           :copy-to-clipboard {:fr "Copier dans le presse-papier"}
-           :mail-to-message   {:fr "Envoyer par mail"}
-           :mail-subject      {:fr "Résultat du guide open data"}
-           :redo              {:fr "Recommencer"}
-           :ok                {:fr "D'accord"}
-           :attention         {:fr "Attention"}
-           :404-title         {:fr "Page introuvable (erreur 404)"}
-           :404-subtitle      {:fr ""}})
+(def i18n {:display-help         {:fr "Afficher de l'aide"}
+           :copy-to-clipboard    {:fr "Copier dans le presse-papier"}
+           :mail-to-message      {:fr "Envoyer par mail"}
+           :mail-subject         {:fr "Résultat du guide open data"}
+           :redo                 {:fr "Recommencer"}
+           :ok                   {:fr "D'accord"}
+           :toggle-summary-style {:fr "Changer le style de résumé"}
+           :attention            {:fr "Attention"}
+           :404-title            {:fr "Page introuvable (erreur 404)"}
+           :404-subtitle         {:fr ""}})
 
 (def header
   {:title    "Guide juridique de l'Open Data"
@@ -26,12 +27,14 @@
    :contact "info@data.gouv.fr"})
 
 (def default-page "0")
+
 (def start-page "1")
 
 (def input
   [{:name       "0"
     :text       "Une présentation du guide."
     :force-help true
+    :no-summary true
     :help       "Un assez long text ici"
     :choices    [{:answer "Commencer"
                   :goto   "1"

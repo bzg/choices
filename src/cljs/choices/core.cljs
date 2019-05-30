@@ -7,22 +7,29 @@
             [cljsjs.clipboard]
             [clojure.string :as string]))
 
-;; Initialize atoms
+;; Initialize atoms and variables
 (def show-help (reagent/atom config/display-help))
 (def output (reagent/atom []))
+(def output-0 (reagent/atom []))
 (def show-modal (reagent/atom false))
 (def modal-message (reagent/atom ""))
-
-;; Utility
 (def bigger {:font-size "2em" :text-decoration "none"})
+(def default-summary (reagent/atom true))
+
+;; Utility function
+(defn reset-history []
+  (reset! output [])
+  (reset! output-0 [])
+  (session/put! :history []))
 
 ;; Create bidi routes
 (def app-routes
-  ["/" (into []
-             (concat [["" (keyword (:name (first config/input)))]]
-                     (into [] (for [n config/input]
-                                [(:name n) (keyword (:name n))]))
-                     [[true :four-o-four]]))])
+  ["/" (into
+        []
+        (concat [["" (keyword (:name (first config/input)))]]
+                (into [] (for [n config/input]
+                           [(:name n) (keyword (:name n))]))
+                [[true :four-o-four]]))])
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
@@ -47,7 +54,8 @@
          label])})))
 
 ;; Create all the pages
-(defn create-page-contents [{:keys [done name text help force-help choices]}]
+(defn create-page-contents [{:keys [done name text help no-summary
+                                    force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
      (when (not-empty config/header)
@@ -88,9 +96,14 @@
           [:a {:class    "button is-text"
                :style    bigger
                :title    (:fr (:display-help config/i18n))
-               :on-click #(swap! show-help not)} "💬"]
+               :on-click #(swap! show-help not)}
+           "💬"]
           ;; Done: display the copy-to-clipboard button
-          [clipboard-button "📋" "#copy-this"])]
+          [:div
+           [:a {:class    "button is-text" :style bigger
+                :title    (:fr (:toggle-summary-style config/i18n))
+                :on-click #(swap! default-summary not)} "🔗"]
+           [clipboard-button "📋" "#copy-this"]])]
        (if-not done
          ;; Not done: display the choices
          [:div {:class "tile is-ancestor"}
@@ -103,11 +116,13 @@
                  [:a {:class    "title"
                       :style    {:text-decoration "none"}
                       :href     (bidi/path-for app-routes (keyword goto))
-                      :on-click #(when summary
-                                   (swap! output conj summary)
-                                   (when (vector? summary)
-                                     (reset! show-modal true)
-                                     (reset! modal-message (peek summary))))}
+                      :on-click #(do (when-not no-summary
+                                       (swap! output-0 conj [text answer]))
+                                     (when summary
+                                       (swap! output conj summary)
+                                       (when (vector? summary)
+                                         (reset! show-modal true)
+                                         (reset! modal-message (peek summary)))))}
                   [:div {:class (str "tile is-child box notification " color)}
                    answer]]
                  (if (and explain @show-help)
@@ -117,7 +132,7 @@
          [:div
           [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
-            (for [o @output]
+            (for [o (if @default-summary @output @output-0)]
               ^{:key o}
               [:div {:class "tile is-child notification"}
                (if (string? o)
@@ -126,13 +141,13 @@
                   (for [n (butlast o)]
                     ^{:key n}
                     [:div {:class "tile is-child subtitle"} n])
-                  [:div {:class "tile is-child subtitle has-text-weight-bold"}
+                  [:div {:class "tile is-child subtitle has-text-weight-bold is-size-4"}
                    (peek o)]])])]]
           [:div {:class "level-right"}
            [:a {:class    "button level-item"
                 :style    bigger
                 :title    (:fr (:redo config/i18n))
-                :on-click #(reset! output [])
+                :on-click reset-history
                 :href     config/start-page} "🔃"]
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
@@ -193,18 +208,23 @@
    {:nav-handler
     (fn [path]
       (let [match        (bidi/match-route app-routes path)
-            current-page (:handler match)]
+            current-page (:handler match)
+            history      (session/get :history)]
         (cond
-          (= current-page (keyword config/default-page))
-          (reset! output [])
-          (= current-page (peek (session/get :history)))
+          (or (= current-page (keyword config/default-page))
+              (= current-page (keyword config/start-page))
+              (some #(= current-page %) history))
+          ;; We need to reset all history information
+          (reset-history)
+          ;; We need to roll back history by one step
+          (= current-page (peek history))
           (do (swap! output #(into [] (butlast %)))
-              (session/put! :history (into [] (butlast (session/get :history))))))
-        (session/put! :history (conj (into [] (session/get :history))
+              (swap! output-0 #(into [] (butlast %)))
+              (session/put! :history (into [] (butlast history)))))
+        (session/put! :history (conj (into [] history)
                                      (session/get :current-page)))
         (session/put! :current-page current-page)))
     :path-exists?
     (fn [path] (boolean (bidi/match-route app-routes path)))})
   (accountant/dispatch-current!)
   (mount-root))
-
