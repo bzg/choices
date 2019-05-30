@@ -8,6 +8,13 @@ users traverse choices and get a summary of what they've chosen.
 - More documentation
 - More testing
 
+* Support the Clojure(script) ecosystem
+
+If you like Clojure(script), please consider supporting its
+development developers by donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].
+
+Thanks!
+
 * License
 
 2019 Bastien Guerry.
