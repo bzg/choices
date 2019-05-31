@@ -5,6 +5,8 @@ users traverse choices and get a summary of what they've chosen.
 
 * TODO
 
+- Add ad for choices in the footer
+- Allow to store/update/report variables
 - More documentation
 - More testing
 
