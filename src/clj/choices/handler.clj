@@ -23,4 +23,5 @@
   (not-found "Not Found"))
 
 (defn -main [& args]
-  (def server (server/run-server #'routes {:port (:port config)})))
+  (server/run-server #'routes {:port (:port config)})
+  (println "Choices application started"))

@@ -17,6 +17,7 @@
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
   :source-paths ["src/clj"]
   :main choices.handler
+  :jvm-opts ["-Xmx500m"]
   :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
   :profiles {:uberjar {:aot :all}
