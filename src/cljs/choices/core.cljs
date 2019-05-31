@@ -156,7 +156,8 @@
                   :title (:mail-to-message view/ui-strings)
                   :href  (str "mailto:" view/mail-to
                               "?subject=" (:mail-subject view/ui-strings)
-                              "&body=" (string/join "\n\n" @summary-answers))}
+                              "&body=" (string/join "%0D%0A%0D%0A"
+                                                    (flatten @summary-answers)))}
               "📩"])]])]]
      (when (not-empty view/footer)
        [:section {:class "footer"}
