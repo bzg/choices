@@ -2,6 +2,8 @@
 
 (def mail-to "bzg@bzg.fr")
 
+(def display-help true)
+
 (def ui-strings {:display-help         "Afficher de l'aide"
                  :copy-to-clipboard    "Copier dans le presse-papier"
                  :mail-to-message      "Envoyer par mail"
@@ -13,8 +15,6 @@
                  :attention            "Attention"
                  :404-title            "Page introuvable (erreur 404)"
                  :404-subtitle         ""})
-
-(def display-help false)
 
 (def header
   {:title    "Guide juridique de l'Open Data"
