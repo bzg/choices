@@ -20,11 +20,14 @@
 (def modal-message (reagent/atom ""))
 (def bigger {:font-size "2em" :text-decoration "none"})
 (def summary-display-answers (reagent/atom true))
+(def final-score (reagent/atom input/score))
+(def last-score-change (reagent/atom nil))
 
 ;; Utility function to reset history
 (defn reset-history []
   (reset! summary-answers [])
   (reset! summary-questions [])
+  (reset! final-score input/score)
   (session/put! :history []))
 
 ;; Create routes
@@ -115,13 +118,16 @@
           [:div {:class "tile is-parent"}
            (let [choices-goto (map :goto choices)]
              (doall
-              (for [{:keys [answer goto explain color summary] :as c} choices]
+              (for [{:keys [answer goto explain color summary score] :as c} choices]
                 ^{:key c}
                 [:div {:class "tile is-parent is-vertical"}
                  [:a {:class    "title"
                       :style    {:text-decoration "none"}
                       :href     (bidi/path-for app-routes (keyword goto))
-                      :on-click #(do (when-not no-summary
+                      :on-click #(do (when score
+                                       (swap! final-score (fn [s] (merge-with + s score)))
+                                       (reset! last-score-change score))
+                                     (when-not no-summary
                                        (swap! summary-questions conj [text answer]))
                                      (when summary
                                        (swap! summary-answers conj summary)
@@ -137,6 +143,12 @@
          [:div
           [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
+            (if (not-empty @final-score)
+              [:div {:class "tile is-parent is-horizontal is-12"}
+               (for [s @final-score]
+                 ^{:key s}
+                 [:div {:class "tile is-child box"}
+                  (str (first s) ": " (second s))])])
             (for [o (if @summary-display-answers @summary-answers @summary-questions)]
               ^{:key o}
               [:div {:class "tile is-child notification"}
@@ -227,6 +239,7 @@
           (= current-page (peek history))
           (do (swap! summary-answers #(into [] (butlast %)))
               (swap! summary-questions #(into [] (butlast %)))
+              (swap! final-score #(merge-with - % last-score-change))
               (session/put! :history (into [] (butlast history)))))
         (session/put! :history (conj (into [] history)
                                      (session/get :current-page)))

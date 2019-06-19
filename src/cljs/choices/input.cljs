@@ -8,6 +8,8 @@
 
 (def start-page "1")
 
+(def score {})
+
 (def choices
   [{:name       "0"
     :text       "Une présentation du guide."
