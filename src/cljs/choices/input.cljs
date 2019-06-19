@@ -18,14 +18,14 @@
     :help       "Un assez long text ici"
     :choices    [{:answer "Commencer"
                   :goto   "1"
-                  :color  "is-success"}]}
+                  :color  "is-info"}]}
    {:name    "1"
     :text    "Votre document est-il achevé ?"
     :help    [:div [:p "Un document administratif correspond à tout document produit ou reçu par une administration dans le cadre de sa mission de service public."] [:br] [:p "Un document administratif produit peut être une base de données contenant des informations relatives à une mission de service public."] [:br] [:p "Un document reçu peut être un document fourni par une administration à une autre pour les besoins de sa mission de service public."]]
     :choices [{:answer  "Oui"
                :summary "Votre document est achevé."
                :goto    "2"
-               :color   "is-success"}
+               :color   "is-info"}
               {:answer  "Non"
                :summary "Votre document n'est pas achevé."
                :color   "is-warning"
@@ -39,7 +39,7 @@
     :choices [{:answer  "Oui"
                :goto    "6"
                :summary "Votre document contient des données couvertes par un secret légal."
-               :color   "is-success"}
+               :color   "is-info"}
               {:answer  "Non"
                :goto    "3"
                :summary "Votre document ne contient pas de données couvertes par un secret légal."
@@ -51,7 +51,7 @@
     :choices [{:answer  "Oui"
                :summary "Votre document contient des données à caractère personnel."
                :goto    "5"
-               :color   "is-success"}
+               :color   "is-info"}
               {:answer  "Non"
                :summary "Votre document ne contient pas de données à caractère personnel."
                :goto    "oui"
@@ -64,7 +64,7 @@
                :summary ["Ces données peuvent être occultées par un traitement d'usage courant."
                          "Vous devez occultez ces données !"]
                :goto    "3"
-               :color   "is-success"}
+               :color   "is-info"}
               {:answer  "Non"
                :summary "L'occultation de ces données dénature ou vide de son sens votre document."
                :goto    "non"
@@ -76,7 +76,7 @@
     :choices [{:answer  "Oui"
                :summary "Ces données sont nécessaires à l'information du public."
                :goto    "oui"
-               :color   "is-success"}
+               :color   "is-info"}
               {:answer  "Non"
                :summary "Ces données ne sont pas nécessaires à l'information du public."
                :goto    "6"
@@ -89,7 +89,7 @@
                :summary ["L'anonymisation de ces données n'implique pas d'effort disproportionné ni ne dénature le document."
                          "Vous devez anonymiser ces données !"]
                :goto    "oui"
-               :color   "is-success"}
+               :color   "is-info"}
               {:answer  "Non"
                :summary "L'anonymisation de ces données implique un effort disproportionné et/ou vide de son sens le document."
                :goto    "non"
