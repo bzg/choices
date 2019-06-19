@@ -1,3 +1,7 @@
+;; Copyright (c) 2019 Bastien Guerry <bzg@bzg.fr>
+;; SPDX-License-Identifier: EPL-2.0
+;; License-Filename: LICENSES/EPL-2.0.txt
+
 (ns choices.input)
 
 (def home-page "0")

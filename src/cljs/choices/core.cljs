@@ -1,3 +1,7 @@
+;; Copyright (c) 2019 Bastien Guerry <bzg@bzg.fr>
+;; SPDX-License-Identifier: EPL-2.0
+;; License-Filename: LICENSES/EPL-2.0.txt
+
 (ns choices.core
   (:require [reagent.core :as reagent]
             [reagent.session :as session]

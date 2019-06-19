@@ -1,4 +1,8 @@
-(defproject choices "0.2.2"
+;; Copyright (c) 2019 Bastien Guerry <bzg@bzg.fr>
+;; SPDX-License-Identifier: EPL-2.0
+;; License-Filename: LICENSES/EPL-2.0.txt
+
+(defproject choices "0.2.3"
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/bzg/choices"
   :license {:name "Eclipse Public License - v 2.0"
