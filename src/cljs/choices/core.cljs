@@ -76,8 +76,7 @@
               [:p {:class "image is-128x128"}
                [:a {:href input/home-page}
                 [:img {:src (:logo view/header)}]]]])
-           [:h1 {:class "title"} [:a {:href input/home-page}
-                                  (:title view/header)]]
+           [:h1 {:class "title"} (:title view/header)]
            [:h2 {:class "subtitle"} (:subtitle view/header)]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
