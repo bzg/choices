@@ -3,12 +3,15 @@
 With minimal configuration, build a single page application to let
 users traverse choices and get a summary of what they've chosen.
 
-* TODO
+[[file:choices.png]]
 
-- Add ad for choices in the footer
-- Allow to store/update/report variables
-- More documentation
-- More testing
+* Configure and install
+
+1. Configure some UI elements from =src/cljs/choices/view.cljs=
+2. Configure the questions/answers from =src/cljs/choices/input.cljs=
+3. Compile with =lein cljsbuild once min=
+4. Run with =lein run=
+5. Go to http://localhost:3000
 
 * Support the Clojure(script) ecosystem
 
