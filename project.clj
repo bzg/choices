@@ -2,12 +2,12 @@
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject choices "0.2.3"
+(defproject choices "0.3.0"
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/bzg/choices"
   :license {:name "Eclipse Public License - v 2.0"
             :url  "http://www.eclipse.org/legal/epl-v20.html"}
-  :dependencies [[org.clojure/clojure "1.10.0"]
+  :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
                  [compojure "1.6.1"]
@@ -31,7 +31,7 @@
              :repl    {:plugins      [[cider/cider-nrepl "0.18.0"]]
                        :dependencies [[nrepl "0.6.0"]
                                       [cider/piggieback "0.4.1"]
-                                      [figwheel-sidecar "0.5.18"]]}}
+                                      [figwheel-sidecar "0.5.19"]]}}
   :cljsbuild {:builds
               {:dev
                {:source-paths ["src/cljs"]
