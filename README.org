@@ -15,8 +15,8 @@ users traverse choices and get a summary of what they've chosen.
 
 * Support the Clojure(script) ecosystem
 
-If you like Clojure(script), please consider supporting its
-development developers by donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].
+If you like Clojure(script), please consider supporting maintainers by
+donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].
 
 * License
 
