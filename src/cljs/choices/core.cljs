@@ -10,7 +10,8 @@
             [choices.input :as input]
             [accountant.core :as accountant]
             [cljsjs.clipboard]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [taoensso.tempura :refer [tr]]))
 
 ;; Initialize atoms and variables
 (def show-help (reagent/atom view/display-help))
@@ -22,6 +23,42 @@
 (def summary-display-answers (reagent/atom true))
 (def final-score (reagent/atom input/score))
 (def last-score-change (reagent/atom nil))
+
+(def localization
+  {:en-GB
+   {:display-help         "Display help"
+    :copy-to-clipboard    "Copy in the clipboard"
+    :mail-to-message      "Send by email"
+    :mail-subject         "Results"
+    :redo                 "Redo"
+    :ok                   "Okay"
+    :contact-intro        "Contact: "
+    :toggle-summary-style "Toggle summary style"
+    :attention            "Attention"
+    :404-title            "404 error - page not found"
+    :404-subtitle         ""}
+   :fr-FR
+   {:display-help         "Afficher de l'aide"
+    :copy-to-clipboard    "Copier dans le presse-papier"
+    :mail-to-message      "Envoyer par mail"
+    :mail-subject         "Résultats"
+    :redo                 "Recommencer"
+    :ok                   "D'accord"
+    :contact-intro        "Contact : "
+    :toggle-summary-style "Changer le style de résumé"
+    :attention            "Attention"
+    :404-title            "Page introuvable (erreur 404)"
+    :404-subtitle         ""}})
+
+(def localization-custom
+  (into {}
+        (map (fn [locale] {(key locale)
+                           (merge (val locale) view/ui-strings)})
+             localization)))
+
+(def lang (keyword (or (not-empty view/locale) "en-GB")))
+(def opts {:dict localization-custom})
+(def i18n (partial tr opts [lang]))
 
 ;; Utility function to reset history
 (defn reset-history []
@@ -55,7 +92,7 @@
          (reset! clipboard-atom nil))
       :reagent-render
       (fn []
-        [:a {:title                 (:copy-to-clipboard view/ui-strings)
+        [:a {:title                 (i18n [:copy-to-clipboard])
              :class                 "button is-text"
              :style                 bigger
              :data-clipboard-target target}
@@ -83,13 +120,13 @@
        [:div {:class "modal-background"}]
        [:div {:class "modal-content"}
         [:div {:class "box"}
-         [:div {:class "title"} (:attention view/ui-strings)]
+         [:div {:class "title"} (i18n [:attention])]
          [:p @modal-message]
          [:br]
          [:div {:class "has-text-centered"}
           [:a {:class    "button is-medium is-warning"
                :on-click #(reset! show-modal false)}
-           (:ok view/ui-strings)]]]]
+           (i18n [:ok])]]]]
        [:button {:class    "modal-close is-large" :aria-label "close"
                  :on-click #(reset! show-modal false)}]]
       [:div {:class "section"}
@@ -102,13 +139,13 @@
           ;; Not done: display the help button
           [:a {:class    "button is-text"
                :style    bigger
-               :title    (:display-help view/ui-strings)
+               :title    (i18n [:display-help])
                :on-click #(swap! show-help not)}
            "💬"]
           ;; Done: display the copy-to-clipboard button
           [:div
            [:a {:class    "button is-text" :style bigger
-                :title    (:toggle-summary-style view/ui-strings)
+                :title    (i18n [:toggle-summary-style])
                 :on-click #(swap! summary-display-answers not)} "🔗"]
            [clipboard-button "📋" "#copy-this"]])]
        (if-not done
@@ -162,15 +199,15 @@
           [:div {:class "level-right"}
            [:a {:class    "button level-item"
                 :style    bigger
-                :title    (:redo view/ui-strings)
+                :title    (i18n [:redo])
                 :on-click reset-history
                 :href     input/start-page} "🔃"]
            (if (not-empty view/mail-to)
              [:a {:class "button level-item"
                   :style bigger
-                  :title (:mail-to-message view/ui-strings)
+                  :title (i18n [:mail-to-message])
                   :href  (str "mailto:" view/mail-to
-                              "?subject=" (:mail-subject view/ui-strings)
+                              "?subject=" (i18n [:mail-subject])
                               "&body=" (string/join "%0D%0A%0D%0A"
                                                     (flatten @summary-answers)))}
               "📩"])]])]]
@@ -178,9 +215,10 @@
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
          [:p (:text view/footer)]
-         [:p (:contact-intro view/ui-strings)
-          [:a {:href (str "mailto:" (:contact view/footer))}
-           (:contact view/footer)]]]])]))
+         (when-let [c (not-empty (:contact view/footer))]
+           [:p (i18n [:contact-intro])
+            [:a {:href (str "mailto:" (:contact view/footer))}
+             (:contact view/footer)]])]])]))
 
 ;; Create a 404 page
 (defmethod page-contents :four-o-four []
@@ -196,11 +234,11 @@
    [:div {:class "container"}
     [:div {:class "section"}
      [:div {:class "level"}
-      [:div [:h1 {:class "title"} (:404-title view/ui-strings)]
-       [:h2 {:class "subtitle"} (:404-subtitle view/ui-strings)]]]
+      [:div [:h1 {:class "title"} (i18n [:404-title])]
+       [:h2 {:class "subtitle"} (i18n [:404-subtitle])]]]
      [:a {:class "button is-info"
           :href  input/start-page}
-      (:redo view/ui-strings)]]]
+      (i18n [:redo])]]]
    (when (not-empty view/footer)
      [:section {:class "footer"}
       [:div {:class "content has-text-centered"}
