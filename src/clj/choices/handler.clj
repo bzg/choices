@@ -1,4 +1,4 @@
-;; Copyright (c) 2019 Bastien Guerry <bzg@bzg.fr>
+;; Copyright (c) 2019 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
@@ -9,8 +9,6 @@
             [compojure.core :refer [GET POST defroutes]]
             [compojure.route :refer [not-found resources]])
   (:gen-class))
-
-(def config (read-string (slurp "config.edn")))
 
 (defn default-page []
   (assoc
@@ -27,5 +25,7 @@
   (not-found "Not Found"))
 
 (defn -main [& args]
-  (server/run-server #'routes {:port (:port config)})
-  (println "Choices application started"))
+  (let [port (read-string (or (System/getenv "CHOICES_PORT") "3000"))]
+    (server/run-server #'routes {:port port})
+    (println (str "Choices application started on localhost:" port))))
+

@@ -1,8 +1,8 @@
-;; Copyright (c) 2019 Bastien Guerry <bzg@bzg.fr>
+;; Copyright (c) 2019 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject choices "0.3.0"
+(defproject choices "0.3.1"
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/bzg/choices"
   :license {:name "Eclipse Public License - v 2.0"
@@ -22,8 +22,9 @@
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
   :source-paths ["src/clj"]
   :main choices.handler
+  :uberjar-name "choices-standalone.jar"
   :jvm-opts ["-Xmx500m"]
-  :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+  :prep-tasks ["compile" ["clean"] ["cljsbuild" "once" "min"]]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
   :profiles {:uberjar {:aot :all}
              :dev     {:source-paths ["dev" "src/cljs"]
