@@ -13,6 +13,15 @@ users traverse choices and get a summary of what they've chosen.
 4. Run with =lein run=
 5. Go to http://localhost:3000
 
+You can configure the port for the application though the =CHOICES_PORT=
+environment variable.
+
+** Run with docker
+
+1. =~$ lein uberjar=
+2. =~$ docker build -t choices .=
+3. =~$ docker run -it -p 3000:3000 -e CHOICES_PORT=3000 --restart=always choices=
+
 * Support the Clojure(script) ecosystem
 
 If you like Clojure(script), please consider supporting maintainers by

@@ -24,7 +24,7 @@
   :main choices.handler
   :uberjar-name "choices-standalone.jar"
   :jvm-opts ["-Xmx500m"]
-  :prep-tasks ["compile" ["clean"] ["cljsbuild" "once" "min"]]
+  :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
   :profiles {:uberjar {:aot :all}
              :dev     {:source-paths ["dev" "src/cljs"]
