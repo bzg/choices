@@ -22,7 +22,8 @@
 (def bigger {:font-size "2em" :text-decoration "none"})
 (def summary-display-answers (reagent/atom true))
 (def final-score (reagent/atom input/score))
-(def last-score-change (reagent/atom nil))
+(def last-score-change (reagent/atom {}))
+(def history (reagent/atom []))
 
 (def localization
   {:en-GB
@@ -60,12 +61,12 @@
 (def opts {:dict localization-custom})
 (def i18n (partial tr opts [lang]))
 
-;; Utility function to reset history
-(defn reset-history []
+;; Utility function to reset state
+(defn reset-state []
   (reset! summary-answers [])
   (reset! summary-questions [])
   (reset! final-score input/score)
-  (session/put! :history []))
+  (reset! history []))
 
 ;; Create routes
 (def app-routes
@@ -200,7 +201,7 @@
            [:a {:class    "button level-item"
                 :style    bigger
                 :title    (i18n [:redo])
-                :on-click reset-history
+                :on-click reset-state
                 :href     input/start-page} "🔃"]
            (if (not-empty view/mail-to)
              [:a {:class "button level-item"
@@ -263,25 +264,24 @@
   (accountant/configure-navigation!
    {:nav-handler
     (fn [path]
-      (let [match        (bidi/match-route app-routes path)
-            current-page (:handler match)
-            history      (session/get :history)]
+      (let [match         (bidi/match-route app-routes path)
+            target-page   (:handler match)
+            local-history @history]
+        (swap! history conj (session/get :current-page))
         (cond
-          (or (= current-page (keyword input/home-page))
-              (= current-page (keyword input/start-page))
-              (some #(= current-page %) history))
+          (or (= target-page (keyword input/home-page))
+              (= target-page (keyword input/start-page)))
           ;; We need to reset all history information
-          (reset-history)
+          (reset-state)
           ;; We need to roll back history by one step
-          (= current-page (peek history))
+          (= target-page (peek local-history))
           (do (swap! summary-answers #(into [] (butlast %)))
               (swap! summary-questions #(into [] (butlast %)))
-              (swap! final-score #(merge-with - % last-score-change))
-              (session/put! :history (into [] (butlast history)))))
-        (session/put! :history (conj (into [] history)
-                                     (session/get :current-page)))
-        (session/put! :current-page current-page)))
+              (swap! final-score #(merge-with - % @last-score-change))
+              (reset! history (into [] (butlast local-history)))))
+        (session/put! :current-page target-page)))
     :path-exists?
     (fn [path] (boolean (bidi/match-route app-routes path)))})
   (accountant/dispatch-current!)
   (mount-root))
+
