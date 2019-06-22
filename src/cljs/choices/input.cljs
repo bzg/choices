@@ -18,7 +18,7 @@
     :text       "A title for the default page"
     :force-help true ;; Always display help for this question
     :no-summary true ;; Don't display a summary for this start question
-    :help       "Some help text"
+    :help       "Some introductory text here."
     ;; The list of choices (with just one question here)
     :choices    [{:answer "Start now"
                   :goto   "1"
@@ -26,7 +26,7 @@
    
    {:name    "1"
     :text    "Is it the first question?"
-    :help    "Some help text here."
+    :help    "Some help text here for the first question."
     :choices [{:answer  "Yes"
                :summary "Yes, this is the first question."
                :goto    "2"
@@ -37,14 +37,14 @@
                :goto    "end"}]}
 
    {:name    "2"
-    :text    "Is it the first question (mhhh...) ?"
-    :help    "Some help text here."
+    :text    "Is it the second question?"
+    :help    "Some help text here for the second question."
     :choices [{:answer  "Yes"
-               :summary "Yes, this is the first question."
+               :summary "Yes, this is the second question."
                :goto    "end"
                :color   "is-info"}
               {:answer  "No"
-               :summary "No, this is not the first question."
+               :summary "No, this is not the second question."
                :color   "is-warning"
                :goto    "end"}]}
    
