@@ -7,14 +7,13 @@
             [reagent.session :as session]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
-            [choices.view :as view]
             [choices.input :as input]
             [cljsjs.clipboard]
             [clojure.string :as string]
             [taoensso.tempura :refer [tr]]))
 
 ;; Initialize atoms and variables
-(def show-help (reagent/atom view/display-help))
+(def show-help (reagent/atom input/display-help))
 (def summary-answers (reagent/atom []))
 (def summary-questions (reagent/atom []))
 (def show-modal (reagent/atom false))
@@ -58,10 +57,10 @@
 (def localization-custom
   (into {}
         (map (fn [locale] {(key locale)
-                           (merge (val locale) view/ui-strings)})
+                           (merge (val locale) input/ui-strings)})
              localization)))
 
-(def lang (keyword (or (not-empty view/locale) "en-GB")))
+(def lang (keyword (or (not-empty input/locale) "en-GB")))
 (def opts {:dict localization-custom})
 (def i18n (partial tr opts [lang]))
 
@@ -103,18 +102,18 @@
                                     force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
-     (when (not-empty view/header)
-       [:section {:class (str "hero " (:color view/header))}
+     (when (not-empty input/header)
+       [:section {:class (str "hero " (:color input/header))}
         [:div {:class "hero-body"}
          [:div {:class "container"}
           [:div {:class "level"}
-           (if (not-empty (:logo view/header))
+           (if (not-empty (:logo input/header))
              [:figure {:class "media-left"}
               [:p {:class "image is-128x128"}
                [:a {:href (rfe/href home-page)}
-                [:img {:src (:logo view/header)}]]]])
-           [:h1 {:class "title"} (:title view/header)]
-           [:h2 {:class "subtitle"} (:subtitle view/header)]]]]])
+                [:img {:src (:logo input/header)}]]]])
+           [:h1 {:class "title"} (:title input/header)]
+           [:h2 {:class "subtitle"} (:subtitle input/header)]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
        [:div {:class "modal-background"}]
@@ -202,23 +201,23 @@
                 :title    (i18n [:redo])
                 :on-click reset-state
                 :href     (rfe/href start-page)} "🔃"]
-           (if (not-empty view/mail-to)
+           (if (not-empty input/mail-to)
              [:a {:class "button level-item"
                   :style bigger
                   :title (i18n [:mail-to-message])
-                  :href  (str "mailto:" view/mail-to
+                  :href  (str "mailto:" input/mail-to
                               "?subject=" (i18n [:mail-subject])
                               "&body=" (string/join "%0D%0A%0D%0A"
                                                     (flatten @summary-answers)))}
               "📩"])]])]]
-     (when (not-empty view/footer)
+     (when (not-empty input/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
-         [:p (:text view/footer)]
-         (when-let [c (not-empty (:contact view/footer))]
+         [:p (:text input/footer)]
+         (when-let [c (not-empty (:contact input/footer))]
            [:p (i18n [:contact-intro])
-            [:a {:href (str "mailto:" (:contact view/footer))}
-             (:contact view/footer)]])]])]))
+            [:a {:href (str "mailto:" (:contact input/footer))}
+             (:contact input/footer)]])]])]))
 
 ;; Create all the pages from `input/choices`
 (doall (map create-page-contents input/choices))
