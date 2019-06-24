@@ -43,9 +43,7 @@
     :ok                   "Okay"
     :contact-intro        "Contact: "
     :toggle-summary-style "Toggle summary style"
-    :attention            "Attention"
-    :404-title            "404 error - page not found"
-    :404-subtitle         ""}
+    :attention            "Attention"}
    :fr-FR
    {:display-help         "Afficher de l'aide"
     :copy-to-clipboard    "Copier dans le presse-papier"
@@ -55,9 +53,7 @@
     :ok                   "D'accord"
     :contact-intro        "Contact : "
     :toggle-summary-style "Changer le style de résumé"
-    :attention            "Attention"
-    :404-title            "Page introuvable (erreur 404)"
-    :404-subtitle         ""}})
+    :attention            "Attention"}})
 
 (def localization-custom
   (into {}
@@ -223,31 +219,6 @@
            [:p (i18n [:contact-intro])
             [:a {:href (str "mailto:" (:contact view/footer))}
              (:contact view/footer)]])]])]))
-
-;; Create a 404 page
-(defmethod page-contents :four-o-four []
-  [:body
-   (when (not-empty view/header)
-     [:section {:class (str "hero " (:color view/header))}
-      [:div {:class "hero-body"}
-       [:div {:class "container"}
-        [:div {:class "level"}
-         [:h1 {:class "title"} [:a {:href (rfe/href home-page)}
-                                (:title view/header)]]
-         [:h2 {:class "subtitle"} (:subtitle view/header)]]]]])
-   [:div {:class "container"}
-    [:div {:class "section"}
-     [:div {:class "level"}
-      [:div [:h1 {:class "title"} (i18n [:404-title])]
-       [:h2 {:class "subtitle"} (i18n [:404-subtitle])]]]
-     [:a {:class "button is-info"
-          :href  (rfe/href start-page)}
-      (i18n [:redo])]]]
-   (when (not-empty view/footer)
-     [:section {:class "footer"}
-      [:div {:class "content has-text-centered"}
-       [:p (:text view/footer)]
-       [:p (:contact view/footer)]]])])
 
 ;; Create all the pages from `input/choices`
 (doall (map create-page-contents input/choices))
