@@ -34,9 +34,6 @@
 (def history (reagent/atom [{:score config/score}]))
 (def hist-to-redo (reagent/atom {}))
 (def hist-to-add (reagent/atom {}))
-(defn reset-history []
-  (reset! history [{:score config/score}])
-  (reset! hist-to-add {}))
 
 ;; Localization variables
 (def localization-custom
@@ -173,11 +170,10 @@
                   [:div {:class "tile is-child subtitle has-text-weight-bold is-size-4"}
                    (peek o)]])])]]
           [:div {:class "level-right"}
-           [:a {:class    "button level-item"
-                :style    bigger
-                :title    (i18n [:redo])
-                :on-click reset-history
-                :href     (rfe/href start-page)} "🔃"]
+           [:a {:class "button level-item"
+                :style bigger
+                :title (i18n [:redo])
+                :href  (rfe/href start-page)} "🔃"]
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
                   :style bigger
@@ -209,10 +205,10 @@
         tmp-hist    @history
         prev        (peek tmp-hist)]
     (cond
-      ;; Do we need to reset all history?
-      (or (= target-page home-page)
-          (= target-page start-page))
-      (reset-history)
+      ;; Reset history?
+      (= target-page start-page)
+      (do (reset! history [{:score config/score}])
+          (reset! hist-to-add {}))
       ;; History backward?
       (= target-page (first (:page (peek tmp-hist))))
       (reset! history (into [] (butlast tmp-hist)))
