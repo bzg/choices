@@ -5,10 +5,10 @@
 (ns choices.core
   (:require [reagent.core :as reagent]
             [reagent.session :as session]
-            [bidi.bidi :as bidi]
+            [reitit.frontend :as rf]
+            [reitit.frontend.easy :as rfe]
             [choices.view :as view]
             [choices.input :as input]
-            [accountant.core :as accountant]
             [cljsjs.clipboard]
             [clojure.string :as string]
             [taoensso.tempura :refer [tr]]))
@@ -24,6 +24,14 @@
 (def final-score (reagent/atom input/score))
 (def last-score-change (reagent/atom {}))
 (def history (reagent/atom []))
+(def home-page
+  (first (remove nil? (map #(when (:home-page %)
+                              (keyword (:name %)))
+                           input/choices))))
+(def start-page
+  (first (remove nil? (map #(when (:start-page %)
+                              (keyword (:name %)))
+                           input/choices))))
 
 (def localization
   {:en-GB
@@ -70,12 +78,7 @@
 
 ;; Create routes
 (def app-routes
-  ["/" (into
-        []
-        (concat [["" (keyword (:name (first input/choices)))]]
-                (into [] (for [n input/choices]
-                           [(:name n) (keyword (:name n))]))
-                [[true :four-o-four]]))])
+  (into [] (for [n input/choices] [(:name n) (keyword (:name n))])))
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
@@ -112,7 +115,7 @@
            (if (not-empty (:logo view/header))
              [:figure {:class "media-left"}
               [:p {:class "image is-128x128"}
-               [:a {:href input/home-page}
+               [:a {:href (rfe/href home-page)}
                 [:img {:src (:logo view/header)}]]]])
            [:h1 {:class "title"} (:title view/header)]
            [:h2 {:class "subtitle"} (:subtitle view/header)]]]]])
@@ -160,7 +163,7 @@
                 [:div {:class "tile is-parent is-vertical"}
                  [:a {:class    "title"
                       :style    {:text-decoration "none"}
-                      :href     (bidi/path-for app-routes (keyword goto))
+                      :href     (rfe/href (keyword goto))
                       :on-click #(do (when score
                                        (swap! final-score (fn [s] (merge-with + s score)))
                                        (reset! last-score-change score))
@@ -202,7 +205,7 @@
                 :style    bigger
                 :title    (i18n [:redo])
                 :on-click reset-state
-                :href     input/start-page} "🔃"]
+                :href     (rfe/href start-page)} "🔃"]
            (if (not-empty view/mail-to)
              [:a {:class "button level-item"
                   :style bigger
@@ -229,7 +232,7 @@
       [:div {:class "hero-body"}
        [:div {:class "container"}
         [:div {:class "level"}
-         [:h1 {:class "title"} [:a {:href input/home-page}
+         [:h1 {:class "title"} [:a {:href (rfe/href home-page)}
                                 (:title view/header)]]
          [:h2 {:class "subtitle"} (:subtitle view/header)]]]]])
    [:div {:class "container"}
@@ -238,7 +241,7 @@
       [:div [:h1 {:class "title"} (i18n [:404-title])]
        [:h2 {:class "subtitle"} (i18n [:404-subtitle])]]]
      [:a {:class "button is-info"
-          :href  input/start-page}
+          :href  (rfe/href start-page)}
       (i18n [:redo])]]]
    (when (not-empty view/footer)
      [:section {:class "footer"}
@@ -251,7 +254,7 @@
 
 ;; Create component to mount the current page
 (defn current-page []
-  (let [page (session/get :current-page)]
+  (let [page (or (session/get :current-page) home-page)]
     [:div
      ^{:key page} [page-contents page]]))
 
@@ -261,27 +264,23 @@
    (. js/document (getElementById "app"))))
 
 (defn ^:export init []
-  (accountant/configure-navigation!
-   {:nav-handler
-    (fn [path]
-      (let [match         (bidi/match-route app-routes path)
-            target-page   (:handler match)
-            local-history @history]
-        (swap! history conj (session/get :current-page))
-        (cond
-          (or (= target-page (keyword input/home-page))
-              (= target-page (keyword input/start-page)))
-          ;; We need to reset all history information
-          (reset-state)
-          ;; We need to roll back history by one step
-          (= target-page (peek local-history))
-          (do (swap! summary-answers #(into [] (butlast %)))
-              (swap! summary-questions #(into [] (butlast %)))
-              (swap! final-score #(merge-with - % @last-score-change))
-              (reset! history (into [] (butlast local-history)))))
-        (session/put! :current-page target-page)))
-    :path-exists?
-    (fn [path] (boolean (bidi/match-route app-routes path)))})
-  (accountant/dispatch-current!)
+  (rfe/start!
+   (rf/router app-routes)
+   (fn [match]
+     (let [target-page   (:name (:data match))
+           local-history @history]
+       (swap! history conj (session/get :current-page))
+       (cond
+         (or (= target-page home-page)
+             (= target-page start-page))
+         ;; We need to reset all history information
+         (reset-state)
+         ;; We need to roll back history by one step
+         (= target-page (peek local-history))
+         (do (swap! summary-answers #(into [] (butlast %)))
+             (swap! summary-questions #(into [] (butlast %)))
+             (swap! final-score #(merge-with - % @last-score-change))
+             (reset! history (into [] (butlast local-history)))))
+       (session/put! :current-page target-page)))
+   {:use-fragment true})
   (mount-root))
-
