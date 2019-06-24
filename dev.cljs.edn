@@ -1,0 +1,8 @@
+^{:watch-dirs   ["src"]
+  :css-dirs     ["resources/public/css"]
+  :auto-testing false}
+{:main       choices.core
+ :output-to  "resources/public/js/choices.js"
+ :output-dir "resources/public/js/dev"
+ :asset-path "js/dev"
+ :externs    ["externs.js"]}

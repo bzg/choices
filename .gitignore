@@ -1,4 +1,4 @@
-/resources/public/js/compiled/**
+/resources/public/js/
 figwheel_server.log
 pom.xml
 *jar
@@ -11,3 +11,4 @@ pom.xml
 .lein-plugins/
 .repl
 .nrepl-port
+.rebel_readline_history

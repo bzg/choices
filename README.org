@@ -5,21 +5,18 @@ users traverse choices and get a summary of what they've chosen.
 
 [[file:choices.png]]
 
-* Configure and install
+* Compile
 
 1. Configure the application at =src/cljs/choices/config.cljs=
-2. Compile with =lein cljsbuild once min=
-3. Run with =lein run=
-4. Go to http://localhost:3000
+2. Compile with =lein fig:min=
+3. Your static files are ready in =resources/public/=
 
-You can configure the port for the application though the =CHOICES_PORT=
-environment variable.
+* Develop
 
-** Run with docker
-
-1. =~$ lein uberjar=
-2. =~$ docker build -t choices .=
-3. =~$ docker run -it -p 3000:3000 -e CHOICES_PORT=3000 --restart=always choices=
+1. Configure the application at =src/cljs/choices/config.cljs=
+2. Compile with =lein fig:build=
+3. Check your web browser
+4. Adapt =config.cljs= to your needs
 
 * Support the Clojure(script) ecosystem
 
