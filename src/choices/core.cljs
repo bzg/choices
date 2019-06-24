@@ -24,16 +24,15 @@
 
 ;; home-page and start-page
 (def home-page
-  (first (remove nil? (map #(when (:home-page %)
-                              (keyword (:name %)))
+  (first (remove nil? (map #(when (:home-page %) (keyword (:name %)))
                            config/choices))))
 (def start-page
-  (first (remove nil? (map #(when (:start-page %)
-                              (keyword (:name %)))
+  (first (remove nil? (map #(when (:start-page %) (keyword (:name %)))
                            config/choices))))
 
 ;; History-handling variables
 (def history (reagent/atom [{:score config/score}]))
+(def hist-to-redo (reagent/atom {}))
 (def hist-to-add (reagent/atom {}))
 (defn reset-history []
   (reset! history [{:score config/score}])
@@ -41,10 +40,9 @@
 
 ;; Localization variables
 (def localization-custom
-  (into {}
-        (map (fn [locale] {(key locale)
-                           (merge (val locale) config/ui-strings)})
-             i18n/localization)))
+  (into {} (map (fn [locale] {(key locale)
+                              (merge (val locale) config/ui-strings)})
+                i18n/localization)))
 
 (def lang (keyword (or (not-empty config/locale) "en-GB")))
 (def opts {:dict localization-custom})
@@ -204,8 +202,7 @@
 ;; Create component to mount the current page
 (defn current-page []
   (let [page (or (session/get :current-page) home-page)]
-    [:div
-     ^{:key page} [page-contents page]]))
+    [:div ^{:key page} [page-contents page]]))
 
 (defn on-navigate [match]
   (let [target-page (:name (:data match))
@@ -219,13 +216,16 @@
       ;; History backward?
       (= target-page (first (:page (peek tmp-hist))))
       (reset! history (into [] (butlast tmp-hist)))
-      ;; FIXME: History forward?
+      ;; History forward?
+      (= target-page (first (:page @hist-to-redo)))
+      (swap! history conj @hist-to-redo)
       :else
       (swap! history
              conj {:page      (conj (:page prev) (session/get :current-page))
                    :questions (conj (:questions prev) (:questions @hist-to-add))
                    :answers   (conj (:answers prev) (:answers @hist-to-add))
                    :score     (conj (:score prev) (:score @hist-to-add))}))
+    (reset! hist-to-redo (peek tmp-hist))
     (session/put! :current-page target-page)))
 
 (defn ^:export init []
