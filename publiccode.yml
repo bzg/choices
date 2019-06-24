@@ -1,0 +1,43 @@
+publiccodeYmlVersion: "0.2"
+
+name: choices
+url: "https://github.com/etalab/choices.git"
+releaseDate: "2019-06-24"
+platforms:
+  - web
+
+categories:
+  - utilities
+
+developmentStatus: development
+
+softwareType: "standalone/web"
+
+description:
+  en:
+    genericName: Choices
+    shortDescription: >
+      Build SPAs to let users traverse choices
+
+    longDescription: >
+      A web utility to build single page applications to let users
+      answers questions from a decision tree and get feedback from
+      their answers.
+
+    features:
+       - Build SPA to let users traverse a decision tree.
+
+legal:
+  license: EPL-2.0
+
+maintenance:
+  type: "individual"
+
+  contacts:
+    - name: Bastien Guerry
+
+localisation:
+  localisationReady: yes
+  availableLanguages:
+    - en
+    - fr
