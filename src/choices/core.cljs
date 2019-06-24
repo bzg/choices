@@ -13,17 +13,16 @@
             [clojure.string :as string]
             [taoensso.tempura :refer [tr]]))
 
-;; Initialize atoms and variables
-(def show-help (reagent/atom config/display-help))
-(def summary-answers (reagent/atom []))
-(def summary-questions (reagent/atom []))
-(def show-modal (reagent/atom false))
-(def modal-message (reagent/atom ""))
+;; UI variables
 (def bigger {:font-size "2em" :text-decoration "none"})
-(def summary-display-answers (reagent/atom true))
-(def final-score (reagent/atom config/score))
-(def last-score-change (reagent/atom {}))
-(def history (reagent/atom []))
+
+;; Modal variables
+(def show-help (reagent/atom config/display-help))
+(def show-modal (reagent/atom false))
+(def show-summary-answers (reagent/atom true))
+(def modal-message (reagent/atom ""))
+
+;; home-page and start-page
 (def home-page
   (first (remove nil? (map #(when (:home-page %)
                               (keyword (:name %)))
@@ -33,6 +32,14 @@
                               (keyword (:name %)))
                            config/choices))))
 
+;; History-handling variables
+(def history (reagent/atom [{:score config/score}]))
+(def hist-to-add (reagent/atom {}))
+(defn reset-history []
+  (reset! history [{:score config/score}])
+  (reset! hist-to-add {}))
+
+;; Localization variables
 (def localization-custom
   (into {}
         (map (fn [locale] {(key locale)
@@ -43,15 +50,8 @@
 (def opts {:dict localization-custom})
 (def i18n (partial tr opts [lang]))
 
-;; Utility function to reset state
-(defn reset-state []
-  (reset! summary-answers [])
-  (reset! summary-questions [])
-  (reset! final-score config/score)
-  (reset! history []))
-
 ;; Create routes
-(def app-routes
+(def routes
   (into [] (for [n config/choices] [(:name n) (keyword (:name n))])))
 
 ;; Define multimethod for later use in `create-page-contents`
@@ -124,7 +124,7 @@
           [:div
            [:a {:class    "button is-text" :style bigger
                 :title    (i18n [:toggle-summary-style])
-                :on-click #(swap! summary-display-answers not)} "🔗"]
+                :on-click #(swap! show-summary-answers not)} "🔗"]
            [clipboard-button "📋" "#copy-this"]])]
        (if-not done
          ;; Not done: display the choices
@@ -138,16 +138,14 @@
                  [:a {:class    "title"
                       :style    {:text-decoration "none"}
                       :href     (rfe/href (keyword goto))
-                      :on-click #(do (when score
-                                       (swap! final-score (fn [s] (merge-with + s score)))
-                                       (reset! last-score-change score))
-                                     (when-not no-summary
-                                       (swap! summary-questions conj [text answer]))
-                                     (when summary
-                                       (swap! summary-answers conj summary)
-                                       (when (vector? summary)
-                                         (reset! show-modal true)
-                                         (reset! modal-message (peek summary)))))}
+                      :on-click #(do (when (vector? summary)
+                                       (reset! show-modal true)
+                                       (reset! modal-message (peek summary)))
+                                     (reset! hist-to-add
+                                             (merge
+                                              {:score (merge-with + (:score (peek @history)) score)}
+                                              {:questions (when-not no-summary [text answer])}
+                                              {:answers summary})))}
                   [:div {:class (str "tile is-child box notification " color)}
                    answer]]
                  (if (and explain @show-help)
@@ -157,13 +155,15 @@
          [:div
           [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
-            (if (not-empty @final-score)
+            (if (not-empty (:score (peek @history)))
               [:div {:class "tile is-parent is-horizontal is-12"}
-               (for [s @final-score]
-                 ^{:key s}
+               (for [s (:score (peek @history))]
+                 ^{:key (pr-str s)}
                  [:div {:class "tile is-child box"}
                   (str (first s) ": " (second s))])])
-            (for [o (if @summary-display-answers @summary-answers @summary-questions)]
+            (for [o (if @show-summary-answers
+                      (reverse (:answers (peek @history)))
+                      (reverse (:questions (peek @history))))]
               ^{:key o}
               [:div {:class "tile is-child notification"}
                (if (string? o)
@@ -178,7 +178,7 @@
            [:a {:class    "button level-item"
                 :style    bigger
                 :title    (i18n [:redo])
-                :on-click reset-state
+                :on-click reset-history
                 :href     (rfe/href start-page)} "🔃"]
            (if (not-empty config/mail-to)
              [:a {:class "button level-item"
@@ -187,7 +187,7 @@
                   :href  (str "mailto:" config/mail-to
                               "?subject=" (i18n [:mail-subject])
                               "&body=" (string/join "%0D%0A%0D%0A"
-                                                    (flatten @summary-answers)))}
+                                                    (flatten (:answers (peek @history)))))}
               "📩"])]])]]
      (when (not-empty config/footer)
        [:section {:class "footer"}
@@ -207,29 +207,32 @@
     [:div
      ^{:key page} [page-contents page]]))
 
-(defn mount-root []
-  (reagent/render-component
-   [current-page]
-   (. js/document (getElementById "app"))))
+(defn on-navigate [match]
+  (let [target-page (:name (:data match))
+        tmp-hist    @history
+        prev        (peek tmp-hist)]
+    (cond
+      ;; Do we need to reset all history?
+      (or (= target-page home-page)
+          (= target-page start-page))
+      (reset-history)
+      ;; History backward?
+      (= target-page (first (:page (peek tmp-hist))))
+      (reset! history (into [] (butlast tmp-hist)))
+      ;; FIXME: History forward?
+      :else
+      (swap! history
+             conj {:page      (conj (:page prev) (session/get :current-page))
+                   :questions (conj (:questions prev) (:questions @hist-to-add))
+                   :answers   (conj (:answers prev) (:answers @hist-to-add))
+                   :score     (conj (:score prev) (:score @hist-to-add))}))
+    (session/put! :current-page target-page)))
 
 (defn ^:export init []
   (rfe/start!
-   (rf/router app-routes)
-   (fn [match]
-     (let [target-page   (:name (:data match))
-           local-history @history]
-       (swap! history conj (session/get :current-page))
-       (cond
-         (or (= target-page home-page)
-             (= target-page start-page))
-         ;; We need to reset all history information
-         (reset-state)
-         ;; We need to roll back history by one step
-         (= target-page (peek local-history))
-         (do (swap! summary-answers #(into [] (butlast %)))
-             (swap! summary-questions #(into [] (butlast %)))
-             (swap! final-score #(merge-with - % @last-score-change))
-             (reset! history (into [] (butlast local-history)))))
-       (session/put! :current-page target-page)))
+   (rf/router routes)
+   on-navigate
    {:use-fragment true})
-  (mount-root))
+  (reagent/render-component
+   [current-page]
+   (. js/document (getElementById "app"))))
