@@ -26,4 +26,4 @@
 ;; Website footer
 (def footer
   {:text    "Some text here."
-   :contact ""}) ;; email
+   :contact ""}) ;; An email address
