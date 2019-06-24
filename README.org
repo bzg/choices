@@ -7,11 +7,10 @@ users traverse choices and get a summary of what they've chosen.
 
 * Configure and install
 
-1. Configure some UI elements from =src/cljs/choices/view.cljs=
-2. Configure the questions/answers from =src/cljs/choices/input.cljs=
-3. Compile with =lein cljsbuild once min=
-4. Run with =lein run=
-5. Go to http://localhost:3000
+1. Configure the application at =src/cljs/choices/config.cljs=
+2. Compile with =lein cljsbuild once min=
+3. Run with =lein run=
+4. Go to http://localhost:3000
 
 You can configure the port for the application though the =CHOICES_PORT=
 environment variable.
@@ -32,4 +31,3 @@ donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].
 2019 DINSIC, Bastien Guerry.
 
 This application is published under the EPL 2.0 license.
-

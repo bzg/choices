@@ -1,7 +1,7 @@
 ;; Copyright (c) 2019 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
-(ns choices.input)
+(ns choices.config)
 
 ;; Default locale for UI strings
 (def locale "en-GB")

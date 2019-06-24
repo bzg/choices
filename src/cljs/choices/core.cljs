@@ -7,30 +7,30 @@
             [reagent.session :as session]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
-            [choices.input :as input]
+            [choices.config :as config]
             [cljsjs.clipboard]
             [clojure.string :as string]
             [taoensso.tempura :refer [tr]]))
 
 ;; Initialize atoms and variables
-(def show-help (reagent/atom input/display-help))
+(def show-help (reagent/atom config/display-help))
 (def summary-answers (reagent/atom []))
 (def summary-questions (reagent/atom []))
 (def show-modal (reagent/atom false))
 (def modal-message (reagent/atom ""))
 (def bigger {:font-size "2em" :text-decoration "none"})
 (def summary-display-answers (reagent/atom true))
-(def final-score (reagent/atom input/score))
+(def final-score (reagent/atom config/score))
 (def last-score-change (reagent/atom {}))
 (def history (reagent/atom []))
 (def home-page
   (first (remove nil? (map #(when (:home-page %)
                               (keyword (:name %)))
-                           input/choices))))
+                           config/choices))))
 (def start-page
   (first (remove nil? (map #(when (:start-page %)
                               (keyword (:name %)))
-                           input/choices))))
+                           config/choices))))
 
 (def localization
   {:en-GB
@@ -57,10 +57,10 @@
 (def localization-custom
   (into {}
         (map (fn [locale] {(key locale)
-                           (merge (val locale) input/ui-strings)})
+                           (merge (val locale) config/ui-strings)})
              localization)))
 
-(def lang (keyword (or (not-empty input/locale) "en-GB")))
+(def lang (keyword (or (not-empty config/locale) "en-GB")))
 (def opts {:dict localization-custom})
 (def i18n (partial tr opts [lang]))
 
@@ -68,12 +68,12 @@
 (defn reset-state []
   (reset! summary-answers [])
   (reset! summary-questions [])
-  (reset! final-score input/score)
+  (reset! final-score config/score)
   (reset! history []))
 
 ;; Create routes
 (def app-routes
-  (into [] (for [n input/choices] [(:name n) (keyword (:name n))])))
+  (into [] (for [n config/choices] [(:name n) (keyword (:name n))])))
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
@@ -102,18 +102,18 @@
                                     force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:body
-     (when (not-empty input/header)
-       [:section {:class (str "hero " (:color input/header))}
+     (when (not-empty config/header)
+       [:section {:class (str "hero " (:color config/header))}
         [:div {:class "hero-body"}
          [:div {:class "container"}
           [:div {:class "level"}
-           (if (not-empty (:logo input/header))
+           (if (not-empty (:logo config/header))
              [:figure {:class "media-left"}
               [:p {:class "image is-128x128"}
                [:a {:href (rfe/href home-page)}
-                [:img {:src (:logo input/header)}]]]])
-           [:h1 {:class "title"} (:title input/header)]
-           [:h2 {:class "subtitle"} (:subtitle input/header)]]]]])
+                [:img {:src (:logo config/header)}]]]])
+           [:h1 {:class "title"} (:title config/header)]
+           [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
        [:div {:class "modal-background"}]
@@ -201,26 +201,26 @@
                 :title    (i18n [:redo])
                 :on-click reset-state
                 :href     (rfe/href start-page)} "🔃"]
-           (if (not-empty input/mail-to)
+           (if (not-empty config/mail-to)
              [:a {:class "button level-item"
                   :style bigger
                   :title (i18n [:mail-to-message])
-                  :href  (str "mailto:" input/mail-to
+                  :href  (str "mailto:" config/mail-to
                               "?subject=" (i18n [:mail-subject])
                               "&body=" (string/join "%0D%0A%0D%0A"
                                                     (flatten @summary-answers)))}
               "📩"])]])]]
-     (when (not-empty input/footer)
+     (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
-         [:p (:text input/footer)]
-         (when-let [c (not-empty (:contact input/footer))]
+         [:p (:text config/footer)]
+         (when-let [c (not-empty (:contact config/footer))]
            [:p (i18n [:contact-intro])
-            [:a {:href (str "mailto:" (:contact input/footer))}
-             (:contact input/footer)]])]])]))
+            [:a {:href (str "mailto:" (:contact config/footer))}
+             (:contact config/footer)]])]])]))
 
-;; Create all the pages from `input/choices`
-(doall (map create-page-contents input/choices))
+;; Create all the pages from `config/choices`
+(doall (map create-page-contents config/choices))
 
 ;; Create component to mount the current page
 (defn current-page []
