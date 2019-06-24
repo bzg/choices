@@ -18,6 +18,12 @@ users traverse choices and get a summary of what they've chosen.
 3. Check your web browser
 4. Adapt =config.cljs= to your needs
 
+
+* Contribute
+
+Your help is welcome.  You can contribute with bug reports, feature
+requests and localization by editing the =i18n.cljs= file.
+
 * Support the Clojure(script) ecosystem
 
 If you like Clojure(script), please consider supporting maintainers by
