@@ -18,7 +18,7 @@
 
 ;; Initial score, a map of strings and integers
 ;; For example: (def score {"happiness" 0 "cleverness" 0})
-(def score {})
+(def score {"Score for 1" 0 "Score for 2" 0})
 
 ;; Website header
 (def header
@@ -51,6 +51,7 @@
     :start-page true ;; This is the page from where to restart.
     :choices    [{:answer  "Yes"
                   :summary "Yes, this is the first question."
+                  :score   {"Score for 1" 1}
                   :goto    "2"
                   :color   "is-info"}
                  {:answer  "No"
@@ -62,11 +63,25 @@
     :text    "Is it the second question?"
     :help    "Some help text here for the second question."
     :choices [{:answer  "Yes"
-               :summary "Yes, this is the second question."
-               :goto    "end"
+               :summary "Yes, this is the second question!"
+               :score   {"Score for 2" 1}
+               :goto    "3"
                :color   "is-info"}
               {:answer  "No"
                :summary "No, this is not the second question."
+               :color   "is-warning"
+               :goto    "end"}]}
+
+   {:name    "3"
+    :text    "Is it the third question?"
+    :help    "Some help text here for the second question."
+    :choices [{:answer  "Yes"
+               :summary ["Yes, this is the third question..."
+                         "This will end soon, I promise."]
+               :goto    "end"
+               :color   "is-info"}
+              {:answer  "No"
+               :summary "No, this is not the third question."
                :color   "is-warning"
                :goto    "end"}]}
    
