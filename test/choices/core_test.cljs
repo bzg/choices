@@ -7,6 +7,7 @@
 (s/def ::name string?)
 (s/def ::text string?)
 (s/def ::answer string?)
+(s/def ::explain string?)
 (s/def ::goto string?)
 (s/def ::color string?)
 (s/def ::summary (s/or :simple-summary string?
@@ -20,7 +21,7 @@
 
 (s/def ::choices (s/coll-of ::choice))
 (s/def ::choice (s/keys :req-un [::answer ::goto]
-                        :opt-un [::color ::summary ::score]))
+                        :opt-un [::color ::summary ::score ::explain]))
 
 (s/def ::tree (s/coll-of ::branch))
 (s/def ::branch (s/keys :req-un [::name ::text]

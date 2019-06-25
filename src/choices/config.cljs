@@ -51,6 +51,7 @@
     :start-page true ;; This is the page from where to restart.
     :choices    [{:answer  "Yes"
                   :summary "Yes, this is the first question."
+                  :explain "Some explanation here."
                   :score   {"Score for 1" 1}
                   :goto    "2"
                   :color   "is-info"}
