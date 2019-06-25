@@ -12,6 +12,7 @@
             [choices.config :as config]
             [cljsjs.clipboard]
             [clojure.string :as string]
+            [markdown-to-hiccup.core :as md]
             [taoensso.tempura :refer [tr]]))
 
 ;; UI variables
@@ -108,7 +109,8 @@
         [:div
          [:h1 {:class "title"} text]
          (when (or force-help @show-help)
-           [:div {:style {:margin "1em"}} help])]
+           [:div {:style {:margin "1em"}}
+            (-> help (md/md->hiccup) (md/component))])]
         (if-not done
           ;; Not done: display the help button
           [:a {:class    "button is-text"

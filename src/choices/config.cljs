@@ -47,7 +47,7 @@
    
    {:name       "1"
     :text       "Is it the first question?"
-    :help       "Some help text here for the first question."
+    :help       "Some **help text** here for the first question.  Markdown formatting accepted."
     :start-page true ;; This is the page from where to restart.
     :choices    [{:answer  "Yes"
                   :summary "Yes, this is the first question."
