@@ -4,6 +4,7 @@
 
 (ns choices.core
   (:require [reagent.core :as reagent]
+            [reagent.format :as fmt]
             [reagent.session :as session]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
@@ -180,8 +181,12 @@
                   :title (i18n [:mail-to-message])
                   :href  (str "mailto:" config/mail-to
                               "?subject=" (i18n [:mail-subject])
-                              "&body=" (string/join "%0D%0A%0D%0A"
-                                                    (flatten (:answers (peek @history)))))}
+                              "&body="
+                              (string/replace
+                               (fmt/format (i18n [:mail-body])
+                                           (string/join "%0D%0A%0D%0A"
+                                                        (flatten (:answers (peek @history)))))
+                               #"[\n\t]" "%0D%0A%0D%0A"))}
               "📩"])]])]]
      (when (not-empty config/footer)
        [:section {:class "footer"}
