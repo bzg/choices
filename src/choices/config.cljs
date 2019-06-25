@@ -32,8 +32,8 @@
   {:text    "Some text here."
    :contact ""}) ;; An email address
 
-;; Available choices, a map.
-(def choices
+;; Decision tree, a map.
+(def tree
   [{:name       "0"  ;; The webpage will look like yourdomain.com/#/0
     :text       "A title for the default page"
     :home-page  true ;; This is the home page of the application

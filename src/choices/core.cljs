@@ -25,10 +25,10 @@
 ;; home-page and start-page
 (def home-page
   (first (remove nil? (map #(when (:home-page %) (keyword (:name %)))
-                           config/choices))))
+                           config/tree))))
 (def start-page
   (first (remove nil? (map #(when (:start-page %) (keyword (:name %)))
-                           config/choices))))
+                           config/tree))))
 
 ;; History-handling variables
 (def history (reagent/atom [{:score config/score}]))
@@ -47,7 +47,7 @@
 
 ;; Create routes
 (def routes
-  (into [] (for [n config/choices] [(:name n) (keyword (:name n))])))
+  (into [] (for [n config/tree] [(:name n) (keyword (:name n))])))
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
@@ -192,8 +192,8 @@
             [:a {:href (str "mailto:" (:contact config/footer))}
              (:contact config/footer)]])]])]))
 
-;; Create all the pages from `config/choices`
-(doall (map create-page-contents config/choices))
+;; Create all the pages from `config/tree`
+(doall (map create-page-contents config/tree))
 
 ;; Create component to mount the current page
 (defn current-page []

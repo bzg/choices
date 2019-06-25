@@ -1,15 +1,16 @@
 * Choices
 
-With minimal configuration, build a single page application to let
-users traverse choices and get a summary of what they've chosen.
+=Choices= lets you build a single page application for users to traverse
+a decision tree and get feedback from what they choose.
 
 [[file:choices.png]]
 
-* Compile
+* Build your application
 
 1. Configure the application at =src/cljs/choices/config.cljs=
-2. Compile with =lein fig:min=
-3. Your static files are ready in =resources/public/=
+2. Test =config/tree= format with =lein fig:test=
+3. Compile with =lein fig:min=
+4. Your static files are ready in =resources/public/=
 
 * Develop
 
@@ -17,8 +18,7 @@ users traverse choices and get a summary of what they've chosen.
 2. Compile with =lein fig:build=
 3. Check your web browser
 4. Adapt =config.cljs= to your needs
-
-
+   
 * Contribute
 
 Your help is welcome.  You can contribute with bug reports, feature

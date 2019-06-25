@@ -1,0 +1,4 @@
+^{:open-url "http://[[server-hostname]]:[[server-port]]/test.html"}
+{:main       choices.test-runner
+ :output-to  "resources/public/js/tests.js"
+ :output-dir "resources/public/js/dev"}

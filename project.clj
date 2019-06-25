@@ -2,7 +2,7 @@
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject choices "0.5.0"
+(defproject choices "0.6.0"
 
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/etalab/choices"
@@ -15,7 +15,8 @@
 
   :aliases {"fig"       ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev" "-r"]
-            "fig:min"   ["run" "-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]}
+            "fig:min"   ["run" "-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]
+            "fig:test"  ["run" "-m" "figwheel.main" "-co" "test.cljs.edn" "-m" choices.test-runner]}
   
   :profiles {:dev {:source-paths ["src"]
                    :dependencies [[org.clojure/clojurescript "1.10.520"]
