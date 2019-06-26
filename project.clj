@@ -11,7 +11,8 @@
 
   :dependencies [[org.clojure/clojure "1.10.1"]]
 
-  :clean-targets ^{:protect false} ["target" "resources/public/js/"]
+  :clean-targets ^{:protect false} ["target" "resources/public/js/dev/"
+                                    "resources/public/js/choices.js"]
 
   :aliases {"fig"       ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev" "-r"]
