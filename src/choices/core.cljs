@@ -89,7 +89,10 @@
                [:a {:href (rfe/href home-page)}
                 [:img {:src (:logo config/header)}]]]])
            [:h1 {:class "title"} (:title config/header)]
-           [:h2 {:class "subtitle"} (:subtitle config/header)]]]]])
+           [:h2 {:class "subtitle"}
+            (-> (:subtitle config/header)
+                (md/md->hiccup)
+                (md/component))]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
        [:div {:class "modal-background"}]
@@ -193,7 +196,9 @@
      (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
-         [:p (:text config/footer)]
+         [:p (-> (:text config/footer)
+                 (md/md->hiccup)
+                 (md/component))]
          (when-let [c (not-empty (:contact config/footer))]
            [:p (i18n [:contact-intro])
             [:a {:href (str "mailto:" (:contact config/footer))}

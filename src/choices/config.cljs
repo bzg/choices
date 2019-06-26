@@ -25,11 +25,11 @@
   {:title    "Your title here"
    :logo     "" ;; "/img/logo.png"
    :color    "is-primary"
-   :subtitle "Your subtitle here"})
+   :subtitle "A subtitle here, possibly with _markdown_ formatting."})
 
 ;; Website footer
 (def footer
-  {:text    "Some text here."
+  {:text    "Some text here, possibly with **markdown** formatting."
    :contact ""}) ;; An email address
 
 ;; Decision tree, a map.
