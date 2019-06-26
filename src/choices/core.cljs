@@ -173,7 +173,7 @@
                   (for [n (butlast o)]
                     ^{:key n}
                     [:div {:class "tile is-child subtitle"} n])
-                  [:div {:class "tile is-child subtitle has-text-weight-bold is-size-4"}
+                  [:div {:class "tile is-child subtitle has-text-centered has-text-weight-bold is-size-4"}
                    (peek o)]])])]]
           [:div {:class "level-right"}
            [:a {:class "button level-item"
