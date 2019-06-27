@@ -32,6 +32,9 @@
   (first (remove nil? (map #(when (:start-page %) (keyword (:name %)))
                            config/tree))))
 
+(defn md-to-string [s]
+  (-> s (md/md->hiccup) (md/component)))
+
 ;; History-handling variables
 (def history (reagent/atom [{:score config/score}]))
 (def hist-to-redo (reagent/atom {}))
@@ -90,9 +93,7 @@
                 [:img {:src (:logo config/header)}]]]])
            [:h1 {:class "title"} (:title config/header)]
            [:h2 {:class "subtitle"}
-            (-> (:subtitle config/header)
-                (md/md->hiccup)
-                (md/component))]]]]])
+            (md-to-string (:subtitle config/header))]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
        [:div {:class "modal-background"}]
@@ -110,10 +111,9 @@
       [:div {:class "section"}
        [:div {:class "level"}
         [:div
-         [:h1 {:class "title"} text]
+         [:h1 {:class "title"} (md-to-string text)]
          (when (or force-help @show-help)
-           [:div {:style {:margin "1em"}}
-            (-> help (md/md->hiccup) (md/component))])]
+           [:div {:style {:margin "1em"}} (md-to-string help)])]
         (if-not done
           ;; Not done: display the help button
           [:a {:class    "button is-text"
@@ -196,9 +196,7 @@
      (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
-         [:p (-> (:text config/footer)
-                 (md/md->hiccup)
-                 (md/component))]
+         [:p (md-to-string (:text config/footer))]
          (when-let [c (not-empty (:contact config/footer))]
            [:p (i18n [:contact-intro])
             [:a {:href (str "mailto:" (:contact config/footer))}

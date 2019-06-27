@@ -74,7 +74,7 @@
                :goto    "end"}]}
 
    {:name    "3"
-    :text    "Is it the third question?"
+    :text    "Is it the _third_ question?"
     :help    "Some help text here for the second question."
     :choices [{:answer  "Yes"
                :summary ["Yes, this is the third question..."
