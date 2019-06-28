@@ -148,33 +148,36 @@
                                               {:questions (when-not no-summary [text answer])}
                                               {:answers summary})))}
                   [:div {:class (str "tile is-child box notification " color)}
-                   answer]]
+                   (md-to-string answer)]]
                  (if (and explain @show-help)
                    [:div {:class (str "tile is-child box")}
-                    [:div {:class "subtitle"} explain]])])))]]
+                    [:div {:class "subtitle"}
+                     (md-to-string explain)]])])))]]
          ;; Done: display the final summary-answers
          [:div
           [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
+            ;; Display score
             (if (not-empty (:score (peek @history)))
               [:div {:class "tile is-parent is-horizontal is-12"}
                (for [s (:score (peek @history))]
                  ^{:key (pr-str s)}
                  [:div {:class "tile is-child box"}
                   (str (first s) ": " (second s))])])
+            ;; Display answers
             (for [o (if @show-summary-answers
                       (reverse (:answers (peek @history)))
                       (reverse (:questions (peek @history))))]
               ^{:key o}
               [:div {:class "tile is-child notification"}
                (if (string? o)
-                 [:div {:class "subtitle"} o]
+                 [:div {:class "subtitle"} (md-to-string o)]
                  [:div {:class "tile is-parent is-horizontal notification"}
                   (for [n (butlast o)]
                     ^{:key n}
-                    [:div {:class "tile is-child subtitle"} n])
+                    [:div {:class "tile is-child subtitle"} (md-to-string n)])
                   [:div {:class "tile is-child subtitle has-text-centered has-text-weight-bold is-size-4"}
-                   (peek o)]])])]]
+                   (peek (md-to-string o))]])])]]
           [:div {:class "level-right"}
            [:a {:class "button level-item"
                 :style bigger
