@@ -80,7 +80,7 @@
 (defn create-page-contents [{:keys [done name text help no-summary
                                     force-help choices]}]
   (defmethod page-contents (keyword name) []
-    [:body
+    [:div
      (when (not-empty config/header)
        [:section {:class (str "hero " (:color config/header))}
         [:div {:class "hero-body"}
@@ -199,7 +199,7 @@
      (when (not-empty config/footer)
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
-         [:p (md-to-string (:text config/footer))]
+         (md-to-string (:text config/footer))
          (when-let [c (not-empty (:contact config/footer))]
            [:p (i18n [:contact-intro])
             [:a {:href (str "mailto:" (:contact config/footer))}
