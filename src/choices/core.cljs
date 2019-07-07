@@ -177,7 +177,7 @@
                     ^{:key n}
                     [:div {:class "tile is-child subtitle"} (md-to-string n)])
                   [:div {:class "tile is-child subtitle has-text-centered has-text-weight-bold is-size-4"}
-                   (peek (md-to-string o))]])])]]
+                   (md-to-string (peek o))]])])]]
           [:div {:class "level-right"}
            [:a {:class "button level-item"
                 :style bigger
