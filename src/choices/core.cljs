@@ -217,16 +217,16 @@
 
 (defn on-navigate [match]
   (let [target-page (:name (:data match))
-        tmp-hist    @history
-        prev        (peek tmp-hist)]
+        prev        (peek @history)]
     (cond
       ;; Reset history?
       (= target-page start-page)
       (do (reset! history [{:score config/score}])
+          (reset! hist-to-redo {})
           (reset! hist-to-add {}))
       ;; History backward?
-      (= target-page (first (:page (peek tmp-hist))))
-      (reset! history (into [] (butlast tmp-hist)))
+      (= target-page (first (:page (peek @history))))
+      (reset! history (into [] (butlast @history)))
       ;; History forward?
       (= target-page (first (:page @hist-to-redo)))
       (swap! history conj @hist-to-redo)
@@ -236,7 +236,7 @@
                    :questions (conj (:questions prev) (:questions @hist-to-add))
                    :answers   (conj (:answers prev) (:answers @hist-to-add))
                    :score     (conj (:score prev) (:score @hist-to-add))}))
-    (reset! hist-to-redo (peek tmp-hist))
+    (reset! hist-to-redo (peek @history))
     (session/put! :current-page target-page)))
 
 (defn ^:export init []
