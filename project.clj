@@ -2,7 +2,7 @@
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject choices "0.7.2"
+(defproject choices "0.8.0"
 
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/etalab/choices"
@@ -22,7 +22,7 @@
   :profiles {:dev {:source-paths ["src"]
                    :dependencies [[org.clojure/clojurescript "1.10.520"]
                                   [markdown-to-hiccup "0.6.2"]
-                                  [com.bhauman/figwheel-main "0.2.1"]
+                                  [com.bhauman/figwheel-main "0.2.3"]
                                   [com.bhauman/rebel-readline-cljs "0.1.4"]
                                   [reagent "0.8.1"]
                                   [reagent-utils "0.3.3"]
