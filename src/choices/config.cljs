@@ -23,8 +23,8 @@
 ;; Website header
 (def header
   {:title    "Your title here"
-   :logo     "" ;; "/img/logo.png"
-   :color    "is-primary"
+   :logo     ""           ; ex: "/img/logo.png"
+   :color    "is-primary" ; ex: has-background-white-ter
    :subtitle "A subtitle here, possibly with _markdown_ formatting."})
 
 ;; Website footer
