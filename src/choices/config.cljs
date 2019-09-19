@@ -18,7 +18,19 @@
 
 ;; Initial score, a map of strings and integers
 ;; For example: (def score {"happiness" 0 "cleverness" 0})
-(def score {"Score for 1" 0 "Score for 2" 0})
+(def score {"Score for 1" 0
+            "Score for 2" 0})
+
+;; Whether to display the raw score values
+(def display-score true)
+
+;; Display content depending on scores
+(defn score-function [scores]
+  (let [s1 (get scores "Score for 1")
+        s2 (get scores "Score for 2")]
+    (when (> s2 0)
+      [:div {:class "tile is-child is-warning notification is-12"}
+       [:p "Score for 2 is more than 0!"]])))
 
 ;; Website header
 (def header

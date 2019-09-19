@@ -160,12 +160,17 @@
           [:div {:id "copy-this" :class "tile is-ancestor"}
            [:div {:class "tile is-parent is-vertical is-12"}
             ;; Display score
-            (if (not-empty (:score (peek @history)))
-              [:div {:class "tile is-parent is-horizontal is-12"}
-               (for [s (:score (peek @history))]
-                 ^{:key (pr-str s)}
-                 [:div {:class "tile is-child box"}
-                  (str (first s) ": " (second s))])])
+            (if-let [scores (:score (peek @history))]
+              [:div
+               (when config/display-score
+                 [:div {:class "tile is-parent is-horizontal is-12"}
+                  (for [s scores]
+                    ^{:key (pr-str s)}
+                    [:div {:class "tile is-child box"}
+                     (str (first s) ": " (second s))])])
+               (config/score-function scores)
+               [:br]])
+            
             ;; Display answers
             (for [o (if @show-summary-answers
                       (reverse (:answers (peek @history)))
