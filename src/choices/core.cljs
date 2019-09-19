@@ -85,15 +85,17 @@
        [:section {:class (str "hero " (:color config/header))}
         [:div {:class "hero-body"}
          [:div {:class "container"}
-          [:div {:class "level"}
-           (if (not-empty (:logo config/header))
-             [:figure {:class "media-left"}
-              [:p {:class "image is-128x128"}
-               [:a {:href (rfe/href home-page)}
-                [:img {:src (:logo config/header)}]]]])
-           [:h1 {:class "title"} (:title config/header)]
-           [:h2 {:class "subtitle"}
-            (md-to-string (:subtitle config/header))]]]]])
+          [:div {:class "columns"}
+           [:div {:class "column"}
+            (if (not-empty (:logo config/header))
+              [:figure {:class "media-left"}
+               [:p {:class "image is-128x128"}
+                [:a {:href (rfe/href home-page)}
+                 [:img {:src (:logo config/header)}]]]])]
+           [:div {:class "column has-text-right"}
+            [:h1 {:class "title"} (:title config/header)]
+            [:br]
+            [:h2 {:class "subtitle"} (md-to-string (:subtitle config/header))]]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
        [:div {:class "modal-background"}]
