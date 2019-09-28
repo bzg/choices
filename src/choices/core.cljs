@@ -111,11 +111,10 @@
        [:button {:class    "modal-close is-large" :aria-label "close"
                  :on-click #(reset! show-modal false)}]]
       [:div {:class "section"}
+       [:h1 {:class "title has-text-centered"} (md-to-string text)]
        [:div {:class "level"}
-        [:div
-         [:h1 {:class "title"} (md-to-string text)]
-         (when (or force-help @show-help)
-           [:div {:style {:margin "1em"}} (md-to-string help)])]
+        (when (or force-help @show-help)
+          [:div {:style {:margin "1em"}} (md-to-string help)])
         (if-not done
           ;; Not done: display the help button
           [:a {:class    "button is-text"
