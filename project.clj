@@ -20,7 +20,7 @@
             "fig:test"  ["run" "-m" "figwheel.main" "-co" "test.cljs.edn" "-m" choices.test-runner]}
   
   :profiles {:dev {:source-paths ["src"]
-                   :dependencies [[org.clojure/clojurescript "1.10.520"]
+                   :dependencies [[org.clojure/clojurescript "1.10.597"]
                                   [markdown-to-hiccup "0.6.2"]
                                   [com.bhauman/figwheel-main "0.2.3"]
                                   [com.bhauman/rebel-readline-cljs "0.1.4"]
@@ -28,4 +28,4 @@
                                   [reagent-utils "0.3.3"]
                                   [cljsjs/clipboard "2.0.4-0"]
                                   [com.taoensso/tempura "1.2.1"]
-                                  [metosin/reitit-frontend "0.3.9"]]}})
+                                  [metosin/reitit-frontend "0.3.10"]]}})
