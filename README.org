@@ -1,5 +1,3 @@
-[[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/etalab/choices/)][https://archive.softwareheritage.org/browse/origin/https://github.com/etalab/choices/]]
-
 * Choices
 
 =Choices= lets you build a single page application for users to traverse
