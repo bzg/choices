@@ -1,8 +1,8 @@
-[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/etalab/choices/)](https://archive.softwareheritage.org/browse/origin/https://github.com/etalab/choices/)
 
 # Choices
 
-`Choices` lets you build a single page application for users to traverse a decision tree and get feedback from what they choose.
+`Choices` lets you build a single page application for users to traverse
+a decision tree and get feedback from what they choose.
 
 ![img](choices.png)
 
@@ -25,17 +25,19 @@
 
 # Contribute
 
-Your help is welcome.  You can contribute with bug reports, feature requests and localization by editing the `i18n.cljs` file.
+Your help is welcome.  You can contribute with bug reports, feature
+requests and localization by editing the `i18n.cljs` file.
 
 
 # Support the Clojure(script) ecosystem
 
-If you like Clojure(script), please consider supporting maintainers by donating to [clojuriststogether.org](https://www.clojuriststogether.org).
+If you like Clojure(script), please consider supporting maintainers by
+donating to [clojuriststogether.org](https://www.clojuriststogether.org).
 
 
 # License
 
-2019 DINSIC, Bastien Guerry.
+2019 DINUM, Bastien Guerry.
 
 This application is published under the EPL 2.0 license.
 
