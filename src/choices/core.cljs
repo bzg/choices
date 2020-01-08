@@ -76,6 +76,9 @@
              :data-clipboard-target target}
          label])})))
 
+(defn strip-html-tags [s]
+  (if (string? s) (string/replace s #"<([^>]+)>" "\1") s))
+
 ;; Create all the pages
 (defn create-page-contents [{:keys [done name text help no-summary
                                     force-help choices]}]
@@ -169,7 +172,6 @@
                      (str (first s) ": " (second s))])])
                (config/score-function scores)
                [:br]])
-            
             ;; Display answers
             (for [o (if @show-summary-answers
                       (reverse (:answers (peek @history)))
@@ -199,7 +201,8 @@
                               (string/replace
                                (fmt/format (i18n [:mail-body])
                                            (string/join "%0D%0A%0D%0A"
-                                                        (flatten (:answers (peek @history)))))
+                                                        (map strip-html-tags
+                                                             (flatten (:answers (peek @history))))))
                                #"[\n\t]" "%0D%0A%0D%0A"))}
               "📩"])]])]]
      (when (not-empty config/footer)
