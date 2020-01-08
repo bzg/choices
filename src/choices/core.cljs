@@ -77,7 +77,7 @@
          label])})))
 
 (defn strip-html-tags [s]
-  (if (string? s) (string/replace s #"<([^>]+)>" "\1") s))
+  (if (string? s) (string/replace s #"<([^>]+)>" "") s))
 
 ;; Create all the pages
 (defn create-page-contents [{:keys [done name text help no-summary
