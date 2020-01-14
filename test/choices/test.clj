@@ -1,8 +1,10 @@
-(ns choices.core-test
+(ns choices.test
   (:require
+   [clojure.test :refer :all]
    [clojure.spec.alpha :as s]
-   [cljs.test :refer-macros [deftest is testing]]
-   [choices.config :as config]))
+   [choices.macros :refer [inline-yaml-resource]]))
+
+(def config (inline-yaml-resource "config.yml"))
 
 (s/def ::name string?)
 (s/def ::text string?)
@@ -30,15 +32,18 @@
 
 (deftest ui-tests
   (testing "Testing basic UI variables"
-    (is (or (= config/locale "en-GB")
-            (= config/locale "fr-FR")))
-    (is (map? config/ui-strings))
-    (is (string? config/mail-to))
-    (is (boolean? config/display-help))
-    (is (map? config/score))
-    (is (map? config/header))
-    (is (map? config/footer))))
+    (is (or (= (:locale config) "en")
+            (= (:locale config) "fr")))
+    (is (or (empty? (:ui-strings config))
+            (map? (:ui-strings config))))
+    (is (or (empty? (:mail-to config))
+            (re-find #"@" (:mail-to config))))
+    (is (boolean? (:display-help config)))
+    (is (boolean? (:display-score config)))
+    (is (map? (:init-scores config)))
+    (is (map? (:header config)))
+    (is (map? (:footer config)))))
 
 (deftest tree-tests
   (testing "Testing tree format"
-    (is (s/valid? ::tree config/tree))))
+    (is (s/valid? ::tree (:tree config)))))
