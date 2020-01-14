@@ -1,15 +1,20 @@
-;; Copyright (c) 2019 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
+;; Copyright (c) 2019-2020 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject choices "0.8.1"
+(defproject choices "0.9.0"
 
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/etalab/choices"
   :license {:name "Eclipse Public License - v 2.0"
             :url  "http://www.eclipse.org/legal/epl-v20.html"}
 
-  :dependencies [[org.clojure/clojure "1.10.1"]]
+  :dependencies [[org.clojure/clojure "1.10.1"]
+                 [io.forward/yaml "1.0.9"]]
+
+  ;; See https://www.deps.co/blog/how-to-upgrade-clojure-projects-to-use-java-11/
+  :managed-dependencies [[org.clojure/core.rrb-vector "0.0.13"]
+                         [org.flatland/ordered "1.5.7"]]
 
   :clean-targets ^{:protect false} ["target" "resources/public/js/dev/"
                                     "resources/public/js/choices.js"]
@@ -18,8 +23,10 @@
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev" "-r"]
             "fig:min"   ["run" "-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]
             "fig:test"  ["run" "-m" "figwheel.main" "-co" "test.cljs.edn" "-m" choices.test-runner]}
+
+  :source-paths ["src/clj" "src/cljs"]
   
-  :profiles {:dev {:source-paths ["src"]
+  :profiles {:dev {:source-paths ["src/cljs"]
                    :dependencies [[org.clojure/clojurescript "1.10.597"]
                                   [markdown-to-hiccup "0.6.2"]
                                   [com.bhauman/figwheel-main "0.2.3"]

@@ -1,4 +1,4 @@
-^{:watch-dirs   ["src"]
+^{:watch-dirs   ["src/cljs"]
   :css-dirs     ["resources/public/css"]
   :auto-testing false}
 {:main       choices.core

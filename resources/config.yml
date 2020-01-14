@@ -1,0 +1,110 @@
+# Default locale for UI strings
+locale: "en"
+
+# Customize UI strings
+ui-strings:
+  # display-help:         "Display help"
+  # copy-to-clipboard:    "Copy in the clipboard"
+  # mail-to-message:      "Send by email"
+  # mail-subject:         "Results"
+  # mail-body:            "Hi,\n%s\nThanks."
+  # redo:                 "Redo"
+  # ok:                   "Okay"
+  # contact-intro:        "Contact: "
+  # toggle-summary-style: "Toggle summary style"
+  # attention:            "Attention"
+
+# Allow users to send you emails with the summary?
+mail-to:
+
+# Display help along with questions by default?
+display-help: true
+
+# Display score along with the results?
+display-score: true
+
+init-scores:
+  score-1:
+    display: "Score for 1"
+    value: 0
+    result: "1 wins!"
+  score-2:
+    display: "Score for 2"
+    value: 0
+    result: "2 wins!"
+
+# Website header
+header:
+ title:    "Here is my title."
+ logo:     ""
+ color:    "is-primary" 
+ subtitle: "A subtitle here, possibly with _markdown_ formatting."
+
+# Website footer
+footer:
+ text:    "Some text here, possibly with **markdown** formatting."
+ contact:  ""
+
+# Mandatory configuration option
+tree:
+  - name:       "0"  
+    text:       "A title for the default page"
+    home-page:  true
+    force-help: true
+    no-summary: true
+    help:       "Some introductory text here."
+    choices:
+    - answer: "Start now"
+      goto:   "1"
+      color:  "is-info"
+
+  - name:       "1"
+    text:       "Is it the first question?"
+    help:       "Some **help text** here for the first question.  Markdown formatting accepted."
+    start-page: true
+    choices:
+    - answer:  "Yes"
+      summary: "Yes, this is the first question."
+      explain: "Some explanation here."
+      score:
+        score-1:
+          value: 1
+      goto:    "2"
+      color:   "is-info"
+    - answer:  "No"
+      summary: "No, this is not the first question."
+      color:   "is-warning"
+      goto:    "end"
+
+  - name:    "2"
+    text:    "Is it the second question?"
+    help:    "Some help text here for the second question."
+    choices:
+    - answer:  "Yes"
+      summary: "Yes, this is the second question!"
+      score:
+        score-2:
+          value: 10
+      goto:    "3"
+      color:   "is-info"
+    - answer:  "No"
+      summary: "No, this is not the second question."
+      color:   "is-warning"
+      goto:    "end"
+
+  - name:    "3"
+    text:    "Is it the _third_ question?"
+    help:    "Some help text here for the second question."
+    choices:
+      - answer:  "Yes"
+        summary: ["Yes, this is the third question...", "This will end soon, I promise."]
+        goto: "end"
+        color: "is-info"
+      - answer:  "No"
+        summary: "No, this is not the third question."
+        color: "is-warning"
+        goto: "end"
+
+  - name: "end"
+    text: "This is the end."
+    done: true

@@ -1,7 +1,11 @@
+;; Copyright (c) 2019-2020 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
+;; SPDX-License-Identifier: EPL-2.0
+;; License-Filename: LICENSES/EPL-2.0.txt
+
 (ns choices.i18n)
 
 (def localization
-  {:en-GB
+  {:en
    {:display-help         "Display help"
     :copy-to-clipboard    "Copy in the clipboard"
     :mail-to-message      "Send by email"
@@ -12,7 +16,7 @@
     :contact-intro        "Contact: "
     :toggle-summary-style "Toggle summary style"
     :attention            "Attention"}
-   :fr-FR
+   :fr
    {:display-help         "Afficher de l'aide"
     :copy-to-clipboard    "Copier dans le presse-papier"
     :mail-to-message      "Envoyer par mail"

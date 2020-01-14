@@ -1,25 +1,29 @@
-;; Copyright (c) 2019 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
+;; Copyright (c) 2019-2020 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
 (ns choices.core
+  (:require-macros [choices.macros :refer [inline-yaml-resource]])
   (:require [reagent.core :as reagent]
             [reagent.format :as fmt]
             [reagent.session :as session]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
             [choices.i18n :as i18n]
-            [choices.config :as config]
             [cljsjs.clipboard]
             [clojure.string :as string]
             [markdown-to-hiccup.core :as md]
             [taoensso.tempura :refer [tr]]))
 
+;; General configuration
+(def config (inline-yaml-resource "config.yml"))
+
 ;; UI variables
 (def bigger {:font-size "2em" :text-decoration "none"})
 
 ;; Modal variables
-(def show-help (reagent/atom config/display-help))
+(def show-help (reagent/atom (:display-help config)))
+
 (def show-modal (reagent/atom false))
 (def show-summary-answers (reagent/atom true))
 (def modal-message (reagent/atom ""))
@@ -27,32 +31,32 @@
 ;; home-page and start-page
 (def home-page
   (first (remove nil? (map #(when (:home-page %) (keyword (:name %)))
-                           config/tree))))
+                           (:tree config)))))
 (def start-page
   (first (remove nil? (map #(when (:start-page %) (keyword (:name %)))
-                           config/tree))))
+                           (:tree config)))))
 
 (defn md-to-string [s]
   (-> s (md/md->hiccup) (md/component)))
 
 ;; History-handling variables
-(def history (reagent/atom [{:score config/score}]))
+(def history (reagent/atom [{:score (:init-scores config)}]))
 (def hist-to-redo (reagent/atom {}))
 (def hist-to-add (reagent/atom {}))
 
 ;; Localization variables
 (def localization-custom
   (into {} (map (fn [locale] {(key locale)
-                              (merge (val locale) config/ui-strings)})
+                              (merge (val locale) (:ui-strings config))})
                 i18n/localization)))
 
-(def lang (keyword (or (not-empty config/locale) "en-GB")))
+(def lang (keyword (or (not-empty (:locale config)) "en-GB")))
 (def opts {:dict localization-custom})
 (def i18n (partial tr opts [lang]))
 
 ;; Create routes
 (def routes
-  (into [] (for [n config/tree] [(:name n) (keyword (:name n))])))
+  (into [] (for [n (:tree config)] [(:name n) (keyword (:name n))])))
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
@@ -79,26 +83,32 @@
 (defn strip-html-tags [s]
   (if (string? s) (string/replace s #"<([^>]+)>" "") s))
 
+(defn sort-map-by-score-values [m]
+  (into (sorted-map-by
+         (fn [k1 k2] (compare [(:value (get m k2)) k2]
+                              [(:value (get m k1)) k1])))
+        m))
+
 ;; Create all the pages
 (defn create-page-contents [{:keys [done name text help no-summary
                                     force-help choices]}]
   (defmethod page-contents (keyword name) []
     [:div
-     (when (not-empty config/header)
-       [:section {:class (str "hero " (:color config/header))}
+     (when (not-empty (:header config))
+       [:section {:class (str "hero " (:color (:header config)))}
         [:div {:class "hero-body"}
          [:div {:class "container"}
           [:div {:class "columns"}
            [:div {:class "column"}
-            (if (not-empty (:logo config/header))
+            (if (not-empty (:logo (:header config)))
               [:figure {:class "media-left"}
                [:p {:class "image is-128x128"}
                 [:a {:href (rfe/href home-page)}
-                 [:img {:src (:logo config/header)}]]]])]
+                 [:img {:src (:logo (:header config))}]]]])]
            [:div {:class "column has-text-right"}
-            [:h1 {:class "title"} (:title config/header)]
+            [:h1 {:class "title"} (:title (:header config))]
             [:br]
-            [:h2 {:class "subtitle"} (md-to-string (:subtitle config/header))]]]]]])
+            [:h2 {:class "subtitle"} (md-to-string (:subtitle (:header config)))]]]]]])
      [:div {:class "container"}
       [:div {:class (str "modal " (when @show-modal "is-active"))}
        [:div {:class "modal-background"}]
@@ -148,7 +158,13 @@
                                        (reset! modal-message (peek summary)))
                                      (reset! hist-to-add
                                              (merge
-                                              {:score (merge-with + (:score (peek @history)) score)}
+                                              {:score
+                                               (merge-with
+                                                (fn [a b] {:display (:display a)
+                                                           :result  (:result a)
+                                                           :value   (+ (:value a) (:value b))})
+                                                (:score (peek @history))
+                                                score)}
                                               {:questions (when-not no-summary [text answer])}
                                               {:answers summary})))}
                   [:div {:class (str "tile is-child box notification " color)}
@@ -164,13 +180,19 @@
             ;; Display score
             (if-let [scores (:score (peek @history))]
               [:div
-               (when config/display-score
+               (when (:display-score config)
                  [:div {:class "tile is-parent is-horizontal is-12"}
                   (for [s scores]
                     ^{:key (pr-str s)}
                     [:div {:class "tile is-child box"}
-                     (str (first s) ": " (second s))])])
-               (config/score-function scores)
+                     (str (:display (val s)) ": " (:value (val s)))])])
+               ;; (pr-str (into (sorted-map-by #(> (:value %1) (:value %2))) scores))
+               (let [final-scores  (sort-map-by-score-values scores)
+                     last-score    (first final-scores)
+                     butlast-score (second final-scores)]
+                 (when (> (:value (val last-score)) (:value (val butlast-score)))
+                   [:div {:class "tile is-child is-warning notification is-12"}
+                    [:p (:result (val last-score))]]))
                [:br]])
             ;; Display answers
             (for [o (if @show-summary-answers
@@ -191,11 +213,11 @@
                 :style bigger
                 :title (i18n [:redo])
                 :href  (rfe/href start-page)} "🔃"]
-           (if (not-empty config/mail-to)
+           (if (not-empty (:mail-to config))
              [:a {:class "button level-item"
                   :style bigger
                   :title (i18n [:mail-to-message])
-                  :href  (str "mailto:" config/mail-to
+                  :href  (str "mailto:" (:mail-to config)
                               "?subject=" (i18n [:mail-subject])
                               "&body="
                               (string/replace
@@ -205,17 +227,17 @@
                                                              (flatten (:answers (peek @history))))))
                                #"[\n\t]" "%0D%0A%0D%0A"))}
               "📩"])]])]]
-     (when (not-empty config/footer)
+     (when (not-empty (:footer config))
        [:section {:class "footer"}
         [:div {:class "content has-text-centered"}
-         (md-to-string (:text config/footer))
-         (when-let [c (not-empty (:contact config/footer))]
+         (md-to-string (:text (:footer config)))
+         (when-let [c (not-empty (:contact (:footer config)))]
            [:p (i18n [:contact-intro])
-            [:a {:href (str "mailto:" (:contact config/footer))}
-             (:contact config/footer)]])]])]))
+            [:a {:href (str "mailto:" (:contact (:footer config)))}
+             (:contact (:footer config))]])]])]))
 
 ;; Create all the pages from `config/tree`
-(doall (map create-page-contents config/tree))
+(doall (map create-page-contents (:tree config)))
 
 ;; Create component to mount the current page
 (defn current-page []
@@ -228,7 +250,7 @@
     (cond
       ;; Reset history?
       (= target-page start-page)
-      (do (reset! history [{:score config/score}])
+      (do (reset! history [{:score (:init-scores config)}])
           (reset! hist-to-redo {})
           (reset! hist-to-add {}))
       ;; History backward?
