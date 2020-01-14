@@ -2,7 +2,7 @@
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject choices "0.9.0"
+(defproject choices "0.9.1"
 
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/etalab/choices"
@@ -13,7 +13,7 @@
                  [io.forward/yaml "1.0.9"]]
 
   ;; See https://www.deps.co/blog/how-to-upgrade-clojure-projects-to-use-java-11/
-  :managed-dependencies [[org.clojure/core.rrb-vector "0.0.13"]
+  :managed-dependencies [[org.clojure/core.rrb-vector "0.1.1"]
                          [org.flatland/ordered "1.5.7"]]
 
   :clean-targets ^{:protect false} ["target" "resources/public/js/dev/"
@@ -21,8 +21,7 @@
 
   :aliases {"fig"       ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev" "-r"]
-            "fig:min"   ["run" "-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]
-            "fig:test"  ["run" "-m" "figwheel.main" "-co" "test.cljs.edn" "-m" choices.test-runner]}
+            "fig:min"   ["run" "-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]}
 
   :source-paths ["src/clj" "src/cljs"]
   
