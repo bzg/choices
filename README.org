@@ -4,15 +4,15 @@
 
 * Choices
 
-=Choices= lets you build a single page application for users to traverse
-a decision tree and get feedback from what they choose.
+=Choices= lets you build a single page application to let users traverse
+a set of related options and get feedback from their choices.
 
 [[file:choices.png]]
 
 * Build your application
 
-1. Configure the application at =src/cljs/choices/config.cljs=
-2. Test =config/tree= format with =lein fig:test=
+1. Configure the application at =resources/config.yml=
+2. Test your configuration with =lein test=
 3. Compile with =lein fig:min=
 4. Your static files are ready in =resources/public/=
 
