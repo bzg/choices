@@ -125,18 +125,19 @@
                  :on-click #(reset! show-modal false)}]]
       [:div {:class "section"}
        [:h1 {:class "title has-text-centered"} (md-to-string text)]
-       [:div {:class "level"}
+       [:div {:class "level-right"}
         (when (or force-help @show-help)
-          [:div {:style {:margin "1em"}} (md-to-string help)])
+          [:div {:class "level-item"}
+           (md-to-string help)])
         (if-not done
           ;; Not done: display the help button
-          [:a {:class    "button is-text"
+          [:a {:class    "level-item button is-text"
                :style    bigger
                :title    (i18n [:display-help])
                :on-click #(swap! show-help not)}
            "💬"]
           ;; Done: display the copy-to-clipboard button
-          [:div
+          [:div {:class "level-item"}
            [:a {:class    "button is-text" :style bigger
                 :title    (i18n [:toggle-summary-style])
                 :on-click #(swap! show-summary-answers not)} "🔗"]
@@ -150,23 +151,24 @@
               (for [{:keys [answer goto explain color summary score] :as c} choices]
                 ^{:key c}
                 [:div {:class "tile is-parent is-vertical"}
-                 [:a {:class    "title"
-                      :style    {:text-decoration "none"}
-                      :href     (rfe/href (keyword goto))
-                      :on-click #(do (when (vector? summary)
-                                       (reset! show-modal true)
-                                       (reset! modal-message (peek summary)))
-                                     (reset! hist-to-add
-                                             (merge
-                                              {:score
-                                               (merge-with
-                                                (fn [a b] {:display (:display a)
-                                                           :result  (:result a)
-                                                           :value   (+ (:value a) (:value b))})
-                                                (:score (peek @history))
-                                                score)}
-                                              {:questions (when-not no-summary [text answer])}
-                                              {:answers summary})))}
+                 [:a {:class "title"
+                      :style {:text-decoration "none"}
+                      :href  (rfe/href (keyword goto))
+                      :on-click
+                      #(do (when (vector? summary)
+                             (reset! show-modal true)
+                             (reset! modal-message (peek summary)))
+                           (reset! hist-to-add
+                                   (merge
+                                    {:score
+                                     (merge-with
+                                      (fn [a b] {:display (:display a)
+                                                 :result  (:result a)
+                                                 :value   (+ (:value a) (:value b))})
+                                      (:score (peek @history))
+                                      score)}
+                                    {:questions (when-not no-summary [text answer])}
+                                    {:answers summary})))}
                   [:div {:class (str "tile is-child box notification " color)}
                    (md-to-string answer)]]
                  (if (and explain @show-help)
@@ -181,18 +183,19 @@
             (if-let [scores (:score (peek @history))]
               [:div
                (when (:display-score config)
-                 [:div {:class "tile is-parent is-horizontal is-12"}
+                 [:div {:class "tile is-parent is-horizontal is-6"}
                   (for [s scores]
                     ^{:key (pr-str s)}
-                    [:div {:class "tile is-child box"}
-                     (str (:display (val s)) ": " (:value (val s)))])])
-               ;; (pr-str (into (sorted-map-by #(> (:value %1) (:value %2))) scores))
-               (let [final-scores  (sort-map-by-score-values scores)
-                     last-score    (first final-scores)
-                     butlast-score (second final-scores)]
-                 (when (> (:value (val last-score)) (:value (val butlast-score)))
-                   [:div {:class "tile is-child is-warning notification is-12"}
-                    [:p (:result (val last-score))]]))
+                    [:div {:class "tile is-parent is-6"}
+                     [:div {:class "tile is-child box"}
+                      (str (:display (val s)) ": " (:value (val s)))]])
+                  (let [final-scores  (sort-map-by-score-values scores)
+                        last-score    (first final-scores)
+                        butlast-score (second final-scores)]
+                    (when (> (:value (val last-score)) (:value (val butlast-score)))
+                      [:div {:class "tile is-parent is-6"}
+                       [:p {:class "tile is-child box is-warning notification"}
+                        (:result (val last-score))]]))])
                [:br]])
             ;; Display answers
             (for [o (if @show-summary-answers
