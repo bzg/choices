@@ -8,4 +8,4 @@
 
 (defmacro inline-yaml-resource [resource-path]
   (yaml/parse-string
-   (slurp (io/resource resource-path))))
+   (slurp resource-path)))

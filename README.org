@@ -11,7 +11,7 @@ a set of related options and get feedback from their choices.
 
 * Build your application
 
-1. Configure the application at =resources/config.yml=
+1. Configure the application at =config.yml=
 2. Test your configuration with =lein test=
 3. Compile with =lein fig:min=
 4. Your static files are ready in =resources/public/=
