@@ -1,4 +1,4 @@
-{:version     "0.9.1"
+{:version     "0.9.2"
  :description "Build SPAs to let users traverse choices"
  :url         "https://github.com/etalab/choices"
  :license     {:name "Eclipse Public License - v 2.0"
