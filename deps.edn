@@ -1,0 +1,44 @@
+{:version     "0.9.1"
+ :description "Build SPAs to let users traverse choices"
+ :url         "https://github.com/etalab/choices"
+ :license     {:name "Eclipse Public License - v 2.0"
+               :url  "http://www.eclipse.org/legal/epl-v20.html"}
+
+ :deps
+ {
+  cljsjs/clipboard                {:mvn/version "2.0.4-0"}
+  com.bhauman/figwheel-main       {:mvn/version "0.2.3"}
+  com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}
+  com.taoensso/tempura            {:mvn/version "1.2.1"}
+  io.forward/yaml                 {:mvn/version "1.0.9"}
+  markdown-to-hiccup              {:mvn/version "0.6.2"}
+  metosin/reitit-frontend         {:mvn/version "0.3.10"}
+  org.clojure/clojure             {:mvn/version "1.10.1"}
+  org.clojure/clojurescript       {:mvn/version "1.10.597"}
+  org.clojure/core.rrb-vector     {:mvn/version "0.1.1"}
+  org.flatland/ordered            {:mvn/version "1.5.7"}
+  reagent                         {:mvn/version "0.8.1"}
+  reagent-utils                   {:mvn/version "0.3.3"}
+  }
+
+ :paths ["src" "src/clj" "src/cljs" "resources"]
+
+ :aliases
+ {:run {:main-opts ["-m" "choices.server"]}
+
+  :jar {:extra-deps {seancorfield/depstar {:mvn/version "RELEASE"}}
+        :main-opts  ["-m" "hf.depstar.uberjar" "choices.jar"
+                     "-C" "-m" "choices.server"]}
+
+  :fig {:main-opts   ["-m" "figwheel.main" "-b" "dev" "-r"]
+        :extra-paths ["src/cljs"]}
+
+  :js {:main-opts   ["-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]
+       :extra-paths ["src/cljs"]}
+
+  :test {:extra-paths ["test"]
+         :extra-deps  {com.cognitect/test-runner
+                       {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                        :sha     "209b64504cb3bd3b99ecfec7937b358a879f55c1"}}
+         :main-opts   ["-m" "cognitect.test-runner"
+                       "-d" "test" "-n" "choices.test"]}}}
