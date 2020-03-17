@@ -3,8 +3,7 @@
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
 (ns choices.macros
-  (:require [clojure.java.io :as io]
-            [yaml.core :as yaml]))
+  (:require [yaml.core :as yaml]))
 
 (defmacro inline-yaml-resource [resource-path]
   (yaml/parse-string

@@ -100,7 +100,7 @@
          [:div {:class "container"}
           [:div {:class "columns"}
            [:div {:class "column"}
-            (if (not-empty (:logo (:header config)))
+            (when (not-empty (:logo (:header config)))
               [:figure {:class "media-left"}
                [:p {:class "image is-128x128"}
                 [:a {:href (rfe/href home-page)}
@@ -146,35 +146,34 @@
          ;; Not done: display the choices
          [:div {:class "tile is-ancestor"}
           [:div {:class "tile is-parent"}
-           (let [choices-goto (map :goto choices)]
-             (doall
-              (for [{:keys [answer goto explain color summary score] :as c} choices]
-                ^{:key c}
-                [:div {:class "tile is-parent is-vertical"}
-                 [:a {:class "title"
-                      :style {:text-decoration "none"}
-                      :href  (rfe/href (keyword goto))
-                      :on-click
-                      #(do (when (vector? summary)
-                             (reset! show-modal true)
-                             (reset! modal-message (peek summary)))
-                           (reset! hist-to-add
-                                   (merge
-                                    {:score
-                                     (merge-with
-                                      (fn [a b] {:display (:display a)
-                                                 :result  (:result a)
-                                                 :value   (+ (:value a) (:value b))})
-                                      (:score (peek @history))
-                                      score)}
-                                    {:questions (when-not no-summary [text answer])}
-                                    {:answers summary})))}
-                  [:div {:class (str "tile is-child box notification " color)}
-                   (md-to-string answer)]]
-                 (if (and explain @show-help)
-                   [:div {:class (str "tile is-child box")}
-                    [:div {:class "subtitle"}
-                     (md-to-string explain)]])])))]]
+           (doall
+            (for [{:keys [answer goto explain color summary score] :as c} choices]
+              ^{:key c}
+              [:div {:class "tile is-parent is-vertical"}
+               [:a {:class "title"
+                    :style {:text-decoration "none"}
+                    :href  (rfe/href (keyword goto))
+                    :on-click
+                    #(do (when (vector? summary)
+                           (reset! show-modal true)
+                           (reset! modal-message (peek summary)))
+                         (reset! hist-to-add
+                                 (merge
+                                  {:score
+                                   (merge-with
+                                    (fn [a b] {:display (:display a)
+                                               :result  (:result a)
+                                               :value   (+ (:value a) (:value b))})
+                                    (:score (peek @history))
+                                    score)}
+                                  {:questions (when-not no-summary [text answer])}
+                                  {:answers summary})))}
+                [:div {:class (str "tile is-child box notification " color)}
+                 (md-to-string answer)]]
+               (when (and explain @show-help)
+                 [:div {:class (str "tile is-child box")}
+                  [:div {:class "subtitle"}
+                   (md-to-string explain)]])]))]]
          ;; Done: display the final summary-answers
          [:div
           [:div {:id "copy-this" :class "tile is-ancestor"}
@@ -216,7 +215,7 @@
                 :style bigger
                 :title (i18n [:redo])
                 :href  (rfe/href start-page)} "🔃"]
-           (if (not-empty (:mail-to config))
+           (when (not-empty (:mail-to config))
              [:a {:class "button level-item"
                   :style bigger
                   :title (i18n [:mail-to-message])
@@ -236,8 +235,7 @@
          (md-to-string (:text (:footer config)))
          (when-let [c (not-empty (:contact (:footer config)))]
            [:p (i18n [:contact-intro])
-            [:a {:href (str "mailto:" (:contact (:footer config)))}
-             (:contact (:footer config))]])]])]))
+            [:a {:href (str "mailto:" c)} c]])]])]))
 
 ;; Create all the pages from `config/tree`
 (doall (map create-page-contents (:tree config)))
