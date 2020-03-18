@@ -36,7 +36,7 @@
   (first (remove nil? (map #(when (:start-page %) (keyword (:name %)))
                            (:tree config)))))
 
-(defn md-to-string [s]
+(defn md-to-string [^string s]
   (-> s (md/md->hiccup) (md/component)))
 
 ;; History-handling variables
@@ -80,7 +80,7 @@
              :data-clipboard-target target}
          label])})))
 
-(defn strip-html-tags [s]
+(defn strip-html-tags [^string s]
   (if (string? s) (string/replace s #"<([^>]+)>" "") s))
 
 (defn sort-map-by-score-values [m]
