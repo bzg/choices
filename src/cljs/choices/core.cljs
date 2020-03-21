@@ -74,10 +74,10 @@
          (reset! clipboard-atom nil))
       :reagent-render
       (fn []
-        [:a {:title                 (i18n [:copy-to-clipboard])
-             :class                 "button is-text"
-             :style                 bigger
-             :data-clipboard-target target}
+        [:a.button.text
+         {:title                 (i18n [:copy-to-clipboard])
+          :style                 bigger
+          :data-clipboard-target target}
          label])})))
 
 (defn strip-html-tags [^string s]
@@ -96,104 +96,111 @@
     [:div
      (when (not-empty (:header config))
        [:section {:class (str "hero " (:color (:header config)))}
-        [:div {:class "hero-body"}
-         [:div {:class "container"}
-          [:div {:class "columns"}
-           [:div {:class "column"}
-            (when (not-empty (:logo (:header config)))
-              [:figure {:class "media-left"}
-               [:p {:class "image is-128x128"}
-                [:a {:href (rfe/href home-page)}
-                 [:img {:src (:logo (:header config))}]]]])]
-           [:div {:class "column has-text-right"}
-            [:h1 {:class "title"} (:title (:header config))]
-            [:br]
-            [:h2 {:class "subtitle"} (md-to-string (:subtitle (:header config)))]]]]]])
-     [:div {:class "container"}
+        [:div.hero-body
+         [:div.container
+          [:div.columns
+           (let [logo (:logo (:header config))]
+             (when (not-empty logo)
+               [:div.column
+                [:figure.media-left
+                 [:p.image.is-128x128
+                  [:a {:href (rfe/href home-page)}
+                   [:img {:src logo}]]]]])
+             [:div.column
+              {:class (if (not-empty logo)
+                        "has-text-right"
+                        "has-text-centered")}
+              [:h1.title (:title (:header config))]
+              [:br]
+              [:h2.subtitle
+               (md-to-string (:subtitle (:header config)))]])]]]])
+     [:div.container
       [:div {:class (str "modal " (when @show-modal "is-active"))}
-       [:div {:class "modal-background"}]
-       [:div {:class "modal-content"}
-        [:div {:class "box"}
-         [:div {:class "title"} (i18n [:attention])]
+       [:div.modal-background]
+       [:div.modal-content
+        [:div.box
+         [:div.title (i18n [:attention])]
          [:p @modal-message]
          [:br]
-         [:div {:class "has-text-centered"}
-          [:a {:class    "button is-medium is-warning"
-               :on-click #(reset! show-modal false)}
+         [:div.has-text-centered
+          [:a.button.is-medium.is-warning
+           {:on-click #(reset! show-modal false)}
            (i18n [:ok])]]]]
-       [:button {:class    "modal-close is-large" :aria-label "close"
-                 :on-click #(reset! show-modal false)}]]
-      [:div {:class "section"}
-       [:h1 {:class "title has-text-centered"} (md-to-string text)]
-       [:div {:class "level-right"}
-        (when (or force-help @show-help)
-          [:div {:class "level-item"}
-           (md-to-string help)])
+       [:button.modal-close.is-large
+        {:aria-label "close"
+         :on-click   #(reset! show-modal false)}]]
+      [:div.section
+       [:div.level
+        [:h1.title.level-item.has-text-centered (md-to-string text)]
+        (when (and (or force-help @show-help)
+                   (not-empty help))
+          [:div.level-item (md-to-string help)])
         (if-not done
           ;; Not done: display the help button
-          [:a {:class    "level-item button is-text"
-               :style    bigger
-               :title    (i18n [:display-help])
-               :on-click #(swap! show-help not)}
+          [:a.level-item.button.is-text
+           {:style    bigger
+            :title    (i18n [:display-help])
+            :on-click #(swap! show-help not)}
            "💬"]
           ;; Done: display the copy-to-clipboard button
-          [:div {:class "level-item"}
-           [:a {:class    "button is-text" :style bigger
-                :title    (i18n [:toggle-summary-style])
-                :on-click #(swap! show-summary-answers not)} "🔗"]
+          [:div.level-item
+           [:a.button.is-text
+            {:style    bigger
+             :title    (i18n [:toggle-summary-style])
+             :on-click #(swap! show-summary-answers not)} "🔗"]
            [clipboard-button "📋" "#copy-this"]])]
        (if-not done
          ;; Not done: display the choices
-         [:div {:class "tile is-ancestor"}
-          [:div {:class "tile is-parent"}
-           (doall
-            (for [{:keys [answer goto explain color summary score] :as c} choices]
-              ^{:key c}
-              [:div {:class "tile is-parent is-vertical"}
-               [:a {:class "title"
-                    :style {:text-decoration "none"}
-                    :href  (rfe/href (keyword goto))
-                    :on-click
-                    #(do (when (vector? summary)
-                           (reset! show-modal true)
-                           (reset! modal-message (peek summary)))
-                         (reset! hist-to-add
-                                 (merge
-                                  {:score
-                                   (merge-with
-                                    (fn [a b] {:display (:display a)
-                                               :result  (:result a)
-                                               :value   (+ (:value a) (:value b))})
-                                    (:score (peek @history))
-                                    score)}
-                                  {:questions (when-not no-summary [text answer])}
-                                  {:answers summary})))}
-                [:div {:class (str "tile is-child box notification " color)}
-                 (md-to-string answer)]]
-               (when (and explain @show-help)
-                 [:div {:class (str "tile is-child box")}
-                  [:div {:class "subtitle"}
-                   (md-to-string explain)]])]))]]
+         [:div.tile.is-ancestor
+          (doall
+           (for [{:keys [answer goto explain color summary score] :as c}
+                 choices]
+             ^{:key c}
+             [:div.tile.is-parent
+              [:a.tile.is-child
+               {:style {:text-decoration "none"}
+                :href  (rfe/href (keyword goto))
+                :on-click
+                #(do (when (vector? summary)
+                       (reset! show-modal true)
+                       (reset! modal-message (md-to-string (peek summary))))
+                     (reset! hist-to-add
+                             (merge
+                              {:score
+                               (merge-with
+                                (fn [a b] {:display (:display a)
+                                           :result  (:result a)
+                                           :value   (+ (:value a) (:value b))})
+                                (:score (peek @history))
+                                score)}
+                              {:questions (when-not no-summary [text answer])}
+                              {:answers summary})))}
+               [:div.card-content.tile.is-parent.is-vertical
+                [:div {:class (str "tile is-child box title notification " color)}
+                 (md-to-string answer)]
+                (when (and explain @show-help)
+                  [:div.tile.is-child.subtitle
+                   (md-to-string explain)])]]]))]
          ;; Done: display the final summary-answers
          [:div
-          [:div {:id "copy-this" :class "tile is-ancestor"}
-           [:div {:class "tile is-parent is-vertical is-12"}
+          [:div.tile.is-ancestor {:id "copy-this"}
+           [:div.tile.is-parent.is-vertical.is-12
             ;; Display score
             (if-let [scores (:score (peek @history))]
               [:div
                (when (:display-score config)
-                 [:div {:class "tile is-parent is-horizontal is-6"}
+                 [:div.tile.is-parent.is-horizontal.is-6
                   (for [s scores]
                     ^{:key (pr-str s)}
-                    [:div {:class "tile is-parent is-6"}
-                     [:div {:class "tile is-child box"}
+                    [:div.tile.is-parent.is-6
+                     [:div.tile.is-child.box
                       (str (:display (val s)) ": " (:value (val s)))]])
                   (let [final-scores  (sort-map-by-score-values scores)
                         last-score    (first final-scores)
                         butlast-score (second final-scores)]
                     (when (> (:value (val last-score)) (:value (val butlast-score)))
-                      [:div {:class "tile is-parent is-6"}
-                       [:p {:class "tile is-child box is-warning notification"}
+                      [:div.tile.is-parent.is-6
+                       [:p.tile.is-child.box.is-warning.notification
                         (:result (val last-score))]]))])
                [:br]])
             ;; Display answers
@@ -201,37 +208,37 @@
                       (reverse (:answers (peek @history)))
                       (reverse (:questions (peek @history))))]
               ^{:key o}
-              [:div {:class "tile is-child notification"}
+              [:div.tile.is-child.notification
                (if (string? o)
-                 [:div {:class "subtitle"} (md-to-string o)]
-                 [:div {:class "tile is-parent is-horizontal notification"}
+                 [:div.subtitle (md-to-string o)]
+                 [:div.tile.is-parent.is-horizontal.notification
                   (for [n (butlast o)]
                     ^{:key n}
-                    [:div {:class "tile is-child subtitle"} (md-to-string n)])
-                  [:div {:class "tile is-child subtitle has-text-centered has-text-weight-bold is-size-4"}
+                    [:div.tile.is-child.subtitle (md-to-string n)])
+                  [:div.tile.is-child.subtitle.has-text-centered.has-text-weight-bold.is-size-4
                    (md-to-string (peek o))]])])]]
-          [:div {:class "level-right"}
-           [:a {:class "button level-item"
-                :style bigger
-                :title (i18n [:redo])
-                :href  (rfe/href start-page)} "🔃"]
+          [:div.level-right
+           [:a.button.level-item
+            {:style bigger
+             :title (i18n [:redo])
+             :href  (rfe/href start-page)} "🔃"]
            (when (not-empty (:mail-to config))
-             [:a {:class "button level-item"
-                  :style bigger
-                  :title (i18n [:mail-to-message])
-                  :href  (str "mailto:" (:mail-to config)
-                              "?subject=" (i18n [:mail-subject])
-                              "&body="
-                              (string/replace
-                               (fmt/format (i18n [:mail-body])
-                                           (string/join "%0D%0A%0D%0A"
-                                                        (map strip-html-tags
-                                                             (flatten (:answers (peek @history))))))
-                               #"[\n\t]" "%0D%0A%0D%0A"))}
+             [:a.button.level-item
+              {:style bigger
+               :title (i18n [:mail-to-message])
+               :href  (str "mailto:" (:mail-to config)
+                           "?subject=" (i18n [:mail-subject])
+                           "&body="
+                           (string/replace
+                            (fmt/format (i18n [:mail-body])
+                                        (string/join "%0D%0A%0D%0A"
+                                                     (map strip-html-tags
+                                                          (flatten (:answers (peek @history))))))
+                            #"[\n\t]" "%0D%0A%0D%0A"))}
               "📩"])]])]]
      (when (not-empty (:footer config))
-       [:section {:class "footer"}
-        [:div {:class "content has-text-centered"}
+       [:section.footer
+        [:div.content.has-text-centered
          (md-to-string (:text (:footer config)))
          (when-let [c (not-empty (:contact (:footer config)))]
            [:p (i18n [:contact-intro])
