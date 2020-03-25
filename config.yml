@@ -14,30 +14,11 @@ ui-strings:
   # toggle-summary-style: "Toggle summary style"
   # attention:            "Attention"
 
-# Allow users to send you emails with the summary?
-mail-to:
-
-# Display help along with questions by default?
-display-help: true
-
-# Display score along with the results?
-display-score: true
-
-init-scores:
-  score-1:
-    display: "Score for 1"
-    value: 0
-    result: "1 wins!"
-  score-2:
-    display: "Score for 2"
-    value: 0
-    result: "2 wins!"
-
 # Website header
 header:
  title:    "Here is my title."
  logo:     ""
- color:    "is-primary" 
+ color:    "is-primary"
  subtitle: "A subtitle here, possibly with _markdown_ formatting."
 
 # Website footer
@@ -45,9 +26,65 @@ footer:
  text:    "Some text here, possibly with **markdown** formatting."
  contact:  ""
 
+# Allow users to send you emails with the summary?
+mail-to:
+
+# Display help along with questions by default?
+display-help: true
+
+# Display summary when done?
+display-summary: true
+
+# Display score information?
+display-score: true
+
+# Display each score?
+display-score-details: true
+
+# Only the score with the highest value?
+display-score-top-result: true
+
+# Set initial variables to register scores.  Each entry of
+# score-variables start with the name of the variable (you can pick
+# up any yaml-acceptable name), then:
+#
+# (1) "display": what to display when detailed scores are displayed
+# (2) "value": the initial value of the variable
+# (3) "as-top-result-display": what to display when the variable is
+#      the one with the highest score when the user is done.
+score-variables:
+  score-1:
+    display: "Score for 1"
+    value: 0
+    as-top-result-display: "1 wins :)"
+  score-2:
+    display: "Score for 2"
+    value: 0
+    as-top-result-display: "2 wins :("
+
+# Set conditional output depending on scores.
+# Each entry is composed of the name of the condition (you can pick up
+# any yaml-acceptable name), then:
+#
+# (1) notification (optional): bulma-based class names for the UI notification
+# (2) message (mandatory): message to display when one of the condition is met
+# (3) anything else is a "condition", which lists variables and their minimal
+# values for the condition to be met.
+conditional-score-outputs:
+  cas-1: # free-form
+    notification: "is-success"
+    message: "1 wins! :)"
+    condition-1: #free-form
+      score-1: 1
+  cas-1: # free-form
+    notification: "is-danger"
+    message: "2 wins! :("
+    condition-1: #free-form
+      score-2: 1
+
 # Mandatory configuration option
 tree:
-  - name:       "0"  
+  - node:       "0"
     text:       "A title for the default page"
     home-page:  true
     force-help: true
@@ -58,7 +95,8 @@ tree:
       goto:   "1"
       color:  "is-info"
 
-  - name:       "1"
+  - node:       "1"
+    progress: "[1 2]"  # progress bar
     text:       "Is it the first question?"
     help:       "Some **help text** here for the first question.  Markdown formatting accepted."
     start-page: true
@@ -76,7 +114,7 @@ tree:
       color:   "is-warning"
       goto:    "end"
 
-  - name:    "2"
+  - node:    "2"
     text:    "Is it the second question?"
     help:    "Some help text here for the second question."
     choices:
@@ -92,7 +130,7 @@ tree:
       color:   "is-warning"
       goto:    "end"
 
-  - name:    "3"
+  - node:    "3"
     text:    "Is it the _third_ question?"
     help:    "Some help text here for the second question."
     choices:
@@ -105,6 +143,6 @@ tree:
         color: "is-warning"
         goto: "end"
 
-  - name: "end"
+  - node: "end"
     text: "This is the end."
     done: true
