@@ -106,7 +106,7 @@
         (when (not-empty logo)
           [:div.column
            [:figure.media-left
-            [:p.image.is-128x128
+            [:p.image.is-256x256
              [:a {:href (rfe/href home-page)}
               [:img {:src logo}]]]]])
         [:div.column
@@ -191,17 +191,19 @@
   (let [conditions   (atom nil)
         matching     (atom nil)
         output       (atom "")
-        notification (atom "")]
+        notification (atom "")
+        node         (atom "")]
     (doseq [[_ cas] conclusions
             :let    [not (:notification cas)
                      msg (:message cas)
+                     nod (:node cas)
                      pri (:priority cas)
                      cds (dissoc cas :message :notification :priority)]]
       (doseq [condition cds]
         (swap! conditions conj
-               (merge (val condition) {:msg msg :not not :pri pri}))))
+               (merge (val condition) {:msg msg :not not :pri pri :nod nod}))))
     (doseq [c0   @conditions
-            :let [c  (dissoc c0 :msg :not :pri)
+            :let [c  (dissoc c0 :msg :not :pri :nod)
                   ks (keys c)]]
       (when (all-vals-compare?
              (fn [a b] (if (zero? a) (= a b) (>= a b)))
@@ -209,9 +211,12 @@
         (swap! matching conj c0)))
     (let [match (first (sort-by :pri @matching))]
       (reset! output (:msg match))
-      (reset! notification (:not match)))
+      (reset! notification (:not match))
+      (reset! node (:nod match)))
     ;; Return the expected map:
-    {:notification @notification :output @output}))
+    {:notification @notification
+     :output       @output
+     :node         @node}))
 
 (defn scores-result [scores]
   (let [scores (if (resolve 'custom/preprocess-scores)
@@ -241,7 +246,12 @@
                  [:div.tile.is-size-4.is-child
                   {:class (str (or (not-empty notification) "is-info")
                                " notification subtitle")}
-                  (md-to-string output)]]))))])
+                  (md-to-string output)]]))))
+        ;; Always display display-unconditionally when not empty
+        (when-let [sticky (:display-unconditionally config)]
+          [:div.tile.is-parent
+           [:div.tile.is-size-4.is-child.notification.subtitle
+            (md-to-string sticky)]])])
      [:br]]))
 
 (defn summary []
@@ -289,6 +299,35 @@
                      (string/replace body #"[\n\t]" "%0D%0A%0D%0A"))}
         "📩"]))])
 
+(defn get-target-node [goto current-score]
+  (cond (string? goto)
+        (keyword goto)
+        (map? goto)
+        (if (and (:conditional-navigation config)
+                 (:conditional-score-outputs goto))
+          (let [score  (if (resolve 'custom/preprocess-scores)
+                         (custom/preprocess-scores current-score)
+                         current-score)
+                score  (apply merge (map (fn [[k v]] {k (:value v)}) score))
+                result (if (resolve 'custom/conditional-score-result)
+                         (custom/conditional-score-result
+                          score conditional-score-outputs)
+                         (conditional-score-result
+                          score conditional-score-outputs))]
+            (keyword (or (:node result) (get goto :default))))
+          (let [score   (apply merge (map (fn [[k v]] {k (:value v)}) current-score))
+                matches (doall
+                         (for [[cnd-name value-node]
+                               goto
+                               :let [kname (keyword cnd-name)
+                                     cnd-val  (:value value-node)
+                                     cnd-node (:node value-node)]]
+                           (when (and (= cnd-val (get score kname))
+                                      (string? cnd-node))
+                             cnd-node)))]
+            (keyword (or (first (remove nil? matches))
+                         (get goto :default)))))))
+
 ;; Create all the pages
 (defn create-page-contents [{:keys [done node text help no-summary
                                     progress force-help choices]}]
@@ -317,22 +356,24 @@
              [:div.tile.is-parent
               [:a.tile.is-child
                {:style {:text-decoration "none"}
-                :href  (rfe/href (keyword goto))
                 :on-click
                 #(do (when (vector? summary)
                        (reset! show-modal true)
                        (reset! modal-message (md-to-string (peek summary))))
-                     (reset! hist-to-add
-                             (merge
-                              {:score
-                               (merge-with
-                                (fn [a b] {:display               (:display a)
-                                           :as-top-result-display (:as-top-result-display a)
-                                           :value                 (+ (:value a) (:value b))})
-                                (:score (peek @history))
-                                score)}
-                              {:questions (when-not no-summary [text answer])}
-                              {:answers summary})))}
+                     (let [current-score
+                           (merge-with
+                            (fn [a b] {:display               (:display a)
+                                       :as-top-result-display (:as-top-result-display a)
+                                       :value                 (+ (:value a) (:value b))})
+                            (:score (peek @history))
+                            score)]
+                       (reset! hist-to-add
+                               (merge
+                                {:score current-score}
+                                {:questions (when-not no-summary [text answer])}
+                                {:answers summary}))
+                       (rfe/push-state
+                        (get-target-node goto current-score))))}
                [:div.card-content.tile.is-parent.is-vertical
                 [:div.tile.is-child.box.is-size-4.notification.has-text-centered.has-text-weight-bold
                  {:class color}

@@ -1,6 +1,6 @@
 (ns choices.test
   (:require
-   [clojure.test :refer :all]
+   [clojure.test :refer [deftest is testing]]
    [clojure.spec.alpha :as s]
    [choices.macros :refer [inline-yaml-resource]]))
 
@@ -19,7 +19,8 @@
 (s/def ::doc string?)
 (s/def ::answer string?)
 (s/def ::explain string?)
-(s/def ::goto string?)
+(s/def ::goto (s/or :target-node string?
+                    :conditional-target-node map?)) ;; FIXME: be more specific?
 (s/def ::color string?)
 (s/def ::summary (s/or :simple-summary string?
                        :composed-summary (s/coll-of string?)))
@@ -48,7 +49,7 @@
 (s/def ::notification string?)
 
 (s/def ::condition (s/keys :req-un [::message]
-                           :opt-un [::priority ::notification]))
+                           :opt-un [::priority ::node ::notification]))
 (s/def ::output-branch (s/tuple keyword? ::condition))
 (s/def ::conditional-score-outputs (s/coll-of ::output-branch))
 
@@ -61,7 +62,7 @@
 (s/def ::email (s/or :empty nil? :with-arobase #(re-matches email-regex %)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define tests
+;; Testing config.yml
 
 (deftest ui
   (testing "Testing UI variables"
@@ -89,4 +90,3 @@
   (testing "Testing the options tree format"
     (is (s/valid? ::tree (:tree config)))))
 
-(s/explain ::tree (:tree config))

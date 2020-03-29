@@ -44,6 +44,13 @@ display-score-details: true
 # Only the score with the highest value?
 display-score-top-result: true
 
+# In a branch of the tree, should the target node be set depending on
+# the updated value of conditional-score-outputs?
+conditional-navigation: false
+
+# Some text message to always display after the score results
+display-unconditionnally: ""
+
 # Set initial variables to register scores.  Each entry of
 # score-variables start with the name of the variable (you can pick
 # up any yaml-acceptable name), then:
@@ -73,6 +80,8 @@ score-variables:
 conditional-score-outputs:
   cas-1: # free-form
     notification: "is-success"
+    priority: 1
+    node: "end"
     message: "1 wins! :)"
     condition-1: #free-form
       score-1: 1
