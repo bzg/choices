@@ -11,7 +11,6 @@
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
             [choices.i18n :as i18n]
-            [choices.custom :as custom]
             [cljsjs.clipboard]
             [cljs.reader]
             [clojure.string :as string]
@@ -29,9 +28,7 @@
 (def modal-message (reagent/atom ""))
 (def show-summary (:display-summary config))
 (def conditional-score-outputs (:conditional-score-outputs config))
-
-;; UI variables
-(def bigger {:font-size "2em" :text-decoration "none"})
+(def sticky-help (reagent/atom ""))
 
 ;; home-page and start-page
 (def home-page
@@ -71,9 +68,8 @@
          (reset! clipboard-atom nil))
       :reagent-render
       (fn []
-        [:a.button.text
+        [:button.button.is-info.is-light.is-size-4
          {:title                 (i18n [:copy-to-clipboard])
-          :style                 bigger
           :data-clipboard-target target}
          label])})))
 
@@ -134,27 +130,28 @@
     {:aria-label "close"
      :on-click   #(reset! show-modal false)}]])
 
-(defn help-clipboard [done text force-help help]
+(defn question-help-clipboard [done question force-help help]
   [:div.level
-   [:div.level-left
-    [:h1.level-item (md-to-string text)]]
+   [:div.is-size-3
+    [:div.columns.is-multiline
+     [:div.column
+      (md-to-string question)]]]
    (if-not done
      ;; Not done: display the help button
      (when (and (not force-help) @show-help-global
                 (not-empty help))
        [:div.level-right
-        [:a.level-item.button.is-text
-         {:style    bigger
-          :title    (i18n [:display-help])
+        [:button.level-item.button.is-info.is-light.is-size-4
+         {:title    (i18n [:display-help])
           :on-click #(swap! show-help not)}
          "💬"]])
      ;; Done: display the copy-to-clipboard button
      [:div.level-right
       [:div.level-item
-       [:a.button.is-text
-        {:style    bigger
-         :title    (i18n [:toggle-summary-style])
-         :on-click #(swap! show-summary-answers not)} "🔗"]
+       [:button.button.is-info.is-light.is-size-4
+        {:title    (i18n [:toggle-summary-style])
+         :on-click #(swap! show-summary-answers not)} "🔗"]]
+      [:div.level-item
        [clipboard-button "📋" "#copy-this"]]])])
 
 (defn footer []
@@ -166,7 +163,7 @@
        [:a {:href (str "mailto:" c)} c]])]])
 
 (defn score-details [scores]
-  (for [row-score (partition-all 4 scores)]
+  (for [row-score (partition-all 5 scores)]
     ^{:key (random-uuid)}
     [:div.tile.is-ancestor
      (for [s row-score]
@@ -219,40 +216,34 @@
      :node         @node}))
 
 (defn scores-result [scores]
-  (let [scores (if (resolve 'custom/preprocess-scores)
-                 (custom/preprocess-scores scores)
-                 scores)]
-    [:div
-     (when (:display-score config)
-       [:div.is-6
-        ;; Optional, mainly for debugging purpose
-        (when (:display-score-details config)
-          (score-details scores))
-        ;; Only when no score-results
-        (when (and (not conditional-score-outputs)
-                   (:display-score-top-result config))
-          (score-top-result scores))
-        ;; Only when score-results is defined
-        (let [scores (apply merge (map (fn [[k v]] {k (:value v)}) scores))]
-          (when conditional-score-outputs
-            (let [{:keys [notification output]}
-                  (if (resolve 'custom/conditional-score-result)
-                    (custom/conditional-score-result
-                     scores conditional-score-outputs)
-                    (conditional-score-result
-                     scores conditional-score-outputs))]
-              (when (not-empty output)
-                [:div.tile.is-parent
-                 [:div.tile.is-size-4.is-child
-                  {:class (str (or (not-empty notification) "is-info")
-                               " notification subtitle")}
-                  (md-to-string output)]]))))
-        ;; Always display display-unconditionally when not empty
-        (when-let [sticky (:display-unconditionally config)]
-          [:div.tile.is-parent
-           [:div.tile.is-size-4.is-child.notification.subtitle
-            (md-to-string sticky)]])])
-     [:br]]))
+  [:div
+   (when (:display-score config)
+     [:div.is-6
+      ;; Optional, mainly for debugging purpose
+      (when (:display-score-details config)
+        (score-details scores))
+      ;; Only when no score-results
+      (when (and (not conditional-score-outputs)
+                 (:display-score-top-result config))
+        (score-top-result scores))
+      ;; Only when score-results is defined
+      (let [scores (apply merge (map (fn [[k v]] {k (:value v)}) scores))]
+        (when conditional-score-outputs
+          (let [{:keys [notification output]}
+                (conditional-score-result
+                 scores conditional-score-outputs)]
+            (when (not-empty output)
+              [:div.tile.is-parent
+               [:div.tile.is-size-4.is-child
+                {:class (str (or (not-empty notification) "is-info")
+                             " notification subtitle")}
+                (md-to-string output)]]))))
+      ;; Always display display-unconditionally when not empty
+      (when-let [sticky (:display-unconditionally config)]
+        [:div.tile.is-parent
+         [:div.tile.is-size-4.is-child.notification.subtitle
+          (md-to-string sticky)]])])
+   [:br]])
 
 (defn summary []
   (for [o (if @show-summary-answers
@@ -278,9 +269,8 @@
 
 (defn restart-mailto-buttons []
   [:div.level-right
-   [:a.button.level-item
-    {:style bigger
-     :title (i18n [:redo])
+   [:a.button.level-item.is-info.is-light.is-size-4
+    {:title (i18n [:redo])
      :href  (rfe/href start-page)} "🔃"]
    (when (not-empty (:mail-to config))
      (let [contents (or (not-empty (remove nil? (:answers (peek @history))))
@@ -290,9 +280,8 @@
                          (map strip-html-tags)
                          (string/join "%0D%0A%0D%0A")
                          (fmt/format (i18n [:mail-body])))]
-       [:a.button.level-item
-        {:style bigger
-         :title (i18n [:mail-to-message])
+       [:a.button.level-item.is-info.is-light.is-size-4
+        {:title (i18n [:mail-to-message])
          :href  (str "mailto:" (:mail-to config)
                      "?subject=" (i18n [:mail-subject])
                      "&body="
@@ -305,15 +294,12 @@
         (map? goto)
         (if (and (:conditional-navigation config)
                  (:conditional-score-outputs goto))
-          (let [score  (if (resolve 'custom/preprocess-scores)
-                         (custom/preprocess-scores current-score)
-                         current-score)
+          (let [score  current-score
                 score  (apply merge (map (fn [[k v]] {k (:value v)}) score))
-                result (if (resolve 'custom/conditional-score-result)
-                         (custom/conditional-score-result
-                          score conditional-score-outputs)
-                         (conditional-score-result
-                          score conditional-score-outputs))]
+                result (conditional-score-result
+                        score conditional-score-outputs)]
+            (when-let [sticky-help-msg (:stick-help result)]
+              (reset! sticky-help sticky-help-msg))
             (keyword (or (:node result) (get goto :default))))
           (let [score   (apply merge (map (fn [[k v]] {k (:value v)}) current-score))
                 matches (doall
@@ -327,6 +313,50 @@
                              cnd-node)))]
             (keyword (or (first (remove nil? matches))
                          (get goto :default)))))))
+
+(defn merge-scores [previous_score current_score]
+  (merge-with
+   (fn [a b] {:display               (:display a)
+              :as-top-result-display (:as-top-result-display a)
+              :value
+              (let [a_v (:value a) b_v (:value b)]
+                (cond (and (integer? a_v) (integer? b_v))
+                      (+ (:value a) (:value b))
+                      ;; one boolean and/or one strings, take last:
+                      :else b_v))})
+   previous_score current_score))
+
+(defn display-choices [choices text no-summary]
+  (for [choices-row (partition-all 4 choices)]
+    ^{:key (random-uuid)}
+    [:div.tile.is-parent.is-horizontal
+     (doall
+      (for [{:keys [answer goto explain color summary score]} choices-row]
+        ^{:key (random-uuid)}
+        [:div.tile.is-child
+         {:class (if (> (count choices) 3) "is-3" "")}
+         [:a.tile
+          {:style {:text-decoration "none"}
+           :on-click
+           #(do (when (vector? summary)
+                  (reset! show-modal true)
+                  (reset! modal-message (md-to-string (peek summary))))
+                (let [current-score
+                      (merge-scores (:score (peek @history)) score)]
+                  (reset! hist-to-add
+                          (merge
+                           {:score current-score}
+                           {:questions (when-not no-summary [text answer])}
+                           {:answers summary}))
+                  (rfe/push-state
+                   (get-target-node goto current-score))))}
+          [:div.card-content.tile.is-parent.is-vertical
+           [:div.tile.is-child.box.is-size-4.notification.has-text-centered
+            {:class (or (not-empty color) "is-info")}
+            (md-to-string answer)]
+           (when (and explain @show-help)
+             [:div.tile.is-child.subtitle
+              (md-to-string explain)])]]]))]))
 
 ;; Create all the pages
 (defn create-page-contents [{:keys [done node text help no-summary
@@ -342,45 +372,20 @@
          [:div [:progress.progress.is-success
                 {:value v :max m}]
           [:br]])
-       (help-clipboard done text force-help help)
-       (when (and (or force-help @show-help)
-                  (not-empty help))
+       (when-let [sticky-help-message (not-empty @sticky-help)]
          [:div.notification.is-size-5
-          (md-to-string help)])
+          {:class (or (:sticky-help-color config)
+                      "is-warning")}
+          (md-to-string sticky-help-message)])
+       (question-help-clipboard done text force-help help)
+       (when (or force-help @show-help)
+         (when-let [help-message (not-empty help)]
+           [:div.notification.is-size-5
+            (md-to-string help-message)]))
        (if-not done
          ;; Not done: display the choices
-         [:div.tile.is-ancestor
-          (doall
-           (for [{:keys [answer goto explain color summary score]} choices]
-             ^{:key (random-uuid)}
-             [:div.tile.is-parent
-              [:a.tile.is-child
-               {:style {:text-decoration "none"}
-                :on-click
-                #(do (when (vector? summary)
-                       (reset! show-modal true)
-                       (reset! modal-message (md-to-string (peek summary))))
-                     (let [current-score
-                           (merge-with
-                            (fn [a b] {:display               (:display a)
-                                       :as-top-result-display (:as-top-result-display a)
-                                       :value                 (+ (:value a) (:value b))})
-                            (:score (peek @history))
-                            score)]
-                       (reset! hist-to-add
-                               (merge
-                                {:score current-score}
-                                {:questions (when-not no-summary [text answer])}
-                                {:answers summary}))
-                       (rfe/push-state
-                        (get-target-node goto current-score))))}
-               [:div.card-content.tile.is-parent.is-vertical
-                [:div.tile.is-child.box.is-size-4.notification.has-text-centered.has-text-weight-bold
-                 {:class (or (not-empty color) "is-info")}
-                 (md-to-string answer)]
-                (when (and explain @show-help)
-                  [:div.tile.is-child.subtitle
-                   (md-to-string explain)])]]]))]
+         [:div.tile.is-ancestor.is-vertical
+          (display-choices choices text no-summary)]
          ;; Done: display the final summary-answers
          [:div
           [:div.tile.is-ancestor {:id "copy-this"}
