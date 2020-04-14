@@ -13,12 +13,12 @@
   com.taoensso/tempura            {:mvn/version "1.2.1"}
   io.forward/yaml                 {:mvn/version "1.0.10"}
   markdown-to-hiccup              {:mvn/version "0.6.2"}
-  metosin/reitit-frontend         {:mvn/version "0.3.10"}
+  metosin/reitit-frontend         {:mvn/version "0.4.2"}
   org.clojure/clojure             {:mvn/version "1.10.1"}
   org.clojure/clojurescript       {:mvn/version "1.10.597"}
   org.clojure/core.rrb-vector     {:mvn/version "0.1.1"}
   org.clojure/math.numeric-tower  {:mvn/version "0.0.4"}
-  org.flatland/ordered            {:mvn/version "1.5.7"}
+  org.flatland/ordered            {:mvn/version "1.5.9"}
   reagent                         {:mvn/version "0.10.0"}
   reagent-utils                   {:mvn/version "0.3.3"}
   }
