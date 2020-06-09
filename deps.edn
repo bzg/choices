@@ -1,4 +1,4 @@
-{:version     "0.9.3"
+{:version     "0.9.4"
  :description "Build SPAs to let users traverse choices"
  :url         "https://github.com/etalab/choices"
  :license     {:name "Eclipse Public License - v 2.0"
@@ -8,12 +8,12 @@
  {
   cheshire                        {:mvn/version "5.10.0"}
   cljsjs/clipboard                {:mvn/version "2.0.4-0"}
-  com.bhauman/figwheel-main       {:mvn/version "0.2.3"}
+  com.bhauman/figwheel-main       {:mvn/version "0.2.8"}
   com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}
   com.taoensso/tempura            {:mvn/version "1.2.1"}
   io.forward/yaml                 {:mvn/version "1.0.10"}
   markdown-to-hiccup              {:mvn/version "0.6.2"}
-  metosin/reitit-frontend         {:mvn/version "0.4.2"}
+  metosin/reitit-frontend         {:mvn/version "0.5.2"}
   org.clojure/clojure             {:mvn/version "1.10.1"}
   org.clojure/clojurescript       {:mvn/version "1.10.597"}
   org.clojure/core.rrb-vector     {:mvn/version "0.1.1"}
