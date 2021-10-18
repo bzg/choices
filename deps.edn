@@ -1,5 +1,5 @@
 {:version     "0.9.4"
- :description "Build SPAs to let users traverse choices"
+ :description "Web application to traverse a decision-tree and expose the result"
  :url         "https://github.com/etalab/choices"
  :license     {:name "Eclipse Public License - v 2.0"
                :url  "http://www.eclipse.org/legal/epl-v20.html"}
