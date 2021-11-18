@@ -1,7 +1,5 @@
 #+title: Choices: build SPA to let users explore a (decision-)tree
 
-[[https://archive.softwareheritage.org/browse/origin/https://github.com/etalab/choices/][https://archive.softwareheritage.org/badge/origin/https://github.com/etalab/choices/?style=.svg]]
-
 * Choices
 
 =Choices= lets you build a single page application to let users traverse
@@ -37,4 +35,4 @@ donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].
 
 2019-2020 DINUM, Bastien Guerry.
 
-This application is published under the EPL 2.0 license.
+This application is published under the [[file:LICENSE][EPL 2.0 license]].
