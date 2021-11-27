@@ -23,8 +23,11 @@ a set of related options and get feedback from their choices.
    
 * Contribute
 
-Your help is welcome.  You can contribute with bug reports, feature
-requests and localization by editing the =i18n.cljs= file.
+Contributions are welcome.  You can send feedback and patches to
+[[mailto:~bzg/dev@lists.sr.ht][~bzg/dev@lists.sr.ht]].  For patches, please configure your local copy
+of the repository to add a prefix to the subject line of your emails:
+
+: ~$ git config format.subjectPrefix 'PATCH choices'
 
 * Support the Clojure(script) ecosystem
 
