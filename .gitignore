@@ -16,3 +16,5 @@ pom.xml
 .dir-locals.el
 .eastwood
 .cpcache/
+.clj-kondo/
+.lsp/
