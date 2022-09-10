@@ -8,20 +8,19 @@ a set of related options and get feedback from their choices.
 ![img](choices.png)
 
 
-# Build your application
+# Build
 
 1.  Configure the application at `config.yml`
-2.  Test your configuration with `lein test`
-3.  Compile with `lein fig:min`
+2.  Test your configuration with `clj -A:test` or `lein test`
+3.  Compile with `clj -A:js` or `lein fig:min`
 4.  Your static files are ready in `resources/public/`
 
 
 # Develop
 
 1.  Configure the application at `src/cljs/choices/config.cljs`
-2.  Compile with `lein fig:build`
-3.  Check your web browser
-4.  Adapt `config.cljs` to your needs
+2.  Compile with `clj -A:fig` or `lein fig:build`
+3.  Check your web browser on <http://localhost:9500>
 
 
 # Contribute
@@ -41,7 +40,7 @@ donating to [clojuriststogether.org](https://www.clojuriststogether.org).
 
 # License
 
-2019-2020 DINUM, Bastien Guerry.
+2019-2022 Bastien Guerry
 
 This application is published under the [EPL 2.0 license](LICENSE).
 
