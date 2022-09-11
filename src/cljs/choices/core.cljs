@@ -1,4 +1,4 @@
-;; Copyright (c) 2019-2020 DINSIC, Bastien Guerry <bastien.guerry@data.gouv.fr>
+;; Copyright (c) 2019-2022 Bastien Guerry <bzg@gnu.org>
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
@@ -322,7 +322,7 @@
               (let [a_v (:value a) b_v (:value b)]
                 (cond (and (integer? a_v) (integer? b_v))
                       (+ (:value a) (:value b))
-                      ;; one boolean and/or one strings, take last:
+                      ;; one boolean and/or one string, take last:
                       :else b_v))})
    previous_score current_score))
 
