@@ -368,9 +368,8 @@
      [:div.container
       (modal show-modal)
       [:div.section
-       (if-let [[v m] (cljs.reader/read-string progress)]
-         [:div [:progress.progress.is-success
-                {:value v :max m}]
+       (when-let [[v m] (cljs.reader/read-string progress)]
+         [:div [:progress.progress.is-success {:value v :max m}]
           [:br]])
        (when-let [sticky-help-message (not-empty @sticky-help)]
          [:div.notification.is-size-5
