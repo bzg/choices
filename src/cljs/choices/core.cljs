@@ -29,6 +29,7 @@
 (def show-summary (:display-summary config))
 (def conditional-score-outputs (:conditional-score-outputs config))
 (def sticky-help (reagent/atom ""))
+(def score-variables (:score-variables config))
 
 ;; home-page and start-page
 (def home-page
@@ -42,7 +43,7 @@
   (-> s (md/md->hiccup) (md/component)))
 
 ;; History-handling variables
-(def history (reagent/atom [{:score (:score-variables config)}]))
+(def history (reagent/atom [{:score score-variables}]))
 (def hist-to-redo (reagent/atom {}))
 (def hist-to-add (reagent/atom {}))
 
@@ -216,7 +217,13 @@
      :node         @node}))
 
 (defn format-score-output-string [output scores]
-  (let [scores (map (fn [[k v]] [(str "%" (name k)) v]) scores)]
+  (let [scores
+        (map (fn [[k v]]
+               [(str "%" (name k))
+                (if-let [max (:max (get score-variables k))]
+                  (fmt/format "%.0f" (/ (* v 100) max))
+                  v)])
+             scores)]
     (reduce-kv string/replace output (into {} scores))))
 
 (defn scores-result [scores]
@@ -419,7 +426,7 @@
     (cond
       ;; Reset history?
       (= target-page start-page)
-      (do (reset! history [{:score (:score-variables config)}])
+      (do (reset! history [{:score score-variables}])
           (reset! hist-to-redo {})
           (reset! hist-to-add {}))
       ;; History backward?
