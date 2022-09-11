@@ -82,7 +82,11 @@ conditional-score-outputs:
     notification: "is-success"
     priority: 1
     node: "end"
-    message: "1 wins! :)"
+    # Final score message supports using formatting strings for
+    # scores.  Strings starting with "%" and matching a score name
+    # will be interpolated: e.g. here the message will display the
+    # value of "score-1".
+    message: "1 wins! :)  Here is the score 1: %score-1"
     condition-1: #free-form
       score-1: 1
   cas-1: # free-form

@@ -215,6 +215,10 @@
      :output       @output
      :node         @node}))
 
+(defn format-score-output-string [output scores]
+  (let [scores (map (fn [[k v]] [(str "%" (name k)) v]) scores)]
+    (reduce-kv string/replace output (into {} scores))))
+
 (defn scores-result [scores]
   [:div
    (when (:display-score config)
@@ -237,7 +241,8 @@
                [:div.tile.is-size-4.is-child
                 {:class (str (or (not-empty notification) "is-info")
                              " notification subtitle")}
-                (md-to-string output)]]))))
+                (md-to-string
+                 (format-score-output-string output scores))]]))))
       ;; Always display display-unconditionally when not empty
       (when-let [sticky (:display-unconditionally config)]
         [:div.tile.is-parent
