@@ -39,7 +39,7 @@ display-summary: true
 display-score: true
 
 # Display each score?
-display-score-details: true
+display-score-details: false
 
 # Only the score with the highest value?
 display-score-top-result: true
@@ -105,7 +105,7 @@ tree:
       color:  "is-info"
 
   - node:       "1"
-    progress: "[1 2]"  # progress bar
+    progress:   "[1 3]"  # progress bar
     text:       "Is it the first question?"
     help:       "Some **help text** here for the first question.  Markdown formatting accepted."
     start-page: true
@@ -123,9 +123,10 @@ tree:
       color:   "is-warning"
       goto:    "end"
 
-  - node:    "2"
-    text:    "Is it the second question?"
-    help:    "Some help text here for the second question."
+  - node:     "2"
+    progress: "[2 3]"  # progress bar
+    text:     "Is it the second question?"
+    help:     "Some help text here for the second question."
     choices:
     - answer:  "Yes"
       summary: "Yes, this is the second question!"
@@ -139,9 +140,10 @@ tree:
       color:   "is-warning"
       goto:    "end"
 
-  - node:    "3"
-    text:    "Is it the _third_ question?"
-    help:    "Some help text here for the second question."
+  - node:     "3"
+    progress: "[3 3]"  # progress bar
+    text:     "Is it the _third_ question?"
+    help:     "Some help text here for the second question."
     choices:
       - answer:  "Yes"
         summary: ["Yes, this is the third question...", "This will end soon, I promise."]
