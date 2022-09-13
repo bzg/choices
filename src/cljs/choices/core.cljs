@@ -339,36 +339,37 @@
    previous_score current_score))
 
 (defn display-choices [choices text no-summary]
-  (for [choices-row (partition-all 4 choices)]
-    ^{:key (random-uuid)}
-    [:div.tile.is-parent.is-horizontal
-     (doall
-      (for [{:keys [answer goto explain color summary score]} choices-row]
-        ^{:key (random-uuid)}
-        [:div.tile.is-child
-         {:class (if (> (count choices) 3) "is-3" "")}
-         [:a.tile
-          {:style {:text-decoration "none"}
-           :on-click
-           #(do (when (vector? summary)
-                  (reset! show-modal true)
-                  (reset! modal-message (md-to-string (peek summary))))
-                (let [current-score
-                      (merge-scores (:score (peek @history)) score)]
-                  (reset! hist-to-add
-                          (merge
-                           {:score current-score}
-                           {:questions (when-not no-summary [text answer])}
-                           {:answers summary}))
-                  (rfe/push-state
-                   (get-target-node goto current-score))))}
-          [:div.card-content.tile.is-parent.is-vertical
-           [:div.tile.is-child.box.is-size-4.notification.has-text-centered
-            {:class (or (not-empty color) "is-info")}
-            (md-to-string answer)]
-           (when (and explain @show-help)
-             [:div.tile.is-child.subtitle
-              (md-to-string explain)])]]]))]))
+  (doall
+   (for [choices-row (partition-all 4 choices)]
+     ^{:key (random-uuid)}
+     [:div.tile.is-parent.is-horizontal
+      (doall
+       (for [{:keys [answer goto explain color summary score]} choices-row]
+         ^{:key (random-uuid)}
+         [:div.tile.is-child
+          {:class (if (> (count choices) 3) "is-3" "")}
+          [:a.tile
+           {:style {:text-decoration "none"}
+            :on-click
+            #(do (when (vector? summary)
+                   (reset! show-modal true)
+                   (reset! modal-message (md-to-string (peek summary))))
+                 (let [current-score
+                       (merge-scores (:score (peek @history)) score)]
+                   (reset! hist-to-add
+                           (merge
+                            {:score current-score}
+                            {:questions (when-not no-summary [text answer])}
+                            {:answers summary}))
+                   (rfe/push-state
+                    (get-target-node goto current-score))))}
+           [:div.card-content.tile.is-parent.is-vertical
+            [:div.tile.is-child.box.is-size-4.notification.has-text-centered
+             {:class (or (not-empty color) "is-info")}
+             (md-to-string answer)]
+            (when (and explain @show-help)
+              [:div.tile.is-child.subtitle
+               (md-to-string explain)])]]]))])))
 
 ;; Create all the pages
 (defn create-page-contents [{:keys [done node text help no-summary
