@@ -14,6 +14,7 @@
             [cljsjs.clipboard]
             [cljs.reader]
             [clojure.string :as string]
+            [clojure.walk :as walk]
             [markdown-to-hiccup.core :as md]
             [taoensso.tempura :refer [tr]]))
 
@@ -30,14 +31,13 @@
 (def conditional-score-outputs (:conditional-score-outputs config))
 (def sticky-help (reagent/atom ""))
 (def score-variables (:score-variables config))
+(def tree (:tree config))
 
 ;; home-page and start-page
 (def home-page
-  (first (remove nil? (map #(when (:home-page %) (keyword (:node %)))
-                           (:tree config)))))
+  (first (remove nil? (map #(when (:home-page %) (keyword (:node %))) tree))))
 (def start-page
-  (first (remove nil? (map #(when (:start-page %) (keyword (:node %)))
-                           (:tree config)))))
+  (first (remove nil? (map #(when (:start-page %) (keyword (:node %))) tree))))
 
 (defn md-to-string [^string s]
   (-> s (md/md->hiccup) (md/component)))
@@ -88,8 +88,7 @@
   (every? true? (for [[k v] m1] (f v (k m2)))))
 
 ;; Create routes
-(def routes
-  (into [] (for [n (:tree config)] [(:node n) (keyword (:node n))])))
+(def routes (into [] (for [n tree] [(:node n) (keyword (:node n))])))
 
 ;; Define multimethod for later use in `create-page-contents`
 (defmulti page-contents identity)
@@ -216,12 +215,22 @@
      :output       @output
      :node         @node}))
 
+(defn sum-values-of-map-entry-with-key [m k]
+  (let [sum (atom 0)]
+    (walk/postwalk
+     #(do (when-let [hm (:value (get % k))]
+            (when (and (number? hm) (pos? hm))
+              (swap! sum + hm))) %) m)
+    @sum))
+
 (defn format-score-output-string [output scores]
   (let [scores
         (map (fn [[k v]]
                [(str "%" (name k))
-                (if-let [max (:max (get score-variables k))]
-                  (fmt/format "%.0f" (/ (* v 100) max))
+                (if (:as-percent (get score-variables k))
+                  (let [max (sum-values-of-map-entry-with-key tree k)]
+                    (println max)
+                    (fmt/format "%.0f" (/ (* v 100) max)))
                   v)])
              scores)]
     (reduce-kv string/replace output (into {} scores))))
@@ -413,7 +422,7 @@
        (footer))]))
 
 ;; Create all the pages from config.yml
-(dorun (map create-page-contents (:tree config)))
+(dorun (map create-page-contents tree))
 
 ;; Create component to mount the current page
 (defn current-page []
