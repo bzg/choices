@@ -229,7 +229,6 @@
                [(str "%" (name k))
                 (if (:as-percent (get score-variables k))
                   (let [max (sum-values-of-map-entry-with-key tree k)]
-                    (println max)
                     (fmt/format "%.0f" (/ (* v 100) max)))
                   v)])
              scores)]
