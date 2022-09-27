@@ -18,4 +18,3 @@ pom.xml
 .cpcache/
 .clj-kondo/
 .lsp/
-config.yml
