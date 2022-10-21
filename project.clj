@@ -2,7 +2,7 @@
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject choices "0.9.4"
+(defproject choices "0.9.5"
 
   :description "Build SPAs to let users traverse choices"
   :url "https://github.com/etalab/choices"
