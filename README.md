@@ -10,7 +10,7 @@ a set of related options and get feedback from their choices.
 
 # Build
 
-1.  Copy `config_example.yml` to `config.yml` and adapt it to your needs
+1.  Copy `config-example.yml` to `config.yml` and adapt it to your needs
 2.  Test your configuration with `clj -A:test` or `lein test`
 3.  Compile with `clj -A:js` or `lein fig:min`
 4.  Your static files are ready in `resources/public/`
@@ -18,7 +18,7 @@ a set of related options and get feedback from their choices.
 
 # Develop
 
-1.  Copy `config_example.yml` to `config.yml` and adapt it to your needs
+1.  Copy `config-example.yml` to `config.yml` and adapt it to your needs
 2.  Compile with `clj -A:fig` or `lein fig:build`
 3.  Check your web browser on <http://localhost:9500>
 
