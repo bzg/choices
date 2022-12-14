@@ -1,6 +1,6 @@
 
 
-# Choices
+# `Choices`
 
 `Choices` lets you build a single page application to let users traverse
 a set of related options and get feedback from their choices.
@@ -21,6 +21,15 @@ a set of related options and get feedback from their choices.
 1.  Copy `config-example.yml` to `config.yml` and adapt it to your needs
 2.  Compile with `clj -A:fig` or `lein fig:build`
 3.  Check your web browser on <http://localhost:9500>
+
+
+# Usage
+
+Here are some examples where `Choices` is used:
+
+-   <https://guide-juridique-logiciel-libre.etalab.gouv.fr/>
+-   <https://guide-juridique-open-data.etalab.gouv.fr/>
+-   <https://publiccodenet.github.io/assessment-eligibility/>
 
 
 # Contribute
