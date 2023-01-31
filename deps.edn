@@ -10,7 +10,7 @@
   cljsjs/clipboard                      {:mvn/version "2.0.4-0"}
   com.bhauman/figwheel-main             {:mvn/version "0.2.18"}
   com.bhauman/rebel-readline-cljs       {:mvn/version "0.1.4"}
-  com.taoensso/tempura                  {:mvn/version "1.5.0"}
+  com.taoensso/tempura                  {:mvn/version "1.5.3"}
   io.forward/yaml                       {:mvn/version "1.0.11"}
   markdown-to-hiccup/markdown-to-hiccup {:mvn/version "0.6.2"}
   metosin/reitit-frontend               {:mvn/version "0.5.18"}
@@ -20,8 +20,8 @@
   org.clojure/math.numeric-tower        {:mvn/version "0.0.5"}
   org.flatland/ordered                  {:mvn/version "1.15.10"}
   reagent/reagent                       {:mvn/version "1.1.1"}
-  cljsjs/react                          {:mvn/version "18.2.0-0"}
-  cljsjs/react-dom                      {:mvn/version "18.2.0-0"}
+  cljsjs/react                          {:mvn/version "18.2.0-1"}
+  cljsjs/react-dom                      {:mvn/version "18.2.0-1"}
   reagent-utils/reagent-utils           {:mvn/version "0.3.5"}
   }
 
