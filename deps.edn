@@ -22,7 +22,7 @@
   reagent/reagent                       {:mvn/version "1.2.0"}
   cljsjs/react                          {:mvn/version "18.2.0-1"}
   cljsjs/react-dom                      {:mvn/version "18.2.0-1"}
-  reagent-utils/reagent-utils           {:mvn/version "0.3.6"}
+  reagent-utils/reagent-utils           {:mvn/version "0.3.7"}
   }
 
  :paths ["src" "src/clj" "src/cljs" "resources"]
