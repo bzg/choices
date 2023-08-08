@@ -9,8 +9,8 @@
   :license {:name "Eclipse Public License - v 2.0"
             :url  "http://www.eclipse.org/legal/epl-v20.html"}
 
-  :dependencies [[org.clojure/clojure "1.10.1"]
-                 [io.forward/yaml "1.0.10"]]
+  :dependencies [[org.clojure/clojure "1.11.1"]
+                 [io.forward/yaml "1.0.11"]]
 
   ;; See https://www.deps.co/blog/how-to-upgrade-clojure-projects-to-use-java-11/
   :managed-dependencies [[org.clojure/core.rrb-vector "0.1.1"]
@@ -26,12 +26,12 @@
   :source-paths ["src/clj" "src/cljs"]
   
   :profiles {:dev {:source-paths ["src/cljs"]
-                   :dependencies [[org.clojure/clojurescript "1.10.597"]
+                   :dependencies [[org.clojure/clojurescript "1.11.60"]
                                   [markdown-to-hiccup "0.6.2"]
-                                  [com.bhauman/figwheel-main "0.2.8"]
+                                  [com.bhauman/figwheel-main "0.2.18"]
                                   [com.bhauman/rebel-readline-cljs "0.1.4"]
-                                  [reagent "0.10.0"]
-                                  [reagent-utils "0.3.3"]
+                                  [reagent "1.2.0"]
+                                  [reagent-utils "0.3.8"]
                                   [cljsjs/clipboard "2.0.4-0"]
-                                  [com.taoensso/tempura "1.2.1"]
-                                  [metosin/reitit-frontend "0.5.2"]]}})
+                                  [com.taoensso/tempura "1.5.3"]
+                                  [metosin/reitit-frontend "0.6.0"]]}})
