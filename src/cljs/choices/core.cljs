@@ -215,21 +215,14 @@
      :output       @output
      :node         @node}))
 
-(defn sum-values-of-map-entry-with-key [m k]
-  (let [sum (atom 0)]
-    (walk/postwalk
-     #(do (when-let [hm (:value (get % k))]
-            (when (and (number? hm) (pos? hm))
-              (swap! sum + hm))) %) m)
-    @sum))
-
 (defn format-score-output-string [output scores]
   (let [scores
         (map (fn [[k v]]
                [(str "%" (name k))
                 (if (:as-percent (get score-variables k))
-                  (let [max (sum-values-of-map-entry-with-key tree k)]
-                    (fmt/format "%.0f" (/ (* v 100) max)))
+                  (fmt/format
+                   "%.0f"
+                   (/ (* v 100) (:max (get score-variables k))))
                   v)])
              scores)]
     (reduce-kv string/replace output (into {} scores))))
