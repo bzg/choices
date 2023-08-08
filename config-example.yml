@@ -67,6 +67,7 @@ score-variables:
   score-2:
     display: "Score for 2"
     value: 0
+    as-percent: true
     max: 10
     as-top-result-display: "2 wins :("
 
@@ -93,8 +94,9 @@ conditional-score-outputs:
   cas-2: # free-form
     notification: "is-danger"
     message: "2 wins! :(  Here is the score 2: %score-2"
-    # When max is set as below, %score-2 above will be formatted as a
-    # percentage: if score 2 is 10 and max is 10, the percent is 100.
+    # In score-variables, when max is set and as-percent is true for a
+    # variable, format the score (%score-2 here) as a percentage: if
+    # score 2 is 10 and max is 10, the percent is 100.
     condition-1: #free-form
       # cas-2 is the case when score-2 >= 9
       score-2: 9
