@@ -3,7 +3,6 @@
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
 (ns choices.core
-  (:require-macros [choices.macros :refer [inline-yaml-resource]])
   (:require [reagent.core :as reagent]
             [reagent.dom]
             [reagent.format :as fmt]
@@ -11,6 +10,7 @@
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
             [choices.i18n :as i18n]
+            [choices.macros :as macros]
             [cljsjs.clipboard]
             [cljs.reader]
             [clojure.string :as string]
@@ -18,7 +18,8 @@
             [taoensso.tempura :refer [tr]]))
 
 ;; General configuration
-(def config (inline-yaml-resource "config.yml"))
+(def config (macros/inline-yaml-resource "config.yml"))
+(def t (macros/inline-edn-resource "theme.edn"))
 
 ;; Variables
 (def show-help-global (reagent/atom (:display-help config)))
@@ -93,69 +94,85 @@
 (defmulti page-contents identity)
 
 (defn header []
-  [:section {:class (str "hero " (:color (:header config)))}
-   [:div.hero-body
-    [:div.container
-     [:div.columns
+  [:section
+   [:div {:class (:header.section.div t)}
+    [:div {:class (:container t)}
+     [:div {:class (:columns t)}
       (let [logo (:logo (:header config))]
         (when (not-empty logo)
-          [:div.column
-           [:figure.media-left
-            [:p.image.is-256x256
+          [:div {:class (:column t)}
+           [:figure {:class (:media-left t)}
+            [:p {:class (:image t)}
              [:a {:href (rfe/href home-page)}
               [:img {:src logo}]]]]])
-        [:div.column
-         {:class (if (not-empty logo)
-                   "has-text-right"
-                   "has-text-centered")}
-         [:h1.title (:title (:header config))]
+        [:div {:class
+               (string/join
+                " "
+                (list (:column t)
+                      (if (not-empty logo)
+                        (:has-text-right t)
+                        (:has-text-centered t))))}
+         [:h1 {:class (:title t)} (:title (:header config))]
          [:br]
-         [:h2.subtitle
-          (md-to-string (:subtitle (:header config)))]])]]]]) 
+         [:h2 {:class (:subtitle t)}
+          (md-to-string (:subtitle (:header config)))]])]]]])
 
 (defn modal [show-modal]
-  [:div {:class (str "modal " (when @show-modal "is-active"))}
-   [:div.modal-background]
-   [:div.modal-content
-    [:div.box
-     [:div.title (i18n [:attention])]
+  [:div {:class (str (:modal t) " " (when @show-modal (:is-active t)))}
+   [:div {:class (:modal-background t)}]
+   [:div {:class (:modal-content t)}
+    [:div {:class (:box t)}
+     [:div {:class (:title t)} (i18n [:attention])]
      @modal-message
      [:br]
-     [:div.has-text-centered
-      [:a.button.is-medium.is-warning
-       {:on-click #(reset! show-modal false)}
+     [:div {:class (:has-text-centered t)}
+      [:a {:class    (string/join " " (list (:button t)
+                                            (:is-medium t)
+                                            (:is-warning t)))
+           :on-click #(reset! show-modal false)}
        (i18n [:ok])]]]]
-   [:button.modal-close.is-large
+   [:button {:class (str (:modal-close t) " " (:is-large t))}
     {:aria-label "close"
      :on-click   #(reset! show-modal false)}]])
 
 (defn question-help-clipboard [done question force-help help]
-  [:div.level
-   [:div.is-size-3
-    [:div.columns.is-multiline
-     [:div.column
+  [:div {:class (:level t)}
+   [:div {:class (:is-size-3 t)}
+    [:div {:class (str (:columns t) " " (:is-multiline t))}
+     [:div {:class (:column t)}
       (md-to-string question)]]]
    (if-not done
      ;; Not done: display the help button
      (when (and (not force-help) @show-help-global
                 (not-empty help))
-       [:div.level-right
-        [:button.level-item.button.is-info.is-light.is-size-4
-         {:title    (i18n [:display-help])
+       [:div {:class (:level-right t)}
+        [:button
+         {:class    (string/join " " (list (:level-item t)
+                                           (:button t)
+                                           (:is-info t)
+                                           (:is-light t)
+                                           (:is-size-4 t)))
+          :title    (i18n [:display-help])
           :on-click #(swap! show-help not)}
          "💬"]])
      ;; Done: display the copy-to-clipboard button
-     [:div.level-right
-      [:div.level-item
-       [:button.button.is-info.is-light.is-size-4
-        {:title    (i18n [:toggle-summary-style])
-         :on-click #(swap! show-summary-answers not)} "🔗"]]
-      [:div.level-item
+     [:div {:class (:level-right t)}
+      [:div {:class (:level-item t)}
+       [:button
+        {:class    (string/join " " (list
+                                     (:button t)
+                                     (:is-info t)
+                                     (:is-light t)
+                                     (:is-size-4 t)))
+         :title    (i18n [:toggle-summary-style])
+         :on-click #(swap! show-summary-answers not)}
+        "🔗"]]
+      [:div {:class (:level-item t)}
        [clipboard-button "📋" "#copy-this"]]])])
 
 (defn footer []
-  [:section.footer
-   [:div.content.has-text-centered
+  [:section {:class (:footer t)}
+   [:div {:class (str (:content t) " " (:has-text-centered t))}
     (md-to-string (:text (:footer config)))
     (when-let [c (not-empty (:contact (:footer config)))]
       [:p (i18n [:contact-intro])
@@ -164,13 +181,13 @@
 (defn score-details [scores]
   (for [row-score (partition-all 5 scores)]
     ^{:key (random-uuid)}
-    [:div.tile.is-ancestor
+    [:div {:class (str (:tile t) " " (:is-ancestor t))}
      (for [s row-score]
        ^{:key (random-uuid)}
-       [:div.tile.is-parent
+       [:div {:class (str (:tile t) " " (:is-parent t))}
         (let [v     (val s)
               value (:value v)]
-          [:div.tile.is-child.box
+          [:div {:class (str (:tile t) " " (:is-child-box t))}
            (str (:display v) ": " value)])])]))
 
 (defn score-top-result [scores]
@@ -179,8 +196,13 @@
         butlast-score (second final-scores)]
     (when (> (:value (val last-score)) (:value (val butlast-score)))
       (when-let [s (:as-top-result-display (val last-score))]
-        [:div.tile.is-parent.is-6
-         [:p.tile.is-child.box.is-warning.notification
+        [:div {:class (string/join " " (list (:tile t) (:is-parent t) (:is-6 t)))}
+         [:p {:class (string/join " "
+                                  (list
+                                   (:tile t)
+                                   (:is-child-box t)
+                                   (:is-warning t)
+                                   (:notification t)))}
           (:as-top-result-display s)]]))))
 
 (defn conditional-score-result [scores conclusions]
@@ -228,7 +250,7 @@
 (defn scores-result [scores]
   [:div
    (when (:display-score config)
-     [:div.is-6
+     [:div {:class (:is-6 t)}
       ;; Optional, mainly for debugging purpose
       (when (:display-score-details config)
         (score-details scores))
@@ -244,61 +266,91 @@
                 (conditional-score-result
                  scores conditional-score-output)]
             (when (not-empty output)
-              [:div.tile.is-parent
-               [:div.tile.is-size-4.is-child
-                {:class (str (or (not-empty notification) "is-info")
-                             " notification subtitle")}
+              [:div {:class (str (:tile t) " " (:is-parent t))}
+               [:div
+                {:class (string/join " "
+                                     (list (:tile t) (:is-size-4 t) (:is-child t)
+                                           (or (not-empty notification) (:is-info t))
+                                           (:notification t)
+                                           (:subtitle t)))}
                 (md-to-string
                  (format-score-output-string output scores))]]))))
       ;; Always display display-unconditionally when not empty
       (when-let [sticky (:display-unconditionally config)]
-        [:div.tile.is-parent
-         [:div.tile.is-size-4.is-child.notification.subtitle
+        [:div {:class (str (:tile t) " " (:is-parent t))}
+         [:div
+          {:class (string/join " "
+                               (list (:tile t) (:is-size-4 t) (:is-child t)
+                                     (:notification t)
+                                     (:subtitle t)))}
           (md-to-string sticky)]])])
    [:br]])
 
 (defn summary []
-  (for [o (if @show-summary-answers
-            (remove nil? (reverse (:answers (peek @history))))
-            (remove nil? (reverse (:questions (peek @history)))))]
-    ^{:key (random-uuid)}
-    (cond
-      (and (string? o) (not-empty o))
-      [:div.tile.is-parent.is-horizontal.notification
-       {:key (random-uuid)}
-       [:div.title.is-child
-        [:div.subtitle (md-to-string o)]]]
-      (not-empty (butlast o))
-      [:div.tile.is-parent.is-horizontal.notification
-       {:key (random-uuid)}
-       (for [n (butlast o)]
-         (when (not-empty n)
-           [:div.tile.is-child.subtitle {:key (random-uuid)} (md-to-string n)]))
-       (when-let [a (not-empty (peek o))]
-         [:div.tile.is-child.subtitle.has-text-centered.has-text-weight-bold.is-size-4
-          {:key (random-uuid)}
-          (md-to-string a)])])))
+  (let [divclass (string/join " " (list (:tile t)
+                                        (:is-parent t)
+                                        (:is-horizontal t)
+                                        (:notification t)))]
+    (for [o (if @show-summary-answers
+              (remove nil? (reverse (:answers (peek @history))))
+              (remove nil? (reverse (:questions (peek @history)))))]
+      ^{:key (random-uuid)}
+      (cond
+        (and (string? o) (not-empty o))
+        [:div
+         {:class divclass
+          :key   (random-uuid)}
+         [:div {:class (str (:title t) " " (:is-child t))}
+          [:div {:class (:subtitle t)} (md-to-string o)]]]
+        (not-empty (butlast o))
+        [:div
+         {:class divclass
+          :key   (random-uuid)}
+         (for [n (butlast o)]
+           (when (not-empty n)
+             [:div
+              {:class (string/join " " (list (:tile t) (:is-child t) (:subtitle t)))
+               :key   (random-uuid)}
+              (md-to-string n)]))
+         (when-let [a (not-empty (peek o))]
+           [:div
+            {:class (string/join " "
+                                 (list
+                                  (:tile t)
+                                  (:is-child t)
+                                  (:subtitle t)
+                                  (:has-text-centered t)
+                                  (:has-text-weight-bold t)
+                                  (:is-size-4 t)))
+             :key   (random-uuid)}
+            (md-to-string a)])]))))
 
 (defn restart-mailto-buttons []
-  [:div.level-right
-   [:a.button.level-item.is-info.is-light.is-size-4
-    {:title (i18n [:redo])
-     :href  (rfe/href start-page)} "🔃"]
-   (when (not-empty (:mail-to config))
-     (let [contents (or (not-empty (remove nil? (:answers (peek @history))))
-                        (not-empty (remove nil? (:questions (peek @history))))
-                        (i18n [:mail-body-default]))
-           body     (->> contents flatten
-                         (map strip-html-tags)
-                         (string/join "%0D%0A%0D%0A")
-                         (fmt/format (i18n [:mail-body])))]
-       [:a.button.level-item.is-info.is-light.is-size-4
-        {:title (i18n [:mail-to-message])
-         :href  (str "mailto:" (:mail-to config)
-                     "?subject=" (i18n [:mail-subject])
-                     "&body="
-                     (string/replace body #"[\n\t]" "%0D%0A%0D%0A"))}
-        "📩"]))])
+  (let [divclass (string/join " " (list (:button t)
+                                        (:level-item t)
+                                        (:is-info t)
+                                        (:is-light t)
+                                        (:is-size-4 t)))]
+    [:div {:class (:level-right t)}
+     [:a {:class divclass
+          :title (i18n [:redo])
+          :href  (rfe/href start-page)} "🔃"]
+     (when (not-empty (:mail-to config))
+       (let [contents (or (not-empty (remove nil? (:answers (peek @history))))
+                          (not-empty (remove nil? (:questions (peek @history))))
+                          (i18n [:mail-body-default]))
+             body     (->> contents flatten
+                           (map strip-html-tags)
+                           (string/join "%0D%0A%0D%0A")
+                           (fmt/format (i18n [:mail-body])))]
+         [:a
+          {:class divclass
+           :title (i18n [:mail-to-message])
+           :href  (str "mailto:" (:mail-to config)
+                       "?subject=" (i18n [:mail-subject])
+                       "&body="
+                       (string/replace body #"[\n\t]" "%0D%0A%0D%0A"))}
+          "📩"]))]))
 
 (defn get-target-node [goto current-score]
   (cond (string? goto)
@@ -342,14 +394,16 @@
   (doall
    (for [choices-row (partition-all 4 choices)]
      ^{:key (random-uuid)}
-     [:div.tile.is-parent.is-horizontal
+     [:div {:class (string/join " " (list (:tile t) (:is-parent t) (:is-horizontal t)))}
       (doall
        (for [{:keys [answer goto explain color summary score]} choices-row]
          ^{:key (random-uuid)}
-         [:div.tile.is-child
-          {:class (if (> (count choices) 3) "is-3" "")}
-          [:a.tile
-           {:style {:text-decoration "none"}
+         [:div
+          {:class (string/join " " (list (:tile t) (:is-child t)
+                                         (when (> (count choices) 3) (:is-3 t))))}
+          [:a
+           {:class (:tile t)
+            :style {:text-decoration "none"}
             :on-click
             #(do (when (vector? summary)
                    (reset! show-modal true)
@@ -363,54 +417,73 @@
                             {:answers summary}))
                    (rfe/push-state
                     (get-target-node goto current-score))))}
-           [:div.card-content.tile.is-parent.is-vertical
-            [:div.tile.is-child.box.is-size-4.notification.has-text-centered
-             {:class (or (not-empty color) "is-info")}
+           [:div {:class (string/join " " (list (:card-content t)
+                                                (:tile t)
+                                                (:is-parent t)
+                                                (:is-vertical t)))}
+            [:div {:class (string/join " " (list (:tile t)
+                                                 (:is-child t)
+                                                 (:box t)
+                                                 (:is-size-4 t)
+                                                 (:notification t)
+                                                 (:has-text-centered t)
+                                                 (or (not-empty color) (:is-info t))))}
              (md-to-string answer)]
             (when (and explain @show-help)
-              [:div.tile.is-child.subtitle
+              [:div {:class (string/join " " (list (:tile t) (:is-child t) (:subtitle t)))}
                (md-to-string explain)])]]]))])))
 
 ;; Create all the pages
 (defn create-page-contents [{:keys [done node text help no-summary
                                     progress force-help choices]}]
-  (defmethod page-contents (keyword node) []
-    [:div
-     (when (not-empty (:header config))
-       (header))
-     [:div.container
-      (modal show-modal)
-      [:div.section
-       (when-let [[v m] (cljs.reader/read-string progress)]
-         [:div [:progress.progress.is-success {:value v :max m}]
-          [:br]])
-       (when-let [sticky-help-message (not-empty @sticky-help)]
-         [:div.notification.is-size-5
-          {:class (or (:sticky-help-color config)
-                      "is-warning")}
-          (md-to-string sticky-help-message)])
-       (question-help-clipboard done text force-help help)
-       (when (or force-help @show-help)
-         (when-let [help-message (not-empty help)]
-           [:div.notification.is-size-5
-            (md-to-string help-message)]))
-       (if-not done
-         ;; Not done: display the choices
-         [:div.tile.is-ancestor.is-vertical
-          (display-choices choices text no-summary)]
-         ;; Done: display the final summary-answers
-         [:div
-          [:div.tile.is-ancestor {:id "copy-this"}
-           [:div.tile.is-parent.is-vertical.is-12
-            ;; Display score
-            (if-let [scores (:score (peek @history))]
-              (scores-result scores)
-              [:br])
-            ;; Display answers
-            (when show-summary (summary))]]
-          (restart-mailto-buttons)])]]
-     (when (not-empty (:footer config))
-       (footer))]))
+  (let [divclass (str (:notification t) "  " (:is-size-5 t))]
+    (defmethod page-contents (keyword node) []
+      [:div
+       (when (not-empty (:header config)) (header))
+       [:div {:class (:container t)}
+        (modal show-modal)
+        [:div.section
+         (when-let [[v m] (cljs.reader/read-string progress)]
+           [:div [:progress {:class (str (:progress t) " " (:is-success t))
+                             :value v :max m}]
+            [:br]])
+         (when-let [sticky-help-message (not-empty @sticky-help)]
+           [:div {:class divclass}
+            {:class (or (:sticky-help-color config)
+                        (:is-warning t))}
+            (md-to-string sticky-help-message)])
+         (question-help-clipboard done text force-help help)
+         (when (or force-help @show-help)
+           (when-let [help-message (not-empty help)]
+             [:div {:class divclass}
+              (md-to-string help-message)]))
+         (if-not done
+           ;; Not done: display the choices
+           [:div
+            {:class (string/join " " (list
+                                      (:tile t)
+                                      (:is-ancestor t)
+                                      (:is-vertical t)))}
+            (display-choices choices text no-summary)]
+           ;; Done: display the final summary-answers
+           [:div
+            [:div {:class (str (:tile t) " " (:is-ancestor t))
+                   :id    "copy-this"}
+             [:div
+              {:class (string/join " " (list
+                                        (:tile t)
+                                        (:is-parent t)
+                                        (:is-vertical t)
+                                        (:is-12 t)))}
+              ;; Display score
+              (if-let [scores (:score (peek @history))]
+                (scores-result scores)
+                [:br])
+              ;; Display answers
+              (when show-summary (summary))]]
+            (restart-mailto-buttons)])]]
+       (when (not-empty (:footer config))
+         (footer))])))
 
 ;; Create all the pages from config.yml
 (dorun (map create-page-contents tree))
