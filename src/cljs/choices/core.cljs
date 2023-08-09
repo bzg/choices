@@ -20,6 +20,13 @@
 ;; General configuration
 (def config (macros/inline-yaml-resource "config.yml"))
 (def t (macros/inline-edn-resource "theme.edn"))
+(def btn
+  (string/join " " (list (:button t) (:is-info t) (:is-light t) (:is-size-4 t))))
+(def tilechildsubtitle
+  (string/join " " (list (:tile t) (:is-child t) (:subtitle t))))
+(def notifclass
+  (string/join " " (list tilechildsubtitle (:is-size-4 t) (:notification t))))
+
 
 ;; Variables
 (def show-help-global (reagent/atom (:display-help config)))
@@ -69,8 +76,9 @@
          (reset! clipboard-atom nil))
       :reagent-render
       (fn []
-        [:button.button.is-info.is-light.is-size-4
-         {:title                 (i18n [:copy-to-clipboard])
+        [:button
+         {:class                 btn
+          :title                 (i18n [:copy-to-clipboard])
           :data-clipboard-target target}
          label])})))
 
@@ -95,7 +103,7 @@
 
 (defn header []
   [:section
-   [:div {:class (:header.section.div t)}
+   [:div {:class (:hero-body t)}
     [:div {:class (:container t)}
      [:div {:class (:columns t)}
       (let [logo (:logo (:header config))]
@@ -147,11 +155,7 @@
                 (not-empty help))
        [:div {:class (:level-right t)}
         [:button
-         {:class    (string/join " " (list (:level-item t)
-                                           (:button t)
-                                           (:is-info t)
-                                           (:is-light t)
-                                           (:is-size-4 t)))
+         {:class    btn
           :title    (i18n [:display-help])
           :on-click #(swap! show-help not)}
          "💬"]])
@@ -159,11 +163,7 @@
      [:div {:class (:level-right t)}
       [:div {:class (:level-item t)}
        [:button
-        {:class    (string/join " " (list
-                                     (:button t)
-                                     (:is-info t)
-                                     (:is-light t)
-                                     (:is-size-4 t)))
+        {:class    btn
          :title    (i18n [:toggle-summary-style])
          :on-click #(swap! show-summary-answers not)}
         "🔗"]]
@@ -206,22 +206,22 @@
           (:as-top-result-display s)]]))))
 
 (defn conditional-score-result [scores conclusions]
-  (let [conditions   (atom nil)
-        matching     (atom nil)
-        output       (atom "")
-        notification (atom "")
-        node         (atom "")]
+  (let [conditions (atom nil)
+        matching   (atom nil)
+        output     (atom "")
+        color      (atom "")
+        node       (atom "")]
     (doseq [[_ cas] conclusions
-            :let    [not (:notification cas)
+            :let    [col (:color cas)
                      msg (:message cas)
                      nod (:node cas)
                      pri (:priority cas)
-                     cds (dissoc cas :message :notification :priority)]]
+                     cds (dissoc cas :message :color :priority)]]
       (doseq [condition cds]
         (swap! conditions conj
-               (merge (val condition) {:msg msg :not not :pri pri :nod nod}))))
+               (merge (val condition) {:msg msg :col col :pri pri :nod nod}))))
     (doseq [c0   @conditions
-            :let [c  (dissoc c0 :msg :not :pri :nod)
+            :let [c  (dissoc c0 :msg :col :pri :nod)
                   ks (keys c)]]
       (when (all-vals-compare?
              (fn [a b] (if (zero? a) (= a b) (>= a b)))
@@ -229,12 +229,12 @@
         (swap! matching conj c0)))
     (let [match (first (sort-by :pri @matching))]
       (reset! output (:msg match))
-      (reset! notification (:not match))
+      (reset! color (:col match))
       (reset! node (:nod match)))
     ;; Return the expected map:
-    {:notification @notification
-     :output       @output
-     :node         @node}))
+    {:color  @color
+     :output @output
+     :node   @node}))
 
 (defn format-score-output-string [output scores]
   (let [scores
@@ -262,27 +262,21 @@
       ;; Only when score-results is defined
       (let [scores (apply merge (map (fn [[k v]] {k (:value v)}) scores))]
         (when conditional-score-output
-          (let [{:keys [notification output]}
+          (let [{:keys [color output]}
                 (conditional-score-result
                  scores conditional-score-output)]
             (when (not-empty output)
               [:div {:class (str (:tile t) " " (:is-parent t))}
                [:div
-                {:class (string/join " "
-                                     (list (:tile t) (:is-size-4 t) (:is-child t)
-                                           (or (not-empty notification) (:is-info t))
-                                           (:notification t)
-                                           (:subtitle t)))}
+                {:class (str notifclass
+                             " " (or (not-empty color) (:is-info t)))}
                 (md-to-string
                  (format-score-output-string output scores))]]))))
       ;; Always display display-unconditionally when not empty
       (when-let [sticky (:display-unconditionally config)]
         [:div {:class (str (:tile t) " " (:is-parent t))}
          [:div
-          {:class (string/join " "
-                               (list (:tile t) (:is-size-4 t) (:is-child t)
-                                     (:notification t)
-                                     (:subtitle t)))}
+          {:class notifclass}
           (md-to-string sticky)]])])
    [:br]])
 
@@ -300,8 +294,8 @@
         [:div
          {:class divclass
           :key   (random-uuid)}
-         [:div {:class (str (:title t) " " (:is-child t))}
-          [:div {:class (:subtitle t)} (md-to-string o)]]]
+         [:div {:class tilechildsubtitle}
+          (md-to-string o)]]
         (not-empty (butlast o))
         [:div
          {:class divclass
@@ -309,25 +303,21 @@
          (for [n (butlast o)]
            (when (not-empty n)
              [:div
-              {:class (string/join " " (list (:tile t) (:is-child t) (:subtitle t)))
+              {:class tilechildsubtitle
                :key   (random-uuid)}
               (md-to-string n)]))
          (when-let [a (not-empty (peek o))]
            [:div
-            {:class (string/join " "
-                                 (list
-                                  (:tile t)
-                                  (:is-child t)
-                                  (:subtitle t)
-                                  (:has-text-centered t)
-                                  (:has-text-weight-bold t)
-                                  (:is-size-4 t)))
+            {:class (str notifclass " "
+                         (string/join " "
+                                      (list
+                                       (:has-text-centered t)
+                                       (:has-text-weight-bold t))))
              :key   (random-uuid)}
             (md-to-string a)])]))))
 
 (defn restart-mailto-buttons []
   (let [divclass (string/join " " (list (:button t)
-                                        (:level-item t)
                                         (:is-info t)
                                         (:is-light t)
                                         (:is-size-4 t)))]
@@ -399,8 +389,7 @@
        (for [{:keys [answer goto explain color summary score]} choices-row]
          ^{:key (random-uuid)}
          [:div
-          {:class (string/join " " (list (:tile t) (:is-child t)
-                                         (when (> (count choices) 3) (:is-3 t))))}
+          {:class tilechildsubtitle}
           [:a
            {:class (:tile t)
             :style {:text-decoration "none"}
@@ -421,16 +410,10 @@
                                                 (:tile t)
                                                 (:is-parent t)
                                                 (:is-vertical t)))}
-            [:div {:class (string/join " " (list (:tile t)
-                                                 (:is-child t)
-                                                 (:box t)
-                                                 (:is-size-4 t)
-                                                 (:notification t)
-                                                 (:has-text-centered t)
-                                                 (or (not-empty color) (:is-info t))))}
+            [:div {:class (str notifclass " " (or (not-empty color) (:is-info t)))}
              (md-to-string answer)]
             (when (and explain @show-help)
-              [:div {:class (string/join " " (list (:tile t) (:is-child t) (:subtitle t)))}
+              [:div {:class tilechildsubtitle}
                (md-to-string explain)])]]]))])))
 
 ;; Create all the pages

@@ -9,7 +9,7 @@
  :has-text-left        "has-text-left"
  :has-text-right       "has-text-right"
  :has-text-weight-bold "has-text-weight-bold"
- :header.section.div   "hero-body"
+ :hero-body            "hero-body"
  :image                "image"
  :is-3                 "is-3"
  :is-6                 "is-6"

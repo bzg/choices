@@ -67,19 +67,19 @@ score-variables:
 conditional-score-output:
   cas-1: # free-form condition name
     # priority: 2 # You can use priority to force order 
-    notification: "is-success" # Bulma-based class names for the UI notification
+    color: "is-success" # Bulma-based class names for the UI notification
     message: "Here is the score 1: %score-1%"
     # In score-variables, when :max is set and :as-percent is true
     # format the score (%score-1 here) as a percentage
     condition-1:
       score-1: 2 # Condition is met when score-1 is >= 2
   cas-2:
-    notification: "is-warning"
+    color: "is-warning"
     message: "Here is the score 1: %score-1%"
     condition-1:
       score-1: 1 # Condition is met when score-1 is >= 1
   cas-3:
-    notification: "is-warning"
+    color: "is-warning"
     message: "Here is the score 1: %score-1%"
     condition-1:
       score-1: 0 # Condition is met when score-1 is >= 0
