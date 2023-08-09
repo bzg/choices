@@ -39,67 +39,50 @@ display-summary: true
 display-score: true
 
 # Display each score?
-display-score-details: true
+# Mostly useful for debugging
+display-score-details: false
 
-# Only the score with the highest value?
-display-score-top-result: true
+# Display the score with the highest value?
+# Only when :as-top-result-display is set for each score
+display-score-top-result: false
 
 # In a branch of the tree, should the target node be set depending on
-# the updated value of conditional-score-outputs?
+# the updated value of conditional-score-output?
 conditional-navigation: false
 
 # Some text message to always display after the score results
-display-unconditionnally: ""
+display-unconditionally: false
 
-# Set initial variables to register scores.  Each entry of
-# score-variables start with the name of the variable (you can pick
-# up any yaml-acceptable name), then:
-#
-# (1) "display": what to display when detailed scores are displayed
-# (2) "value": the initial value of the variable
-# (3) "as-top-result-display": what to display when the variable is
-#      the one with the highest score when the user is done.
+# Set initial variables to register scores.
 score-variables:
-  score-1:
-    display: "Score for 1"
-    value: 0
-    as-top-result-display: "1 wins :)"
-  score-2:
-    display: "Score for 2"
-    value: 0
-    as-percent: true
-    max: 10
-    as-top-result-display: "2 wins :("
+  score-1: # "score-1" is a user-defined string
+    display: "Score for 1" # What to display when displaying score details
+    value: 0 # Initial value for score-1
+    as-percent: true # When you when the score message to use percent
+    max: 2 # Max is needed for displaying percent:
+    as-top-result-display: "1 wins :)" # Only needed when
+    # display-score-top-result is true
 
 # Set conditional output depending on scores.
-# Each entry is composed of the name of the condition (you can pick up
-# any yaml-acceptable name), then:
-#
-# (1) notification (optional): bulma-based class names for the UI notification
-# (2) message (mandatory): message to display when one of the condition is met
-# (3) anything else is a "condition", which lists variables and their minimal
-# values for the condition to be met.
-conditional-score-outputs:
-  cas-1: # free-form
-    notification: "is-success"
-    priority: 1
-    # Final score message supports using formatting strings for
-    # scores.  Strings starting with "%" and matching a score name
-    # will be interpolated: e.g. here the message will display the
-    # value of "score-1".
-    message: "1 wins! :)  Here is the score 1: %score-1"
-    condition-1: #free-form
-      # cas-1 is the case when score-& >= 1
-      score-1: 1
-  cas-2: # free-form
-    notification: "is-danger"
-    message: "2 wins! :(  Here is the score 2: %score-2"
-    # In score-variables, when max is set and as-percent is true for a
-    # variable, format the score (%score-2 here) as a percentage: if
-    # score 2 is 10 and max is 10, the percent is 100.
-    condition-1: #free-form
-      # cas-2 is the case when score-2 >= 9
-      score-2: 9
+conditional-score-output:
+  cas-1: # free-form condition name
+    # priority: 2 # You can use priority to force order 
+    notification: "is-success" # Bulma-based class names for the UI notification
+    message: "Here is the score 1: %score-1%"
+    # In score-variables, when :max is set and :as-percent is true
+    # format the score (%score-1 here) as a percentage
+    condition-1:
+      score-1: 2 # Condition is met when score-1 is >= 2
+  cas-2:
+    notification: "is-warning"
+    message: "Here is the score 1: %score-1%"
+    condition-1:
+      score-1: 1 # Condition is met when score-1 is >= 1
+  cas-3:
+    notification: "is-warning"
+    message: "Here is the score 1: %score-1%"
+    condition-1:
+      score-1: 0 # Condition is met when score-1 is >= 0
 
 # Mandatory configuration option
 tree:
@@ -141,8 +124,8 @@ tree:
     - answer:  "Yes"
       summary: "Yes, this is the second question!"
       score:
-        score-2:
-          value: 10
+        score-1:
+          value: 1
       goto:    "3"
       color:   "is-info"
     - answer:  "No"
