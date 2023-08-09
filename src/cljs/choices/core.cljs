@@ -14,7 +14,6 @@
             [cljsjs.clipboard]
             [cljs.reader]
             [clojure.string :as string]
-            [clojure.walk :as walk]
             [markdown-to-hiccup.core :as md]
             [taoensso.tempura :refer [tr]]))
 
@@ -28,7 +27,7 @@
 (def show-summary-answers (reagent/atom true))
 (def modal-message (reagent/atom ""))
 (def show-summary (:display-summary config))
-(def conditional-score-outputs (:conditional-score-outputs config))
+(def conditional-score-output (:conditional-score-output config))
 (def sticky-help (reagent/atom ""))
 (def score-variables (:score-variables config))
 (def tree (:tree config))
@@ -219,10 +218,9 @@
   (let [scores
         (map (fn [[k v]]
                [(str "%" (name k))
-                (if (:as-percent (get score-variables k))
-                  (fmt/format
-                   "%.0f"
-                   (/ (* v 100) (:max (get score-variables k))))
+                (when (:as-percent (get score-variables k))
+                  (when-let [max (:max (get score-variables k))]
+                    (fmt/format "%.0f" (/ (* v 100) max)))
                   v)])
              scores)]
     (reduce-kv string/replace output (into {} scores))))
@@ -234,16 +232,17 @@
       ;; Optional, mainly for debugging purpose
       (when (:display-score-details config)
         (score-details scores))
-      ;; Only when no score-results
-      (when (and (not conditional-score-outputs)
+      ;; Only when no conditional score output and
+      ;; when :as-top-result-display is set for each score
+      (when (and (not conditional-score-output)
                  (:display-score-top-result config))
         (score-top-result scores))
       ;; Only when score-results is defined
       (let [scores (apply merge (map (fn [[k v]] {k (:value v)}) scores))]
-        (when conditional-score-outputs
+        (when conditional-score-output
           (let [{:keys [notification output]}
                 (conditional-score-result
-                 scores conditional-score-outputs)]
+                 scores conditional-score-output)]
             (when (not-empty output)
               [:div.tile.is-parent
                [:div.tile.is-size-4.is-child
@@ -306,11 +305,11 @@
         (keyword goto)
         (map? goto)
         (if (and (:conditional-navigation config)
-                 (:conditional-score-outputs goto))
+                 (:conditional-score-output goto))
           (let [score  current-score
                 score  (apply merge (map (fn [[k v]] {k (:value v)}) score))
                 result (conditional-score-result
-                        score conditional-score-outputs)]
+                        score conditional-score-output)]
             (when-let [sticky-help-msg (:stick-help result)]
               (reset! sticky-help sticky-help-msg))
             (keyword (or (:node result) (get goto :default))))

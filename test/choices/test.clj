@@ -6,7 +6,7 @@
 
 (def config (inline-yaml-resource "config.yml"))
 (def score-variables (:score-variables config))
-(def conditional-score-outputs (:conditional-score-outputs config))
+(def conditional-score-output (:conditional-score-output config))
 (defn nilable-email? [s] (s/valid? ::email s))
 (defn nilable-map? [m] (s/valid? (s/nilable map?) m))
 
@@ -51,7 +51,7 @@
 (s/def ::condition (s/keys :req-un [::message]
                            :opt-un [::priority ::node ::notification]))
 (s/def ::output-branch (s/tuple keyword? ::condition))
-(s/def ::conditional-score-outputs (s/coll-of ::output-branch))
+(s/def ::conditional-score-output (s/coll-of ::output-branch))
 
 (s/def ::branch (s/keys :req-un [::node ::text]
                         :opt-un [::choices ::home-page ::start-page ::progress
@@ -80,7 +80,7 @@
 
 (deftest outputs
   (testing "Testing score setting"
-    (is (s/valid? ::conditional-score-outputs conditional-score-outputs))))
+    (is (s/valid? ::conditional-score-output conditional-score-output))))
 
 (deftest score
   (testing "Testing score setting"
