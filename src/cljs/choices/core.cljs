@@ -304,7 +304,8 @@
                               (i18n [:mail-body-default]))
                  body     (->> contents flatten
                                (map strip-html-tags)
-                               (string/join "%0d%0a%0d%0a")
+                               reverse
+                               (string/join "%0a")
                                (fmt/format (i18n [:mail-body])))]
              [:a
               {:class (:button t)
@@ -312,7 +313,7 @@
                :href  (str "mailto:" (:mail-to config)
                            "?subject=" (i18n [:mail-subject])
                            "&body="
-                           (string/replace body #"[\n\t]" "%0d%0a%0d%0a"))}
+                           (string/replace body #"[\n\t]" "%0a"))}
               "📩"]))])
       [:br]
       (when-let [help-message (not-empty help)]
