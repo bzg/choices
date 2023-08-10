@@ -20,7 +20,6 @@
 ;; General configuration
 (def config (macros/inline-yaml-resource "config.yml"))
 (def t (macros/inline-edn-resource "theme.edn"))
-(def notifclass (string/join " " (list (:is-size-3 t) (:notification t))))
 
 ;; Variables
 (def show-summary-answers (reagent/atom true))
@@ -184,12 +183,12 @@
                  scores conditional-score-output)]
             (when (not-empty output)
               [:div
-               {:class (str notifclass " " (or (not-empty color) (:is-info t)))}
+               {:class (str (:notification t) " " (or (not-empty color) (:is-info t)))}
                (md-to-string
                 (format-score-output-string output scores))]))))
       ;; Always display display-unconditionally when not empty
       (when-let [sticky (:display-unconditionally config)]
-        [:div {:class notifclass} (md-to-string sticky)])])
+        [:div {:class (:notification t)} (md-to-string sticky)])])
    [:br]])
 
 (defn summary []
@@ -285,10 +284,10 @@
       (when-let [[v m] (cljs.reader/read-string progress)]
         [:progress {:class (str (:progress t) " " (:is-success t))
                     :value v :max m}])
-      ;; main question (text)
-      [:div {:class (:is-size-3 t)} (md-to-string text)]
+      ;; Main question (text)
+      [:div {:class (:subtitle t)} (md-to-string text)]
       (when done
-        ;; done: display the copy-to-clipboard button
+        ;; Done: display the copy-to-clipboard button
         [:div
          [:a
           {:class    (:button t)
