@@ -3,7 +3,6 @@ locale: "en"
 
 # Customize UI strings
 ui-strings:
-  # display-help:         "Display help"
   # copy-to-clipboard:    "Copy in the clipboard"
   # mail-to-message:      "Send by email"
   # mail-subject:         "Results"
@@ -17,7 +16,6 @@ ui-strings:
 # Website header
 header:
  title:    "Here is my title."
- logo:     ""
 # color:    "is-primary"
  subtitle: "A subtitle here, possibly with _markdown_ formatting."
 
@@ -27,10 +25,7 @@ footer:
  contact:  ""
 
 # Allow users to send you emails with the summary?
-mail-to:
-
-# Display help along with questions by default?
-display-help: true
+mail-to: bzg@gnu.org
 
 # Display summary when done?
 display-summary: true
@@ -59,7 +54,7 @@ score-variables:
     display: "Score for 1" # What to display when displaying score details
     value: 0 # Initial value for score-1
     as-percent: true # When you when the score message to use percent
-    max: 2 # Max is needed for displaying percent:
+    max: 3 # Max is needed for displaying percent:
     as-top-result-display: "1 wins :)" # Only needed when
     # display-score-top-result is true
 
@@ -89,7 +84,6 @@ tree:
   - node:       "0"
     text:       "A title for the default page"
     home-page:  true
-    force-help: true
     no-summary: true
     help:       "Some introductory text here."
     choices:
@@ -110,7 +104,7 @@ tree:
         score-1:
           value: 1
       goto:    "2"
-      color:   "is-info"
+      color:   "is-success"
     - answer:  "No"
       summary: "No, this is not the first question."
       color:   "is-warning"
@@ -127,6 +121,10 @@ tree:
         score-1:
           value: 1
       goto:    "3"
+      color:   "is-success"
+    - answer:  "Maybe"
+      summary: "This is the second question, maybe."
+      goto:    "3"
       color:   "is-info"
     - answer:  "No"
       summary: "No, this is not the second question."
@@ -136,12 +134,14 @@ tree:
   - node:     "3"
     progress: "[3 3]"  # progress bar
     text:     "Is it the _third_ question?"
-    help:     "Some help text here for the second question."
     choices:
       - answer:  "Yes"
         summary: ["Yes, this is the third question...", "This will end soon, I promise."]
         goto: "end"
-        color: "is-info"
+        color: "is-success"
+        score:
+          score-1:
+            value: 1
       - answer:  "No"
         summary: "No, this is not the third question."
         color: "is-warning"

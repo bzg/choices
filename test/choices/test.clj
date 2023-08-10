@@ -70,7 +70,6 @@
             (= (:locale config) "fr")))
     (is (nilable-map? (:ui-strings config)))
     (is (nilable-email? (:mail-to config)))
-    (is (boolean? (:display-help config)))
     (is (boolean? (:display-summary config)))
     (is (boolean? (:display-score config)))
     (is (boolean? (:display-score-details config)))
