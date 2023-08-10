@@ -16,16 +16,15 @@ ui-strings:
 # Website header
 header:
  title:    "Here is my title."
-# color:    "is-primary"
  subtitle: "A subtitle here, possibly with _markdown_ formatting."
 
 # Website footer
 footer:
  text:    "Some text here, possibly with **markdown** formatting."
- contact:  ""
+ contact:  "bzg@gnu.org"
 
 # Allow users to send you emails with the summary?
-mail-to: bzg@gnu.org
+mail-to: "bzg@gnu.org"
 
 # Display summary when done?
 display-summary: true
