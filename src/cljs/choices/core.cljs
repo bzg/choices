@@ -279,7 +279,7 @@
 (defn create-page-contents [{:keys [done node text help no-summary
                                     progress choices]}]
   (defmethod page-contents (keyword node) []
-    [:div
+    [:div {:class (:container t)}
      (when (not-empty (:header config)) (header))
      [:div.section
       (when-let [[v m] (cljs.reader/read-string progress)]
