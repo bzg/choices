@@ -1,6 +1,10 @@
 # Default locale for UI strings
 locale: "en"
 
+# Available themes: bulma, chota
+# You'll need to update resources/public/index.html too
+theme: "bulma"
+
 # Customize UI strings
 ui-strings:
   # copy-to-clipboard:    "Copy in the clipboard"
@@ -91,7 +95,7 @@ tree:
       color:  "is-info"
 
   - node:       "1"
-    progress:   "[1 3]"  # progress bar
+    progress:   "[0 3]"
     text:       "Is it the first question?"
     help:       "Some **help text** here for the first question.  Markdown formatting accepted."
     start-page: true
@@ -110,7 +114,7 @@ tree:
       goto:    "end"
 
   - node:     "2"
-    progress: "[2 3]"  # progress bar
+    progress: "[1 3]"
     text:     "Is it the second question?"
     help:     "Some help text here for the second question."
     choices:
@@ -131,7 +135,7 @@ tree:
       goto:    "end"
 
   - node:     "3"
-    progress: "[3 3]"  # progress bar
+    progress: "[2 3]"
     text:     "Is it the _third_ question?"
     choices:
       - answer:  "Yes"
@@ -147,5 +151,6 @@ tree:
         goto: "end"
 
   - node: "end"
+    progress: "[3 3]"
     text: "This is the end."
     done: true

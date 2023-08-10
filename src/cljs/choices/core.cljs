@@ -19,7 +19,9 @@
 
 ;; General configuration
 (def config (macros/inline-yaml-resource "config.yml"))
-(def t (macros/inline-edn-resource "theme.edn"))
+(def theme (:theme config))
+(def t (into {} (map (fn [[k v]] [k ((keyword theme) v)])
+                     (macros/inline-edn-resource "theme.edn"))))
 
 ;; Variables
 (def show-summary-answers (reagent/atom true))
@@ -64,7 +66,7 @@
       :reagent-render
       (fn []
         [:a
-         {:class                 (:button t)
+         {:class                 (:button-outline t)
           :title                 (i18n [:copy-to-clipboard])
           :data-clipboard-target target}
          label])})))
@@ -90,17 +92,20 @@
 
 (defn header []
   [:div {:class (str (:hero-body t) " " (:has-text-centered t))}
-   [:h1 {:class (:title t)} (:title (:header config))]
-   [:h2 {:class (:subtitle t)}
-    (md-to-string (:subtitle (:header config)))]])
+   [:div
+    [:h1 {:class (:title t)} (:title (:header config))]
+    [:h2 {:class (:subtitle t)}
+     (md-to-string (:subtitle (:header config)))]]])
 
 (defn footer []
   [:section {:class (:footer t)}
+   [:br]
    [:div {:class (:has-text-centered t)}
-    (md-to-string (:text (:footer config)))
-    (when-let [c (not-empty (:contact (:footer config)))]
-      [:p (i18n [:contact-intro])
-       [:a {:href (str "mailto:" c)} c]])]])
+    [:div
+     (md-to-string (:text (:footer config)))
+     (when-let [c (not-empty (:contact (:footer config)))]
+       [:p (i18n [:contact-intro])
+        [:a {:href (str "mailto:" c)} c]])]]])
 
 (defn score-details [scores]
   (for [row-score (partition-all 5 scores)]
@@ -183,7 +188,7 @@
                  scores conditional-score-output)]
             (when (not-empty output)
               [:div
-               {:class (str (:notification t) " " (or (not-empty color) (:is-info t)))}
+               {:class (str (:notification t) " " (or ((keyword color) t) (:is-info t)))}
                (md-to-string
                 (format-score-output-string output scores))]))))
       ;; Always display display-unconditionally when not empty
@@ -257,7 +262,7 @@
          ^{:key (random-uuid)}
          [:div {:class (:column t)}
           [:button.section
-           {:class (str (:button t) " " (:is-fullwidth t) " " color)
+           {:class (str (:button t) " " (:is-fullwidth t) " " ((keyword color) t))
             :on-click
             #(do (when (vector? summary) (js/alert (peek summary)))
                  (let [current-score
@@ -282,19 +287,19 @@
      (when (not-empty (:header config)) (header))
      [:div.section
       (when-let [[v m] (cljs.reader/read-string progress)]
-        [:progress {:class (str (:progress t) " " (:is-success t))
+        [:progress {:class (str (:progress t) " " (:is-fullwidth t))
                     :value v :max m}])
       ;; Main question (text)
-      [:div {:class (:subtitle t)} (md-to-string text)]
+      [:h3 {:class (:subtitle t)} (md-to-string text)]
       (when done
         ;; Done: display the copy-to-clipboard button
         [:div
          [:a
-          {:class    (:button t)
+          {:class    (:button-outline t)
            :title    (i18n [:toggle-summary-style])
            :on-click #(swap! show-summary-answers not)} "🔗"]
          [clipboard-button "📋" "#copy-this"]
-         [:a {:class (:button t)
+         [:a {:class (:button-outline t)
               :title (i18n [:redo])
               :href  (rfe/href start-page)} "🔃"]
          (when (not-empty (:mail-to config))
@@ -307,7 +312,7 @@
                                (string/join "%0a")
                                (fmt/format (i18n [:mail-body])))]
              [:a
-              {:class (:button t)
+              {:class (:button-outline t)
                :title (i18n [:mail-to-message])
                :href  (str "mailto:" (:mail-to config)
                            "?subject=" (i18n [:mail-subject])
@@ -318,6 +323,7 @@
       (when-let [help-message (not-empty help)]
         [:div {:class (:notification t)}
          (md-to-string help-message)])
+      [:br]
       (if-not done
         ;; Not done: display the choices
         (display-choices choices text no-summary)

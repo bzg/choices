@@ -1,18 +1,19 @@
 {
- :button            "button"
- :column            "column"
- :columns           "columns"
- :container         "container"
- :footer            "footer"
- :has-text-centered "has-text-centered"
- :hero-body         "hero-body"
- :is-fullwidth      "is-fullwidth"
- :is-info           "is-info"
- :is-size-3         "is-size-3"
- :is-success        "is-success"
- :is-warning        "is-warning"
- :notification      "notification"
- :progress          "progress"
- :subtitle          "subtitle"
- :title             "title"
+ :button            {:bulma "button" :chota "button"}
+ :button-outline    {:bulma "button is-outlined" :chota "button outline"}
+ :column            {:bulma "column" :chota "col"}
+ :columns           {:bulma "columns" :chota "container row"}
+ :container         {:bulma "container" :chota "container"}
+ :footer            {:bulma "footer" :chota ""}
+ :has-text-centered {:bulma "has-text-centered" :chota "is-center"}
+ :hero-body         {:bulma "hero-body" :chota ""}
+ :is-fullwidth      {:bulma "is-fullwidth" :chota "is-full-width"}
+ :is-info           {:bulma "is-info" :chota "primary"}
+ :is-success        {:bulma "is-success" :chota "success"}
+ :is-warning        {:bulma "is-warning" :chota "error"}
+ :is-danger         {:bulma "is-danger" :chota "error"}
+ :notification      {:bulma "notification" :chota "card"}
+ :progress          {:bulma "progress" :chota ""}
+ :subtitle          {:bulma "subtitle" :chota ""}
+ :title             {:bulma "title" :chota ""}
  }
