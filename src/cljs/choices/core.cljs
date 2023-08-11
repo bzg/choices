@@ -290,8 +290,9 @@
      (when (not-empty (:header config)) (header))
      [:div.section
       (when-let [[v m] (cljs.reader/read-string progress)]
-        [:progress {:class (str (:progress t) " " (:is-fullwidth t))
-                    :value v :max m}])
+        [:progress
+         {:class (str (:progress t) " " (:is-fullwidth t) " " (:is-info t))
+          :value v :max m}])
       ;; Main question (text)
       [:h3 {:class (:subtitle t)} (md-to-string text)]
       (when done
