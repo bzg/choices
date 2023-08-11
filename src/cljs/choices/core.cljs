@@ -21,9 +21,10 @@
 (def config (macros/inline-yaml-resource "config.yml"))
 (def theme (:theme config))
 (def t (into {} (map (fn [[k v]]
-                       (if (= theme "bulma")
-                         [k (string/replace (name k) "_" " ")]
-                         [k ((keyword theme) v)]))
+                       (if (= theme "chota")
+                         [k ((keyword theme) v)]
+                         ;; For bulma and dsfr, keep keyword as name
+                         [k (string/replace (name k) "_" " ")]))
                      (macros/inline-edn-resource "theme.edn"))))
 
 ;; Variables
@@ -94,15 +95,14 @@
 (defmulti page-contents identity)
 
 (defn header []
-  [:div {:class (str (:hero-body t) " " (:has-text-centered t))}
-   [:div
+  [:header
+   [:div {:class (str (:hero-body t) " " (:has-text-centered t))}
     [:h1 {:class (:title t)} (:title (:header config))]
     [:h2 {:class (:subtitle t)}
      (md-to-string (:subtitle (:header config)))]]])
 
 (defn footer []
-  [:section {:class (:footer t)}
-   [:br]
+  [:footer {:class (:footer t)}
    [:div {:class (:has-text-centered t)}
     [:div
      (md-to-string (:text (:footer config)))
