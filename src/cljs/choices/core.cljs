@@ -40,7 +40,7 @@
 (def start-page
   (first (remove nil? (map #(when (:start-page %) (keyword (:node %))) tree))))
 
-(defn md-to-string [^string s]
+(defn md-to-string [^String s]
   (-> s (md/md->hiccup) (md/component)))
 
 ;; History-handling variables
