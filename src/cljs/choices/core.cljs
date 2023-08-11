@@ -95,20 +95,24 @@
 (defmulti page-contents identity)
 
 (defn header []
-  [:header
-   [:div {:class (:container t)}
-    [:div {:class (:hero-body t)}
-     [:h1 {:class (:title t)} (:title (:header config))]
-     [:h2 {:class (:subtitle t)}
-      (md-to-string (:subtitle (:header config)))]]]])
+  [:header {:class (:container t)}
+   [:div {:class (:hero-body t)}
+    [:div {:class (:has-text-centered t)}
+     [:div
+      [:h1 {:class (:title t)} (:title (:header config))]
+      [:h2 {:class (:subtitle t)}
+       (md-to-string (:subtitle (:header config)))]]]]])
 
 (defn footer []
   [:footer {:class (:footer t)}
    [:div {:class (:container t)}
-    (md-to-string (:text (:footer config)))
-    (when-let [c (not-empty (:contact (:footer config)))]
-      [:p (i18n [:contact-intro])
-       [:a {:href (str "mailto:" c)} c]])]])
+    [:br]
+    [:div {:class (:has-text-centered t)}
+     [:div
+      (md-to-string (:text (:footer config)))
+      (when-let [c (not-empty (:contact (:footer config)))]
+        [:p (i18n [:contact-intro])
+         [:a {:href (str "mailto:" c)} c]])]]]])
 
 (defn score-details [scores]
   (for [row-score (partition-all 5 scores)]
