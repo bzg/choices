@@ -29,7 +29,7 @@ a set of related options and get feedback from their choices.
 
 **Don't use the dsfr theme unless you are [authorized](https://www.systeme-de-design.gouv.fr/utilisation-et-organisation/perimetre-d-application) to.**
 
-To set chota as the theme, run `clj -X:set theme chota`.
+To set chota as the theme, run `clj -X:set :theme chota`.
 
 This will update `config.yml` and `resources/public/index.html` to use
 chota as the theme when generating the static website.
