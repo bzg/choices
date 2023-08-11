@@ -20,7 +20,10 @@
 ;; General configuration
 (def config (macros/inline-yaml-resource "config.yml"))
 (def theme (:theme config))
-(def t (into {} (map (fn [[k v]] [k ((keyword theme) v)])
+(def t (into {} (map (fn [[k v]]
+                       (if (= theme "bulma")
+                         [k (name k)]
+                         [k ((keyword theme) v)]))
                      (macros/inline-edn-resource "theme.edn"))))
 
 ;; Variables

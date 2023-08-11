@@ -1,19 +1,19 @@
 {
- :button            {:bulma "button" :chota "button"}
- :button-outline    {:bulma "button is-outlined" :chota "button outline"}
- :column            {:bulma "column" :chota "col"}
- :columns           {:bulma "columns" :chota "container row"}
- :container         {:bulma "container" :chota "container"}
- :footer            {:bulma "footer" :chota ""}
- :has-text-centered {:bulma "has-text-centered" :chota "is-center"}
- :hero-body         {:bulma "hero-body" :chota ""}
- :is-fullwidth      {:bulma "is-fullwidth" :chota "is-full-width"}
- :is-info           {:bulma "is-info" :chota "primary"}
- :is-success        {:bulma "is-success" :chota "success"}
- :is-warning        {:bulma "is-warning" :chota "error"}
- :is-danger         {:bulma "is-danger" :chota "error"}
- :notification      {:bulma "notification" :chota "card"}
- :progress          {:bulma "progress" :chota ""}
- :subtitle          {:bulma "subtitle" :chota ""}
- :title             {:bulma "title" :chota ""}
+ :button            {:chota "button"}
+ :button-outline    {:chota "button outline"}
+ :column            {:chota "col"}
+ :columns           {:chota "container row"}
+ :container         {:chota "container"}
+ :footer            {:chota ""}
+ :has-text-centered {:chota "is-center"}
+ :hero-body         {:chota ""}
+ :is-fullwidth      {:chota "is-full-width"}
+ :is-info           {:chota "primary"}
+ :is-success        {:chota "success"}
+ :is-warning        {:chota "error"}
+ :is-danger         {:chota "error"}
+ :notification      {:chota "card"}
+ :progress          {:chota ""}
+ :subtitle          {:chota ""}
+ :title             {:chota ""}
  }
