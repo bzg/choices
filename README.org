@@ -22,7 +22,9 @@ a set of related options and get feedback from their choices.
 
 * Themes
 
-=Choices= come with three themes: [[https://bulma.io/][bulma]], the default, and [[https://jenil.github.io/chota/][chota]].
+=Choices= come with three themes: [[https://bulma.io/][bulma]], the default, [[https://jenil.github.io/chota/][chota]] and [[https://www.systeme-de-design.gouv.fr/][dsfr]].
+
+*Don't use the dsfr theme unless you are [[https://www.systeme-de-design.gouv.fr/utilisation-et-organisation/perimetre-d-application][authorized]] to.*
 
 To set chota as the theme, run =clj -X:set theme chota=.
 

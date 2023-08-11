@@ -25,7 +25,9 @@ a set of related options and get feedback from their choices.
 
 # Themes
 
-`Choices` come with three themes: [bulma](https://bulma.io/), the default, and [chota](https://jenil.github.io/chota/).
+`Choices` come with three themes: [bulma](https://bulma.io/), the default, [chota](https://jenil.github.io/chota/) and [dsfr](https://www.systeme-de-design.gouv.fr/).
+
+**Don't use the dsfr theme unless you are [authorized](https://www.systeme-de-design.gouv.fr/utilisation-et-organisation/perimetre-d-application) to.**
 
 To set chota as the theme, run `clj -X:set theme chota`.
 

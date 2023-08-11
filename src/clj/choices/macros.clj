@@ -19,30 +19,24 @@
 (defn slurp-no-error [f]
   (try (slurp f) (catch Exception e nil)))
 
-(defn use-bulma [& [args]]
+(defn use-theme [theme & [args]]
   (if-let [config (or (not-empty (slurp-no-error "config.yml"))
                       (slurp "config-example.yml"))]
     (let [index (slurp "resources/public/index.html")]
       (spit "config.yml"
-            (string/replace config #"theme: \"[^\"]+\"" "theme: \"bulma\""))
+            (string/replace config #"theme: \"[^\"]+\"" (format "theme: \"%s\"" theme)))
       (spit "resources/public/index.html"
-            (string/replace index #"css/[^\"]+" "css/bulma.css")))
-    (println "Can't set bulma theme")))
+            (string/replace index #"css/[^\"]+" (format "css/%s.css" theme))))
+    (println "Can't set %s theme" theme)))
 
-(defn use-chota [& [args]]
-  (if-let [config (or (not-empty (slurp-no-error "config.yml"))
-                      (slurp "config-example.yml"))]
-    (let [index (slurp "resources/public/index.html")]
-      (spit "config.yml"
-            (string/replace config #"theme: \"[^\"]+\"" "theme: \"chota\""))
-      (spit "resources/public/index.html"
-            (string/replace index #"css/[^\"]+" "css/chota.css")))
-    (println "Can't set chota theme")))
+(defn use-bulma [] (use-theme "bulma"))
+(defn use-chota [] (use-theme "chota"))
+(defn use-dsfr [] (use-theme "dsfr"))
 
 (defn set-theme [{:keys [theme]}]
   (let [theme (name theme)]
     (if-not theme
       (println "Please provide a theme")
-      (if (= theme "chota")
-        (use-chota)
-        (use-bulma)))))
+      (cond (= theme "chota") (use-chota)
+            (= theme "dsfr")  (use-dsfr)
+            :else             (use-bulma)))))
