@@ -1,6 +1,6 @@
-{:version     "0.10.2"
+{:version     "0.10"
  :description "Web application to traverse a decision-tree and expose the result"
- :url         "https://github.com/etalab/choices"
+ :url         "https://git.sr.ht/~bzg/choices"
  :license     {:name "Eclipse Public License - v 2.0"
                :url  "http://www.eclipse.org/legal/epl-v20.html"}
 
