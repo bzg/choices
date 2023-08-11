@@ -22,7 +22,7 @@
 (def theme (:theme config))
 (def t (into {} (map (fn [[k v]]
                        (if (= theme "bulma")
-                         [k (name k)]
+                         [k (string/replace (name k) "_" " ")]
                          [k ((keyword theme) v)]))
                      (macros/inline-edn-resource "theme.edn"))))
 
@@ -69,7 +69,7 @@
       :reagent-render
       (fn []
         [:a
-         {:class                 (:button-outline t)
+         {:class                 (:button_is-outlined t)
           :title                 (i18n [:copy-to-clipboard])
           :data-clipboard-target target}
          label])})))
@@ -298,11 +298,11 @@
         ;; Done: display the copy-to-clipboard button
         [:div
          [:a
-          {:class    (:button-outline t)
+          {:class    (:button_is-outlined t)
            :title    (i18n [:toggle-summary-style])
            :on-click #(swap! show-summary-answers not)} "🔗"]
          [clipboard-button "📋" "#copy-this"]
-         [:a {:class (:button-outline t)
+         [:a {:class (:button_is-outlined t)
               :title (i18n [:redo])
               :href  (rfe/href start-page)} "🔃"]
          (when (not-empty (:mail-to config))
@@ -315,7 +315,7 @@
                                (string/join "%0a")
                                (fmt/format (i18n [:mail-body])))]
              [:a
-              {:class (:button-outline t)
+              {:class (:button_is-outlined t)
                :title (i18n [:mail-to-message])
                :href  (str "mailto:" (:mail-to config)
                            "?subject=" (i18n [:mail-subject])

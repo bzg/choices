@@ -1,19 +1,19 @@
 {
- :button            {:chota "button"}
- :button-outline    {:chota "button outline"}
- :column            {:chota "col"}
- :columns           {:chota "container row"}
- :container         {:chota "container"}
- :footer            {:chota ""}
- :has-text-centered {:chota "is-center"}
- :hero-body         {:chota ""}
- :is-fullwidth      {:chota "is-full-width"}
- :is-info           {:chota "primary"}
- :is-success        {:chota "success"}
- :is-warning        {:chota "error"}
- :is-danger         {:chota "error"}
- :notification      {:chota "card"}
- :progress          {:chota ""}
- :subtitle          {:chota ""}
- :title             {:chota ""}
+ :button             {:chota "button"}
+ :button_is-outlined {:chota "button outline"}
+ :column             {:chota "col"}
+ :columns            {:chota "container row"}
+ :container          {:chota "container"}
+ :footer             {:chota ""}
+ :has-text-centered  {:chota "is-center"}
+ :hero-body          {:chota ""}
+ :is-fullwidth       {:chota "is-full-width"}
+ :is-info            {:chota "primary"}
+ :is-success         {:chota "success"}
+ :is-warning         {:chota "error"}
+ :is-danger          {:chota "error"}
+ :notification       {:chota "card"}
+ :progress           {:chota ""}
+ :subtitle           {:chota ""}
+ :title              {:chota ""}
  }
