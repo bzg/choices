@@ -77,7 +77,7 @@ conditional-score-output:
     condition-1:
       score-1: 1 # Condition is met when score-1 is >= 1
   cas-3:
-    color: "is-warning"
+    color: "is-danger"
     message: "Here is the score 1: %score-1%"
     condition-1:
       score-1: 0 # Condition is met when score-1 is >= 0
@@ -110,7 +110,7 @@ tree:
       color:   "is-success"
     - answer:  "No"
       summary: "No, this is not the first question."
-      color:   "is-warning"
+      color:   "is-danger"
       goto:    "end"
 
   - node:     "2"
@@ -131,7 +131,7 @@ tree:
       color:   "is-info"
     - answer:  "No"
       summary: "No, this is not the second question."
-      color:   "is-warning"
+      color:   "is-danger"
       goto:    "end"
 
   - node:     "3"
@@ -147,7 +147,7 @@ tree:
             value: 1
       - answer:  "No"
         summary: "No, this is not the third question."
-        color: "is-warning"
+        color: "is-danger"
         goto: "end"
 
   - node: "end"
