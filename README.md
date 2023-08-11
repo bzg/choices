@@ -23,16 +23,6 @@ a set of related options and get feedback from their choices.
 3.  Check your web browser on <http://localhost:9500>
 
 
-# Themes
-
-`Choices` come with three themes: bulma (the default), chota and dsfr.
-
-To set chota as the theme, run `clj -X:set theme chota`.
-
-This will update `config.yml` and `resources/public/index.html` to use
-chota as the theme when generating the static website.
-
-
 # Usage
 
 Here are some examples where `Choices` is used:
@@ -61,6 +51,5 @@ donating to [clojuriststogether.org](https://www.clojuriststogether.org).
 
 2019-2023 Bastien Guerry
 
-This application is published under the [EPL 2.0 license](LICENSE), except for
-the fonts in `resources/public/fonts`.
+This application is published under the [EPL 2.0 license](LICENSE).
 
