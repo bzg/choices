@@ -41,7 +41,7 @@
   (first (remove nil? (map #(when (:start-page %) (keyword (:node %))) tree))))
 
 (defn md-to-string [^String s]
-  (-> s (md/md->hiccup) (md/component)))
+  (-> s (md/md->hiccup) (md/component) peek))
 
 ;; History-handling variables
 (def history (reagent/atom [{:score score-variables}]))
