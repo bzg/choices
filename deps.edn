@@ -38,6 +38,9 @@
   :js {:main-opts   ["-m" "figwheel.main" "-O" "advanced" "-bo" "dev"]
        :extra-paths ["src/cljs"]}
 
+  :set {:exec-fn   choices.macros/set-theme
+        :exec-args {:theme "bulma"}}
+
   :test {:extra-paths ["test"]
          :extra-deps  {com.cognitect/test-runner
                        {:git/url "https://github.com/cognitect-labs/test-runner.git"
