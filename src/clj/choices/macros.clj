@@ -26,7 +26,8 @@
       (spit "config.yml"
             (string/replace config #"theme: \"[^\"]+\"" (format "theme: \"%s\"" theme)))
       (spit "resources/public/index.html"
-            (string/replace index #"css/[^\"]+" (format "css/%s.css" theme))))
+            (string/replace index #"css/[^\"]+" (format "css/%s.css" theme)))
+      (println "Choices theme set to %s" theme))
     (println "Can't set %s theme" theme)))
 
 (defn use-bulma [] (use-theme "bulma"))
