@@ -1,8 +1,9 @@
 # Default locale for UI strings
 locale: "en"
 
-# Available themes: bulma, chota
-# You'll need to update resources/public/index.html too
+# Available themes: bulma, chota, dsfr
+# You can set the theme on the command line with
+# clj -X:set :theme bulma
 theme: "bulma"
 
 # Customize UI strings
@@ -53,34 +54,44 @@ display-unconditionally: false
 
 # Set initial variables to register scores.
 score-variables:
-  score-1: # "score-1" is a user-defined string
-    display: "Score for 1" # What to display when displaying score details
-    value: 0 # Initial value for score-1
-    as-percent: true # When you when the score message to use percent
-    max: 3 # Max is needed for displaying percent:
-    as-top-result-display: "1 wins :)" # Only needed when
-    # display-score-top-result is true
+  # "score-1" is a user-defined string
+  score-1:
+    # What to display when displaying score details:
+    display: "Score for 1"
+    # Initial value for score-1:
+    value: 0
+    # When you when the score message to use percent:
+    as-percent: true
+    # Max is needed for displaying percent:
+    max: 3
+    # Only needed when display-score-top-result is true
+    as-top-result-display: "1 wins :)"
 
 # Set conditional output depending on scores.
 conditional-score-output:
+  # Cases are tested one by one.  The first case that matches is the
+  # main score.  When case have a priority value, the matching case
+  # with the highest priority is the main score.
   cas-1: # free-form condition name
-    # priority: 2 # You can use priority to force order 
-    color: "is-success" # Bulma-based class names for the UI notification
+    # priority: 2 # Use priority to matching order
+    color: "is-success" # Bulma-based class names for the UI
+    # notification.  Available values for colors are: is-success,
+    # is-info, is-warning, is-danger.
     message: "Here is the score 1: %score-1%"
-    # In score-variables, when :max is set and :as-percent is true
-    # format the score (%score-1 here) as a percentage
+    # In score-variables, when :max is set and :as-percent is true,
+    # then the score will be shown as a percentage.
     condition-1:
-      score-1: 2 # Condition is met when score-1 is >= 2
+      score-1: 2 # This condition is met when score-1 is >= 2
   cas-2:
     color: "is-warning"
     message: "Here is the score 1: %score-1%"
     condition-1:
-      score-1: 1 # Condition is met when score-1 is >= 1
+      score-1: 1 # This condition is met when score-1 is >= 1
   cas-3:
     color: "is-danger"
     message: "Here is the score 1: %score-1%"
     condition-1:
-      score-1: 0 # Condition is met when score-1 is >= 0
+      score-1: 0 # This condition is met when score-1 is >= 0
 
 # Mandatory configuration option
 tree:
