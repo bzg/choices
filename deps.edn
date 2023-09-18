@@ -15,7 +15,7 @@
   markdown-to-hiccup/markdown-to-hiccup {:mvn/version "0.6.2"}
   metosin/reitit-frontend               {:mvn/version "0.6.0"}
   org.clojure/clojure                   {:mvn/version "1.11.1"}
-  org.clojure/clojurescript             {:mvn/version "1.11.60"}
+  org.clojure/clojurescript             {:mvn/version "1.11.121"}
   org.clojure/core.rrb-vector           {:mvn/version "0.1.2"}
   org.clojure/math.numeric-tower        {:mvn/version "0.0.5"}
   org.flatland/ordered                  {:mvn/version "1.15.11"}
