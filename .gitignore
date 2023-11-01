@@ -19,3 +19,4 @@ pom.xml
 .clj-kondo/
 .lsp/
 todo.org
+README.org
