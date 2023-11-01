@@ -1,4 +1,5 @@
 # Default locale for UI strings
+# Available UI languages: en, fr, de
 locale: "en"
 
 # Available themes: bulma, chota, dsfr
