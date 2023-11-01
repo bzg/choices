@@ -22,10 +22,23 @@
     :copy-to-clipboard    "Copier dans le presse-papier"
     :mail-to-message      "Envoyer par mail"
     :mail-subject         "Résultats"
-    :mail-body            "Bonjour!\n%s\nMerci."
+    :mail-body            "Bonjour !\n%s\nMerci."
     :mail-body-default    "Voici mes retours :\n"
     :redo                 "Recommencer"
     :ok                   "D'accord"
     :contact-intro        "Contact : "
     :toggle-summary-style "Changer le style de résumé"
-    :attention            "Attention"}})
+    :attention            "Attention"}
+   :de
+   {:display-help         "Anzeigehilfe"
+    :copy-to-clipboard    "In die Zwischenablage kopieren"
+    :mail-to-message      "Per E-Mail senden"
+    :mail-subject         "Ergebnisse"
+    :mail-body            "Hallo!\n%s\nDanke."
+    :mail-body-default    "hier ist mein Feedback :\n"
+    :redo                 "Neu anfangen"
+    :ok                   "Einverstanden"
+    :contact-intro        "Kontakt: "
+    :toggle-summary-style "Den Stil der Zusammenfassung ändern"
+    :attention            "Achtung"}
+   })
