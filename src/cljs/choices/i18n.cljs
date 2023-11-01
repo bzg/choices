@@ -41,4 +41,16 @@
     :contact-intro        "Kontakt: "
     :toggle-summary-style "Den Stil der Zusammenfassung ändern"
     :attention            "Achtung"}
+   :sv
+   {:display-help         "Visa hjälp"
+    :copy-to-clipboard    "Kopiera till urklipp"
+    :mail-to-message      "Skicka med e-post"
+    :mail-subject         "Resultat"
+    :mail-body            "Hej,\n%s\nTack."
+    :mail-body-default    "Här är min återkoppling:\n"
+    :redo                 "Redo"
+    :ok                   "Okej"
+    :contact-intro        "Kontakt: "
+    :toggle-summary-style "Växla sammanfattningsstil"
+    :attention            "Observera"}
    })

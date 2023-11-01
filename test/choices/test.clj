@@ -67,7 +67,8 @@
 (deftest ui
   (testing "Testing UI variables"
     (is (or (= (:locale config) "en")
-            (= (:locale config) "fr")))
+            (= (:locale config) "fr")
+            (= (:locale config) "sv")))
     (is (nilable-map? (:ui-strings config)))
     (is (nilable-email? (:mail-to config)))
     (is (boolean? (:display-summary config)))
