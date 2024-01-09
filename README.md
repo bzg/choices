@@ -61,7 +61,7 @@ donating to [clojuriststogether.org](https://www.clojuriststogether.org).
 
 # License
 
-2019-2023 Bastien Guerry
+2019-2024 Bastien Guerry
 
 This application is published under the [EPL 2.0 license](LICENSE), except for
 the fonts in `resources/public/fonts`.
