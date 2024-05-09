@@ -1,4 +1,4 @@
-{:version     "0.10"
+{:version     "0.11"
  :description "Web application to traverse a decision-tree and expose the result"
  :url         "https://git.sr.ht/~bzg/choices"
  :license     {:name "Eclipse Public License - v 2.0"
@@ -11,20 +11,20 @@
   com.taoensso/tempura                  {:mvn/version "1.5.3"}
   io.forward/yaml                       {:mvn/version "1.0.11"}
   markdown-to-hiccup/markdown-to-hiccup {:mvn/version "0.6.2"}
-  metosin/reitit-frontend               {:mvn/version "0.6.0"}
-  org.clojure/clojure                   {:mvn/version "1.11.1"}
-  org.clojure/clojurescript             {:mvn/version "1.11.121"}
+  metosin/reitit-frontend               {:mvn/version "0.7.0"}
+  org.clojure/clojure                   {:mvn/version "1.11.3"}
+  org.clojure/clojurescript             {:mvn/version "1.11.132"}
   org.flatland/ordered                  {:mvn/version "1.15.11"}
   reagent/reagent                       {:mvn/version "1.2.0"}
-  cljsjs/react                          {:mvn/version "17.0.2-0"}
-  cljsjs/react-dom                      {:mvn/version "17.0.2-0"}
+  cljsjs/react                          {:mvn/version "18.2.0-1"}
+  cljsjs/react-dom                      {:mvn/version "18.2.0-1"}
   reagent-utils/reagent-utils           {:mvn/version "0.3.8"}
   }
 
  :paths ["src" "src/clj" "src/cljs" "resources"]
 
  :aliases
- {:jar {:extra-deps {seancorfield/depstar {:mvn/version "RELEASE"}}
+ {:jar {:extra-deps {com.github.seancorfield/depstar {:mvn/version "RELEASE"}}
         :main-opts  ["-m" "hf.depstar.uberjar" "choices.jar"
                      "-C" "-m" "choices.server"]}
 
