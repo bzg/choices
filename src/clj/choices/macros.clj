@@ -5,7 +5,6 @@
 (ns choices.macros
   (:require [yaml.core :as yaml]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]
             [clojure.string :as string]))
 
 (defmacro inline-yaml-resource [resource-path]
@@ -17,11 +16,11 @@
    (slurp resource-path)))
 
 (defn slurp-no-error [f]
-  (try (slurp f) (catch Exception e nil)))
+  (try (slurp f) (catch Exception _ nil)))
 
-(defn use-theme [theme & [args]]
-  (if-let [config (or (not-empty (slurp-no-error "config.yml"))
-                      (slurp "config-example.yml"))]
+(defn use-theme [theme]
+  (when-let [config (or (not-empty (slurp-no-error "config.yml"))
+                        (slurp "config-example.yml"))]
     (let [index (slurp "resources/public/index.html")]
       (spit "config.yml"
             (string/replace config #"theme: \"[^\"]+\"" (format "theme: \"%s\"" theme)))
