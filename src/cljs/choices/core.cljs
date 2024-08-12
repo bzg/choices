@@ -11,7 +11,6 @@
             [reitit.frontend.easy :as rfe]
             [choices.i18n :as i18n]
             [choices.macros :as macros]
-            [cljsjs.clipboard]
             [cljs.reader]
             [clojure.string :as string]
             [markdown-to-hiccup.core :as md]
@@ -56,24 +55,6 @@
 (def lang (keyword (or (not-empty (:locale config)) "en")))
 (def opts {:dict localization-custom})
 (def i18n (partial tr opts [lang]))
-
-;; Create a copy-to-clipboard component
-(defn clipboard-button [label target]
-  (let [clipboard-atom (reagent/atom nil)]
-    (reagent/create-class
-     {:display-name "clipboard-button"
-      :component-did-mount
-      #(let [clipboard (new js/ClipboardJS (reagent.dom/dom-node %))]
-         (reset! clipboard-atom clipboard))
-      :component-will-unmount
-      #(when-not (nil? @clipboard-atom) (reset! clipboard-atom nil))
-      :reagent-render
-      (fn []
-        [:a
-         {:class                 (:button_is-outlined t)
-          :title                 (i18n [:copy-to-clipboard])
-          :data-clipboard-target target}
-         label])})))
 
 ;; Utility functions
 (defn strip-html-tags [^string s]
@@ -306,7 +287,6 @@
           {:class    (:button_is-outlined t)
            :title    (i18n [:toggle-summary-style])
            :on-click #(swap! show-summary-answers not)} "🔗"]
-         [clipboard-button "📋" "#copy-this"]
          [:a {:class (:button_is-outlined t)
               :title (i18n [:redo])
               :href  (rfe/href start-page)} "🔃"]

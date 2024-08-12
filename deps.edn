@@ -1,4 +1,4 @@
-{:version     "0.11"
+{:version     "0.12"
  :description "Web application to traverse a decision-tree and expose the result"
  :url         "https://git.sr.ht/~bzg/choices"
  :license     {:name "Eclipse Public License - v 2.0"
@@ -6,7 +6,6 @@
 
  :deps
  {
-  cljsjs/clipboard                      {:mvn/version "2.0.4-0"}
   com.bhauman/figwheel-main             {:mvn/version "0.2.18"}
   com.taoensso/tempura                  {:mvn/version "1.5.4"}
   io.forward/yaml                       {:mvn/version "1.0.11"}
