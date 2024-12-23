@@ -15,8 +15,8 @@
   org.clojure/clojurescript             {:mvn/version "1.11.132"}
   org.flatland/ordered                  {:mvn/version "1.15.12"}
   reagent/reagent                       {:mvn/version "1.2.0"}
-  cljsjs/react                          {:mvn/version "18.2.0-1"}
-  cljsjs/react-dom                      {:mvn/version "18.2.0-1"}
+  cljsjs/react                          {:mvn/version "18.3.1-1"}
+  cljsjs/react-dom                      {:mvn/version "18.3.1-1"}
   reagent-utils/reagent-utils           {:mvn/version "0.3.8"}
   }
 
@@ -39,6 +39,6 @@
   :test {:extra-paths ["test"]
          :extra-deps  {com.cognitect/test-runner
                        {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                        :sha     "9d36f36ff541dac680a05010e4348c744333f191"}}
+                        :sha     "3f288f1f16d167723ad87cc35b1dfee3c1681e10"}}
          :main-opts   ["-m" "cognitect.test-runner"
                        "-d" "test" "-n" "choices.test"]}}}
