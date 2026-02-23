@@ -1,5 +1,7 @@
 #+title: Choices: build SPA to let users explore a (decision-)tree
 
+⚠️ This repo is not maintained. Check [[https://codeberg.org/bzg/trees][trees]] for the new version.
+
 * =Choices=
 
 =Choices= lets you build a single page application to let users traverse
